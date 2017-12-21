@@ -19,4 +19,16 @@ public class JobDescriptor {
     public List<PropertyDescriptor> getProperties() {
         return properties;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof JobDescriptor)) {
+            return false;
+        }
+        JobDescriptor other = (JobDescriptor) obj;
+        if (!other.getName().equals(this.getName())) {
+            return false;
+        }
+        return other.getProperties().equals(this.getProperties());
+    }
 }

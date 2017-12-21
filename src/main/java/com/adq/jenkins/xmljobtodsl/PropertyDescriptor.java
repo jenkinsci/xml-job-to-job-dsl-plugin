@@ -2,13 +2,16 @@ package com.adq.jenkins.xmljobtodsl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 public class PropertyDescriptor {
     private String name;
     private List<PropertyDescriptor> properties;
     private Map<String, String> attributes;
     private String value;
+
+    public PropertyDescriptor(String name) {
+        this(name, null, null, null);
+    }
 
     public PropertyDescriptor(String name, String value) {
         this(name, value, null);
@@ -51,5 +54,23 @@ public class PropertyDescriptor {
 
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof PropertyDescriptor)) {
+            return false;
+        }
+        PropertyDescriptor other = (PropertyDescriptor) obj;
+        if (!other.getName().equals(this.getName())) {
+            return false;
+        }
+        if (!other.getAttributes().equals(this.getAttributes())) {
+            return false;
+        }
+        if (!other.getValue().equals(this.getValue())) {
+            return false;
+        }
+        return other.getProperties().equals(this.getProperties());
     }
 }

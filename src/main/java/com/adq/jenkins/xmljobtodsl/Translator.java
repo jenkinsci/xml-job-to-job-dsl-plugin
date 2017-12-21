@@ -45,12 +45,19 @@ public class Translator {
         translatorProperties.load(in);
     }
 
-    public void toDSL() {
+    public String toDSL() {
         for (JobDescriptor jobDescriptor : jobDescriptors) {
             jobDeclarations.add(
                 String.format(syntaxProperties.getProperty("syntax.job"), "job", jobDescriptor.getName(),
                 getDSLofJobProperties(jobDescriptor.getProperties())));
         }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(convertListInString(variableDeclarations));
+        stringBuilder.append(convertListInString(objectDeclarations));
+        stringBuilder.append(convertListInString(closureDeclarations));
+        stringBuilder.append(convertListInString(jobDeclarations));
+        stringBuilder.append(convertListInString(viewDeclarations));
+        return stringBuilder.toString();
     }
 
     public List<String> getDSLofJobProperties(List<PropertyDescriptor> jobProperties) {
@@ -100,7 +107,7 @@ public class Translator {
             PropertyDescriptor propertyDescriptor, String property) {
         
         if (methodsInsideOfJob.contains(property)) {
-            removeMethodCallAndAddClosure(methodsInsideOfJob, propertyDescriptor, property);
+            //removeMethodCallAndAddClosure(methodsInsideOfJob, propertyDescriptor, property);
             return null;
         }
 
@@ -108,7 +115,7 @@ public class Translator {
             syntaxProperties.getProperty("syntax.method_call"), property, propertyDescriptor.getValue());
     }
 
-    public void removeMethodCallAndAddClosure(List<String> methods, PropertyDescriptor propertyDescriptor, String property) {
+    /*public void removeMethodCallAndAddClosure(List<String> methods, PropertyDescriptor propertyDescriptor, String property) {
         for (Iterator<String> iterator = methods.iterator(); iterator.hasNext();) {
             
             String line = iterator.next();
@@ -132,7 +139,7 @@ public class Translator {
     public String createClosureWithParameter() {
         return "";
     }
-
+*/
     public String convertListInString(List<String> list) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String str : list) {
