@@ -31,4 +31,10 @@ public class JobDescriptor {
         }
         return other.getProperties().equals(this.getProperties());
     }
+
+    @Override
+    public String toString() {
+        return String.format("{%n    name: \"%s\",%n    properties: %s%n}", getName(),
+                getProperties() == null ? "null" : String.format("[%n%s%n]", getProperties().toString()));
+    }
 }

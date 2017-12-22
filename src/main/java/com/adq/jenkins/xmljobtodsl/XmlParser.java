@@ -1,15 +1,15 @@
 package com.adq.jenkins.xmljobtodsl;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -20,47 +20,63 @@ import java.util.Map;
 public class XmlParser {
 
     private String xml;
+    private String jobName;
 
-    public XmlParser(String xml) {
+    public XmlParser(String jobName, String xml) {
+        this.jobName = jobName;
         this.xml = xml;
         prepareXml();
     }
 
     public String prepareXml() {
-        return this.xml = this.xml.replaceAll("\n", "").replaceAll("\\s*<", "<");
+        return this.xml = this.xml.replaceAll(">%n", "").replaceAll("\\s*<", "<");
     }
 
     public JobDescriptor parse() throws IOException, SAXException, ParserConfigurationException {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         Document doc = docBuilder.parse(is);
+        doc.getDocumentElement().normalize();
 
         List<PropertyDescriptor> properties = new ArrayList<>();
 
         properties.addAll(getChildNodes(doc.getChildNodes()));
 
-        return new JobDescriptor(properties);
+        return new JobDescriptor(jobName, properties);
     }
 
     public List<PropertyDescriptor> getChildNodes(NodeList childNodes) {
         List<PropertyDescriptor> properties = new ArrayList<>();
         for (int i = 0; i < childNodes.getLength(); i++) {
-            Node child = childNodes.item(i);
-            String name = child.getNodeName();
+            Node node = childNodes.item(i);
+            if (node.getNodeType() != Node.ELEMENT_NODE) {
+                continue;
+            }
+            String name = node.getNodeName();
 
             Map<String, String> attributes = null;
-            if (child.hasAttributes()) {
-                attributes = getAttributes(child.getAttributes());
+            if (node.hasAttributes()) {
+                attributes = getAttributes(node.getAttributes());
             }
 
-            List<PropertyDescriptor> childProperties = new ArrayList<>();
-            if (child.hasChildNodes()) {
-                childProperties.addAll(getChildNodes(child.getChildNodes()));
-            } else {
-                String value = child.getNodeValue();
+            if (!node.hasChildNodes()) {
+                PropertyDescriptor descriptor = new PropertyDescriptor(name, attributes);
+                properties.add(descriptor);
+                continue;
+            }
+
+            Node firstChild = node.getFirstChild();
+
+            if (firstChild.getNodeType() == Node.TEXT_NODE && !((Text) firstChild).isElementContentWhitespace()) {
+                String value = node.getFirstChild().getNodeValue();
                 PropertyDescriptor descriptor = new PropertyDescriptor(name, value, attributes);
                 properties.add(descriptor);
                 continue;
+            }
+
+            List<PropertyDescriptor> childProperties = new ArrayList<>();
+            if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+                childProperties.addAll(getChildNodes(node.getChildNodes()));
             }
 
             PropertyDescriptor descriptor = new PropertyDescriptor(name, childProperties, attributes);

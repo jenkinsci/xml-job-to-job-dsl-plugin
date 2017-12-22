@@ -65,12 +65,32 @@ public class PropertyDescriptor {
         if (!other.getName().equals(this.getName())) {
             return false;
         }
-        if (!other.getAttributes().equals(this.getAttributes())) {
-            return false;
+
+        if (other.getAttributes() != null && this.getAttributes() != null) {
+            if (!other.getAttributes().equals(this.getAttributes())) {
+                return false;
+            }
         }
-        if (!other.getValue().equals(this.getValue())) {
-            return false;
+
+        if (other.getProperties() != null && this.getProperties() != null) {
+            if (!other.getProperties().equals(this.getProperties())) {
+                return false;
+            }
+        }
+
+        if (other.getValue() != null && this.getValue() != null) {
+            if (!other.getValue().equals(this.getValue())) {
+                return false;
+            }
         }
         return other.getProperties().equals(this.getProperties());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("{%n    name: \"%s\",%n    value: \"%s\",%n    attributes: %s,%n    properties: %s%n}",
+                getName(), getValue(),
+                getAttributes() == null ? "null" : String.format("[%n%s%n]", getAttributes().toString()),
+                getProperties() == null ? "null" : String.format("[%n%s%n]", getProperties().toString()));
     }
 }
