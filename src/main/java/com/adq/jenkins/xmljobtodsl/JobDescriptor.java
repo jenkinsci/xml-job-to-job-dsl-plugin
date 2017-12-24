@@ -2,7 +2,7 @@ package com.adq.jenkins.xmljobtodsl;
 
 import java.util.List;
 
-public class JobDescriptor {
+public class JobDescriptor implements IDescriptor {
 
     private String name;
     private List<PropertyDescriptor> properties;

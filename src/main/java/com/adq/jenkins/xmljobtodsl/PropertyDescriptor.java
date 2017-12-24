@@ -3,41 +3,44 @@ package com.adq.jenkins.xmljobtodsl;
 import java.util.List;
 import java.util.Map;
 
-public class PropertyDescriptor {
+public class PropertyDescriptor implements IDescriptor {
+
+    private PropertyDescriptor parent;
     private String name;
     private List<PropertyDescriptor> properties;
     private Map<String, String> attributes;
     private String value;
 
-    public PropertyDescriptor(String name) {
-        this(name, null, null, null);
+    public PropertyDescriptor(String name, PropertyDescriptor parent) {
+        this(name, parent, null, null, null);
     }
 
-    public PropertyDescriptor(String name, String value) {
-        this(name, value, null);
+    public PropertyDescriptor(String name, PropertyDescriptor parent , String value) {
+        this(name, parent, value, null);
     }
 
-    public PropertyDescriptor(String name, String value, Map<String, String> attributes) {
-        this(name, value, null, attributes);
+    public PropertyDescriptor(String name, PropertyDescriptor parent , String value, Map<String, String> attributes) {
+        this(name, parent, value, null, attributes);
     }
 
-    public PropertyDescriptor(String name, List<PropertyDescriptor> properties) {
-        this(name, properties, null);
+    public PropertyDescriptor(String name, PropertyDescriptor parent , List<PropertyDescriptor> properties) {
+        this(name, parent, properties, null);
     }
 
-    public PropertyDescriptor(String name, Map<String, String> attributes) {
-        this(name, null, null, attributes);
+    public PropertyDescriptor(String name, PropertyDescriptor parent , Map<String, String> attributes) {
+        this(name, parent, null, null, attributes);
     }
 
-    public PropertyDescriptor(String name, List<PropertyDescriptor> properties, Map<String, String> attributes) {
-        this(name, null, properties, attributes);
+    public PropertyDescriptor(String name, PropertyDescriptor parent , List<PropertyDescriptor> properties, Map<String, String> attributes) {
+        this(name, parent, null, properties, attributes);
     }
 
-    public PropertyDescriptor(String name, String value, List<PropertyDescriptor> properties, Map<String, String> attributes) {
+    public PropertyDescriptor(String name, PropertyDescriptor parent , String value, List<PropertyDescriptor> properties, Map<String, String> attributes) {
         this.name = name;
         this.value = value;
         this.properties = properties;
         this.attributes = attributes;
+        this.parent = parent;
     }
 
     public String getName() {

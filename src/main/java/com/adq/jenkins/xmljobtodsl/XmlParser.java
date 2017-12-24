@@ -40,12 +40,12 @@ public class XmlParser {
 
         List<PropertyDescriptor> properties = new ArrayList<>();
 
-        properties.addAll(getChildNodes(doc.getChildNodes()));
+        properties.addAll(getChildNodes(null, doc.getChildNodes()));
 
         return new JobDescriptor(jobName, properties);
     }
 
-    public List<PropertyDescriptor> getChildNodes(NodeList childNodes) {
+    public List<PropertyDescriptor> getChildNodes(PropertyDescriptor parent, NodeList childNodes) {
         List<PropertyDescriptor> properties = new ArrayList<>();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);
@@ -60,7 +60,7 @@ public class XmlParser {
             }
 
             if (!node.hasChildNodes()) {
-                PropertyDescriptor descriptor = new PropertyDescriptor(name, attributes);
+                PropertyDescriptor descriptor = new PropertyDescriptor(name, parent, attributes);
                 properties.add(descriptor);
                 continue;
             }
@@ -69,17 +69,16 @@ public class XmlParser {
 
             if (firstChild.getNodeType() == Node.TEXT_NODE && !((Text) firstChild).isElementContentWhitespace()) {
                 String value = node.getFirstChild().getNodeValue();
-                PropertyDescriptor descriptor = new PropertyDescriptor(name, value, attributes);
+                PropertyDescriptor descriptor = new PropertyDescriptor(name, parent, value, attributes);
                 properties.add(descriptor);
                 continue;
             }
 
             List<PropertyDescriptor> childProperties = new ArrayList<>();
+            PropertyDescriptor descriptor = new PropertyDescriptor(name, parent, childProperties, attributes);
             if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
-                childProperties.addAll(getChildNodes(node.getChildNodes()));
+                childProperties.addAll(getChildNodes(descriptor, node.getChildNodes()));
             }
-
-            PropertyDescriptor descriptor = new PropertyDescriptor(name, childProperties, attributes);
             properties.add(descriptor);
         }
         return properties;
