@@ -11,15 +11,15 @@ import java.util.Properties;
 
 public abstract class AbstractDSLStrategy implements DSLStrategy {
 
-    private static final String PREFIX_GROOVY = "groovy.";
-    private static final String SUFIX_GROOVY_TYPE = ".type";
+    public static final String PREFIX_GROOVY = "groovy.";
+    public static final String SUFIX_GROOVY_TYPE = ".type";
 
-    private static final String TYPE_CONST = "CONST";
-    private static final String TYPE_INNER = "INNER";
-    private static final String TYPE_OBJECT = "OBJECT";
-    private static final String TYPE_METHOD = "METHOD";
-    private static final String TYPE_PARAMETER = "PARAMETER";
-    private static final String TYPE_PROPERTY = "PROPERTY";
+    public static final String TYPE_CONST = "CONST";
+    public static final String TYPE_INNER = "INNER";
+    public static final String TYPE_OBJECT = "OBJECT";
+    public static final String TYPE_METHOD = "METHOD";
+    public static final String TYPE_PARAMETER = "PARAMETER";
+    public static final String TYPE_PROPERTY = "PROPERTY";
 
     private Properties syntaxProperties;
     private Properties translatorProperties;
@@ -47,7 +47,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         translatorProperties.load(in);
     }
 
-    public DSLStrategy getStrategyByPropertyDescriptorType(PropertyDescriptor propertyDescriptor) {
+    public String getType(PropertyDescriptor propertyDescriptor) {
         String key = String.format("%s%s", PREFIX_GROOVY, propertyDescriptor.getName());
         String property = translatorProperties.getProperty(key);
 
@@ -56,17 +56,29 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         }
 
         if (TYPE_INNER.equals(property)) {
-            return new DSLInnerStrategy(propertyDescriptor);
+            return TYPE_INNER;
         }
-
         String type = String.format("%s%s", key, SUFIX_GROOVY_TYPE);
         String propertyType = translatorProperties.getProperty(type);
 
         if (propertyType == null) {
             propertyType = TYPE_METHOD;
         }
+        return propertyType;
+    }
 
-        switch (propertyType) {
+    public DSLStrategy getStrategyByPropertyDescriptorType(PropertyDescriptor propertyDescriptor) {
+        String key = String.format("%s%s", PREFIX_GROOVY, propertyDescriptor.getName());
+        String property = translatorProperties.getProperty(key);
+        String type = getType(propertyDescriptor);
+
+        if (type == null) {
+            return null;
+        }
+
+        switch (type) {
+            case TYPE_INNER:
+                return new DSLInnerStrategy(propertyDescriptor);
             case TYPE_CONST:
                 return new DSLConstantStrategy(propertyDescriptor, property);
             case TYPE_OBJECT:
@@ -104,6 +116,16 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
                 addChild(strategy);
             }
         }
+    }
+
+    protected List<PropertyDescriptor> getChildrenOfType(PropertyDescriptor parent, String type) {
+        List<PropertyDescriptor> selectedPropertyDescription = new ArrayList<>();
+        for (PropertyDescriptor propertyDescriptor : parent.getProperties()) {
+            if (type.equals(getType(propertyDescriptor))) {
+                selectedPropertyDescription.add(propertyDescriptor);
+            }
+        }
+        return selectedPropertyDescription;
     }
 
     protected String getChildrenDSL() {

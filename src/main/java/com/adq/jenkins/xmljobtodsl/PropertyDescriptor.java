@@ -59,6 +59,10 @@ public class PropertyDescriptor implements IDescriptor {
         return value;
     }
 
+    public PropertyDescriptor getParent() {
+        return parent;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PropertyDescriptor)) {
@@ -86,7 +90,12 @@ public class PropertyDescriptor implements IDescriptor {
                 return false;
             }
         }
-        return other.getProperties().equals(this.getProperties());
+
+        if (other.getParent() != null) {
+            return other.getParent().equals(this.getParent());
+        } else {
+            return this.getParent() == null;
+        }
     }
 
     @Override

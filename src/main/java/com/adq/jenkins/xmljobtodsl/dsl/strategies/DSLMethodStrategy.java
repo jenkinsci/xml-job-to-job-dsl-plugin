@@ -18,8 +18,28 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
     @Override
     public String toDSL() {
         if (propertyDescriptor.getValue() != null) {
-            return String.format(getSyntaxProperties().getProperty("syntax.method_call"),
+            String method = "";
+            boolean isParentAMethod = propertyDescriptor.getParent() != null &&
+                    getType(propertyDescriptor.getParent()).equals(TYPE_METHOD);
+
+            List<PropertyDescriptor> siblings = null;
+
+            if (isParentAMethod) {
+                siblings = getChildrenOfType(propertyDescriptor.getParent(), TYPE_METHOD);
+
+                if (siblings.get(0).equals(propertyDescriptor)) {
+                    method = "{\n";
+                }
+            }
+
+            method += String.format(getSyntaxProperties().getProperty("syntax.method_call"),
                     methodName, printValueAccordingOfItsType(propertyDescriptor.getValue()));
+
+            if (isParentAMethod &&
+                    siblings.get(siblings.size() - 1).equals(propertyDescriptor)) {
+                method += " }";
+            }
+            return method;
         } else {
             return String.format(getSyntaxProperties().getProperty("syntax.method_call"),
                     methodName, getChildrenDSL());
