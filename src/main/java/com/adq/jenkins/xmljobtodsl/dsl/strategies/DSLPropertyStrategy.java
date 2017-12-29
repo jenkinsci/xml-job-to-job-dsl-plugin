@@ -7,13 +7,13 @@ public class DSLPropertyStrategy extends AbstractDSLStrategy {
     private String property;
 
     public DSLPropertyStrategy(int tabs, PropertyDescriptor propertyDescriptor, String property) {
-        super(propertyDescriptor, tabs);
+        super(tabs, propertyDescriptor);
         this.property = property;
     }
 
     @Override
     public String toDSL() {
-        return String.format(getSyntaxProperties().getProperty("syntax.property"), property,
-                getChildrenDSL());
+        return replaceTabs(String.format(getSyntax("syntax.property"), property,
+                getChildrenDSL()), getTabs());
     }
 }

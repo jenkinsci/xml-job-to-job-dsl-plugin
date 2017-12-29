@@ -11,4 +11,6 @@ public interface DSLStrategy {
     String toDSL();
 
     int getTabs();
+
+    void setTabs(int tabs);
 }

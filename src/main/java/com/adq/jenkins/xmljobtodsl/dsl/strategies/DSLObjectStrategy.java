@@ -9,16 +9,21 @@ public class DSLObjectStrategy extends AbstractDSLStrategy {
     private final String name;
 
     public DSLObjectStrategy(int tabs, PropertyDescriptor propertyDescriptor, String name) {
-        super(propertyDescriptor, tabs);
+        super(tabs, propertyDescriptor);
         this.name = name;
     }
 
     @Override
     public String toDSL() {
+        String childrenDSL = getChildrenDSL();
+        if (childrenDSL.isEmpty()) {
+            return "";
+        }
+
         if (name != null) {
-            return String.format(getSyntaxProperties().getProperty("syntax.object_with_name"), name, getChildrenDSL());
+            return replaceTabs(String.format(getSyntax("syntax.object_with_name"), name, childrenDSL), getTabs());
         } else {
-            return String.format(getSyntaxProperties().getProperty("syntax.object"), getChildrenDSL());
+            return replaceTabs(String.format(getSyntax("syntax.object"), childrenDSL), getTabs());
         }
     }
 }

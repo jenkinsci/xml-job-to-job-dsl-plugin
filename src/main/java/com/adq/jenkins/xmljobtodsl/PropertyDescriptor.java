@@ -1,12 +1,16 @@
 package com.adq.jenkins.xmljobtodsl;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 import java.util.Map;
 
 public class PropertyDescriptor implements IDescriptor {
 
-    private PropertyDescriptor parent;
     private String name;
+    private PropertyDescriptor parent;
     private List<PropertyDescriptor> properties;
     private Map<String, String> attributes;
     private String value;
@@ -91,18 +95,23 @@ public class PropertyDescriptor implements IDescriptor {
             }
         }
 
-        if (other.getParent() != null) {
-            return other.getParent().equals(this.getParent());
-        } else {
-            return this.getParent() == null;
-        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return String.format("{%n    name: \"%s\",%n    value: \"%s\",%n    attributes: %s,%n    properties: %s%n}",
-                getName(), getValue(),
-                getAttributes() == null ? "null" : String.format("[%n%s%n]", getAttributes().toString()),
-                getProperties() == null ? "null" : String.format("[%n%s%n]", getProperties().toString()));
+        GsonBuilder builder = new GsonBuilder();
+        builder.setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+                return fieldAttributes.getName().equals("parent");
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        });
+        return builder.create().toJson(this);
     }
 }

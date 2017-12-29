@@ -10,13 +10,13 @@ public class DSLJobStrategy extends AbstractDSLStrategy {
     private final JobDescriptor jobDescriptor;
 
     public DSLJobStrategy(JobDescriptor jobDescriptor) {
-        super(jobDescriptor, 0);
+        super(jobDescriptor);
         this.jobDescriptor = jobDescriptor;
     }
 
     @Override
     public String toDSL() {
-        return String.format(getSyntaxProperties().getProperty("syntax.job"),
+        return String.format(getSyntax("syntax.job"),
                 JOB_TYPE_JOB, jobDescriptor.getName(), getChildrenDSL());
     }
 }

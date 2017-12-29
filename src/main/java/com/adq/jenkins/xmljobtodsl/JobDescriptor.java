@@ -1,5 +1,9 @@
 package com.adq.jenkins.xmljobtodsl;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 
 public class JobDescriptor implements IDescriptor {
@@ -34,7 +38,20 @@ public class JobDescriptor implements IDescriptor {
 
     @Override
     public String toString() {
-        return String.format("{%n    name: \"%s\",%n    properties: %s%n}", getName(),
-                getProperties() == null ? "null" : String.format("[%n%s%n]", getProperties().toString()));
+        GsonBuilder builder = new GsonBuilder();
+        builder.setExclusionStrategies(new ExclusionStrategy() {
+
+            @Override
+            public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+                return fieldAttributes.getName().equals("parent");
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> aClass) {
+                return false;
+            }
+        });
+        builder.setPrettyPrinting();
+        return builder.create().toJson(this);
     }
 }

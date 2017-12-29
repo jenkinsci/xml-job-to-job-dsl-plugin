@@ -4,8 +4,8 @@ import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
 
 public class DSLInnerStrategy extends AbstractDSLStrategy {
 
-    public DSLInnerStrategy(PropertyDescriptor propertyDescriptor) {
-        super(propertyDescriptor, 0);
+    public DSLInnerStrategy(int tabs, PropertyDescriptor propertyDescriptor) {
+        super(tabs, propertyDescriptor);
     }
 
     @Override

@@ -26,9 +26,14 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
     private List<DSLStrategy> children = new ArrayList<>();
 
-    protected int tabs = 0;
+    private int tabs = 0;
 
-    public AbstractDSLStrategy(IDescriptor descriptor, int tabs) {
+    public AbstractDSLStrategy(IDescriptor descriptor) {
+       this(0, descriptor);
+    }
+
+    public AbstractDSLStrategy(int tabs, IDescriptor descriptor) {
+        this.tabs = tabs;
         try {
             initProperties();
         } catch (IOException e) {
@@ -76,24 +81,32 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
             return null;
         }
 
+        DSLStrategy strategy;
         switch (type) {
             case TYPE_INNER:
-                return new DSLInnerStrategy(propertyDescriptor);
+                strategy = new DSLInnerStrategy(getTabs(), propertyDescriptor);
+                break;
             case TYPE_CONST:
-                return new DSLConstantStrategy(propertyDescriptor, property);
+                strategy = new DSLConstantStrategy(propertyDescriptor, property);
+                break;
             case TYPE_OBJECT:
-                return new DSLObjectStrategy(getTabs(), propertyDescriptor, property);
+                strategy = new DSLObjectStrategy(getTabs() + 1, propertyDescriptor, property);
+                break;
             case TYPE_PARAMETER:
-                return new DSLParameterStrategy(propertyDescriptor);
+                strategy = new DSLParameterStrategy(propertyDescriptor);
+                break;
             case TYPE_PROPERTY:
-                return new DSLPropertyStrategy(getTabs(), propertyDescriptor, property);
+                strategy = new DSLPropertyStrategy(getTabs() + 1, propertyDescriptor, property);
+                break;
             default:
-                return new DSLMethodStrategy(getTabs(), propertyDescriptor, property);
+                strategy = new DSLMethodStrategy(getTabs() + 1, propertyDescriptor, property);
+                break;
         }
+        return strategy;
     }
 
-    public Properties getSyntaxProperties() {
-        return syntaxProperties;
+    protected String getSyntax(String key) {
+        return syntaxProperties.getProperty(key);
     }
 
     @Override
@@ -129,13 +142,16 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     }
 
     protected String getChildrenDSL() {
-        tabs++;
         StringBuilder dsl = new StringBuilder();
         for (DSLStrategy strategy : getChildren()) {
-            dsl.append(getTabsString());
-            dsl.append(strategy.toDSL());
+            String strategyDsl = strategy.toDSL();
+            dsl.append(strategyDsl);
         }
         return dsl.toString();
+    }
+
+    protected String replaceTabs(String dsl, int tabs) {
+        return dsl.replaceAll("<t>", getTabsString(tabs));
     }
 
     public String printValueAccordingOfItsType(String value) {
@@ -159,10 +175,14 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         return tabs;
     }
 
-    public String getTabsString() {
+    public void setTabs(int tabs) {
+        this.tabs = tabs;
+    }
+
+    public String getTabsString(int tabs) {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < getTabs(); i++) {
-            builder.append("\t");
+        for (int i = 0; i < tabs; i++) {
+            builder.append(syntaxProperties.getProperty("syntax.tab"));
         }
         return builder.toString();
     }

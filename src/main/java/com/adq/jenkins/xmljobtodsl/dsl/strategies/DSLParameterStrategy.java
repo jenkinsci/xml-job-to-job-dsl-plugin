@@ -9,13 +9,13 @@ public class DSLParameterStrategy extends AbstractDSLStrategy {
     private final PropertyDescriptor propertyDescriptor;
 
     public DSLParameterStrategy(PropertyDescriptor propertyDescriptor) {
-        super(propertyDescriptor, 0);
+        super(propertyDescriptor);
         this.propertyDescriptor = propertyDescriptor;
     }
 
     @Override
     public String toDSL() {
-        return String.format(getSyntaxProperties().getProperty("syntax.method_param"),
+        return String.format(getSyntax("syntax.method_param"),
                 printValueAccordingOfItsType(propertyDescriptor.getValue()));
     }
 }

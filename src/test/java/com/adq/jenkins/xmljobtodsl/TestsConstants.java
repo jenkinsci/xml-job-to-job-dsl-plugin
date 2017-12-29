@@ -35,9 +35,10 @@ public class TestsConstants {
 
         List<PropertyDescriptor> shellProperties = new ArrayList<>();
         PropertyDescriptor shell = new PropertyDescriptor("hudson.tasks.Shell", builder, shellProperties);
-        shellProperties.add(new PropertyDescriptor("command", shell, "export PLATFORM=${platform}\n" +
-                "               cd 'iOSTest-AppiumTests/src/scripts/'\n" +
-                "               fab -f build.py initialize_env run_appium run_tests kill_appium"));
+        shellProperties.add(new PropertyDescriptor("command", shell,
+                "export PLATFORM=${platform}" + System.lineSeparator() +
+                "cd 'iOSTest-AppiumTests/src/scripts/'" + System.lineSeparator() +
+                "fab -f build.py fetch_git build_app upload_app"));
         buildersProperties.add(shell);
 
         projectProperties.add(builder);
@@ -58,51 +59,49 @@ public class TestsConstants {
     }
 
     public static final String getXml() {
-        return "<project>\n" +
-                "   <properties>\n" +
-                "       <hudson.plugins.buildblocker.BuildBlockerProperty>\n" +
-                "           <useBuildBlocker>true</useBuildBlocker>\n" +
-                "           <blockingJobs>Build-iOS-App</blockingJobs>\n" +
-                "           <blockLevel>GLOBAL</blockLevel>\n" +
-                "           <scanQueueFor>DISABLED</scanQueueFor>\n" +
-                "       </hudson.plugins.buildblocker.BuildBlockerProperty>\n" +
-                "   </properties>\n" +
-                "   <builders>\n" +
-                "       <org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater plugin=\"build-name-setter@1.6.5\">\n" +
-                "           <macroTemplate>Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}</macroTemplate>\n" +
-                "           <fromFile>false</fromFile>\n" +
-                "           <fromMacro>true</fromMacro>\n" +
-                "           <macroFirst>true</macroFirst>\n" +
-                "       </org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater>\n" +
-                "       <hudson.tasks.Shell>\n" +
-                "           <command>export PLATFORM=${platform}\n" +
-                "               cd 'iOSTest-AppiumTests/src/scripts/'\n" +
-                "               fab -f build.py initialize_env run_appium run_tests kill_appium\n" +
-                "           </command>\n" +
-                "       </hudson.tasks.Shell>\n" +
-                "   </builders>\n" +
+        return "<project>" + System.lineSeparator() +
+                "\t<properties>" + System.lineSeparator() +
+                "\t\t<hudson.plugins.buildblocker.BuildBlockerProperty>" + System.lineSeparator() +
+                "\t\t\t<useBuildBlocker>true</useBuildBlocker>" + System.lineSeparator() +
+                "\t\t\t<blockingJobs>Build-iOS-App</blockingJobs>" + System.lineSeparator() +
+                "\t\t\t<blockLevel>GLOBAL</blockLevel>" + System.lineSeparator() +
+                "\t\t\t<scanQueueFor>DISABLED</scanQueueFor>" + System.lineSeparator() +
+                "\t\t</hudson.plugins.buildblocker.BuildBlockerProperty>" + System.lineSeparator() +
+                "\t</properties>" + System.lineSeparator() +
+                "\t<builders>" + System.lineSeparator() +
+                "\t\t<org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater plugin=\"build-name-setter@1.6.5\">" + System.lineSeparator() +
+                "\t\t\t<macroTemplate>Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}</macroTemplate>" + System.lineSeparator() +
+                "\t\t\t<fromFile>false</fromFile>" + System.lineSeparator() +
+                "\t\t\t<fromMacro>true</fromMacro>" + System.lineSeparator() +
+                "\t\t\t<macroFirst>true</macroFirst>" + System.lineSeparator() +
+                "\t\t</org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater>" + System.lineSeparator() +
+                "\t\t<hudson.tasks.Shell>" + System.lineSeparator() +
+                "\t\t\t<command>export PLATFORM=${platform}" + System.lineSeparator() +
+                "cd 'iOSTest-AppiumTests/src/scripts/'" + System.lineSeparator() +
+                "fab -f build.py fetch_git build_app upload_app" + System.lineSeparator() +
+                "\t\t\t</command>" + System.lineSeparator() +
+                "\t\t</hudson.tasks.Shell>" + System.lineSeparator() +
+                "\t</builders>" + System.lineSeparator() +
                 "</project>";
     }
 
     public static final String getDSL() {
-        return "job(\"Test\") {\n" +
-                "   blockOn(\"Build-iOS-App\", {\n" +
-                "       blockLevel(\"GLOBAL\")\n" +
-                "       scanQueueFor(\"DISABLED\")\n" +
-                "   }\n" +
-                ")\n" +
-                "   steps {\n" +
-                "       buildNameUpdater {\n" +
-                "           macroTemplate(\"Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}\")\n" +
-                "           fromFile(false)\n" +
-                "           fromMacro(true)\n" +
-                "           macroFirst(true)\n" +
-                "       }\n" +
-                "       shell(\"\"\"export PLATFORM=${platform}\n" +
-                "cd \"iOSTest-AppiumTests/src/scripts/\"\n" +
-                "fab -f build.py fetch_git build_app upload_app\n" +
-                "\"\"\")\n" +
-                "   }\n" +
-                "}\n";
+        return "job(\"Test\") {" + System.lineSeparator() +
+                "\tblockOn(\"Build-iOS-App\", {" + System.lineSeparator() +
+                "\t\tblockLevel(\"GLOBAL\")" + System.lineSeparator() +
+                "\t\tscanQueueFor(\"DISABLED\")" + System.lineSeparator() +
+                "\t})" + System.lineSeparator() +
+                "\tsteps {" + System.lineSeparator() +
+                "\t\tbuildNameUpdater {" + System.lineSeparator() +
+                "\t\t\tmacroTemplate(\"Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}\")" + System.lineSeparator() +
+                "\t\t\tfromFile(false)" + System.lineSeparator() +
+                "\t\t\tfromMacro(true)" + System.lineSeparator() +
+                "\t\t\tmacroFirst(true)" + System.lineSeparator() +
+                "\t\t}" + System.lineSeparator() +
+                "\t\tshell(\"\"\"export PLATFORM=${platform}" + System.lineSeparator() +
+                "cd 'iOSTest-AppiumTests/src/scripts/'" + System.lineSeparator() +
+                "fab -f build.py fetch_git build_app upload_app\"\"\")" + System.lineSeparator() +
+                "\t}" + System.lineSeparator() +
+                "}" + System.lineSeparator() + System.lineSeparator();
     }
 }

@@ -33,8 +33,10 @@ public class TestsXmlParser {
 
     @Test
     public void testParse() throws ParserConfigurationException, SAXException, IOException {
-        assertEquals(TestsConstants.getJobDescriptor().toString(),
-                new XmlParser("Test", TestsConstants.getXml()).parse().toString());
+        String expected = TestsConstants.getJobDescriptor().toString();
+        expected = expected.replaceAll("(\\\\r)", "");
+        String actual = new XmlParser("Test", TestsConstants.getXml()).parse().toString();
+        assertEquals(expected, actual);
     }
 
     @Test
