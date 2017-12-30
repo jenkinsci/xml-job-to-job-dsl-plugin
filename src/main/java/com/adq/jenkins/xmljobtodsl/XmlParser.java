@@ -28,7 +28,7 @@ public class XmlParser {
         prepareXml();
     }
 
-    public String prepareXml() {
+    private String prepareXml() {
         return this.xml = this.xml.replaceAll(">%n", "").replaceAll("\\s*<", "<");
     }
 

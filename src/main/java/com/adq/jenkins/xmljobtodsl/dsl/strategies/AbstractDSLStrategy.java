@@ -20,6 +20,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     public static final String TYPE_METHOD = "METHOD";
     public static final String TYPE_PARAMETER = "PARAMETER";
     public static final String TYPE_PROPERTY = "PROPERTY";
+    public static final String TYPE_ARRAY = "ARRAY";
 
     private Properties syntaxProperties;
     private Properties translatorProperties;
@@ -81,28 +82,22 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
             return null;
         }
 
-        DSLStrategy strategy;
         switch (type) {
             case TYPE_INNER:
-                strategy = new DSLInnerStrategy(getTabs(), propertyDescriptor);
-                break;
+                return new DSLInnerStrategy(getTabs(), propertyDescriptor);
             case TYPE_CONST:
-                strategy = new DSLConstantStrategy(propertyDescriptor, property);
-                break;
+                return new DSLConstantStrategy(propertyDescriptor, property);
             case TYPE_OBJECT:
-                strategy = new DSLObjectStrategy(getTabs() + 1, propertyDescriptor, property);
-                break;
+                return new DSLObjectStrategy(getTabs() + 1, propertyDescriptor, property);
             case TYPE_PARAMETER:
-                strategy = new DSLParameterStrategy(propertyDescriptor);
-                break;
+                return new DSLParameterStrategy(propertyDescriptor);
             case TYPE_PROPERTY:
-                strategy = new DSLPropertyStrategy(getTabs() + 1, propertyDescriptor, property);
-                break;
+                return new DSLPropertyStrategy(getTabs() + 1, propertyDescriptor, property);
+            case TYPE_ARRAY:
+                return new DSLArrayStrategy(propertyDescriptor);
             default:
-                strategy = new DSLMethodStrategy(getTabs() + 1, propertyDescriptor, property);
-                break;
+                return new DSLMethodStrategy(getTabs() + 1, propertyDescriptor, property);
         }
-        return strategy;
     }
 
     protected String getSyntax(String key) {

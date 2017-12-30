@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotEquals;
 
 public class TestsXmlParser {
 
-    private String readExampleFile() {
+    public static String readExampleFile() {
         try {
             return new IOUtils().readFromResource("example1.xml");
         } catch (IOException e) {
