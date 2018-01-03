@@ -15,11 +15,15 @@ public class DSLTranslator {
         this.jobDescriptors = jobDescriptors;
     }
 
+    public DSLTranslator(JobDescriptor jobDescriptor) {
+        this.jobDescriptors = new JobDescriptor[] { jobDescriptor };
+    }
+
     public String toDSL() {
         StringBuilder builder = new StringBuilder();
         for (JobDescriptor job : jobDescriptors) {
             builder.append(new DSLJobStrategy(job).toDSL());
         }
-        return builder.toString();
+        return builder.toString().trim();
     }
 }

@@ -13,28 +13,49 @@ import static org.junit.Assert.assertEquals;
 public class TestsTranslator {
 
     public static String readExampleFile() {
-        try {
-            return new IOUtils().readFromResource("example1.groovy");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return TestsXmlParser.readFile("example1.groovy");
     }
 
     @Test
     public void testSimpleDSL() throws IOException {
         assertEquals(TestsConstants.getDSL(),
-                new DSLTranslator(new JobDescriptor[] { TestsConstants.getJobDescriptor() }).toDSL());
+                new DSLTranslator(TestsConstants.getJobDescriptor()).toDSL());
     }
 
     @Test
-    public void testReadingFile() throws IOException, ParserConfigurationException, SAXException {
-        String xml = TestsXmlParser.readExampleFile();
+    public void testDSLWithArrays() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("array.xml");
+        JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
+        String expectedDSL = TestsXmlParser.readFile("array.groovy");
+
+        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+    }
+
+    @Test
+    public void testDSLWithObjectAsParameter() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("object_parameter.xml");
+        JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
+        String expectedDSL = TestsXmlParser.readFile("object_parameter.groovy");
+
+        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+    }
+
+    @Test
+    public void testDSLScm() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("scm.xml");
+        JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
+        String expectedDSL = TestsXmlParser.readFile("scm.groovy");
+
+        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+    }
+
+    @Test
+    public void testReadingComplexFile() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("example1.xml");
         JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
 
         String expectedDSL = readExampleFile();
 
-        assertEquals(expectedDSL,
-                new DSLTranslator(new JobDescriptor[] { actualJobDescriptor }).toDSL());
+        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
     }
 }

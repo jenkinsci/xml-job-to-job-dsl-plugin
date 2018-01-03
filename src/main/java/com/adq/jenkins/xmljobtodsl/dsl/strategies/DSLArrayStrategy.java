@@ -1,10 +1,10 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
-import com.adq.jenkins.xmljobtodsl.IDescriptor;
+import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
 
-public class DSLArrayStrategy extends AbstractDSLStrategy {
+public class DSLArrayStrategy extends DSLMethodStrategy implements IValueStrategy {
 
-    public DSLArrayStrategy(IDescriptor descriptor) {
+    public DSLArrayStrategy(PropertyDescriptor descriptor) {
         super(descriptor);
     }
 

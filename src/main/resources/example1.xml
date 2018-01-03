@@ -17,114 +17,6 @@
         <hudson.model.ParametersDefinitionProperty>
             <parameterDefinitions>
                 <hudson.model.StringParameterDefinition>
-                    <name>REMOTE_USER</name>
-                    <defaultValue>jenkins</defaultValue>
-                    <description>User of the slave machines to log in</description>
-                </hudson.model.StringParameterDefinition>
-                <com.cloudbees.plugins.credentials.CredentialsParameterDefinition>
-                    <name>PASS_WORD</name>
-                    <description>Credential of type "Secret Text" with the password used to log in slave machines</description>
-                    <defaultValue>JenkinsMachinePassword</defaultValue>
-                    <credentialType>org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl</credentialType>
-                    <required>false</required>
-                </com.cloudbees.plugins.credentials.CredentialsParameterDefinition>
-                <hudson.model.ChoiceParameterDefinition>
-                    <choices class="java.util.Arrays$ArrayList">
-                        <a class="string-array">
-                            <string>cip1-qa</string>
-                            <string>cip2-qa</string>
-                            <string>cip3-qa</string>
-                            <string>cip4-qa</string>
-                            <string>qa4</string>
-                            <string>qa3</string>
-                            <string>qa5</string>
-                            <string>qa6</string>
-                            <string>qa10</string>
-                            <string>qa12</string>
-                            <string>qa20</string>
-                            <string>qa22</string>
-                            <string>qa24</string>
-                            <string>qa26</string>
-                            <string>qa27</string>
-                            <string>warpdrive</string>
-                        </a>
-                    </choices>
-                    <name>POD</name>
-                    <description/>
-                </hudson.model.ChoiceParameterDefinition>
-                <hudson.model.ChoiceParameterDefinition>
-                    <choices class="java.util.Arrays$ArrayList">
-                        <a class="string-array">
-                            <string>cip3-qa</string>
-                            <string>cip2-qa</string>
-                            <string>cip1-qa</string>
-                            <string>cip4-qa</string>
-                            <string>qa4</string>
-                            <string>qa3</string>
-                            <string>qa5</string>
-                            <string>qa6</string>
-                            <string>qa10</string>
-                            <string>qa12</string>
-                            <string>qa20</string>
-                            <string>qa22</string>
-                            <string>qa24</string>
-                            <string>qa26</string>
-                            <string>qa27</string>
-                            <string>warpdrive</string>
-                        </a>
-                    </choices>
-                    <name>XPOD</name>
-                    <description/>
-                </hudson.model.ChoiceParameterDefinition>
-                <hudson.model.StringParameterDefinition>
-                    <name>STORIES</name>
-                    <defaultValue>all</defaultValue>
-                    <description/>
-                </hudson.model.StringParameterDefinition>
-                <hudson.model.StringParameterDefinition>
-                    <name>TESTRAIL_RUN_ID</name>
-                    <defaultValue>None</defaultValue>
-                    <description>Use this to have the tests post their status into an existing Testrail run instead of creating a new one.
-                        Enter the ID of the run into this field or leave it as "None" to have the tests create a new one.
-                        E.g.: 692, 677, 123</description>
-                </hudson.model.StringParameterDefinition>
-                <hudson.model.ChoiceParameterDefinition>
-                    <choices class="java.util.Arrays$ArrayList">
-                        <a class="string-array">
-                            <string>warn</string>
-                            <string>debug</string>
-                            <string>info</string>
-                        </a>
-                    </choices>
-                    <name>LOG_LEVEL</name>
-                    <description>This is the Appium log level</description>
-                </hudson.model.ChoiceParameterDefinition>
-                <hudson.model.StringParameterDefinition>
-                    <name>URLS</name>
-                    <defaultValue>10.240.50.18:4723,10.240.50.36:4723,10.240.50.37:4723</defaultValue>
-                    <description>List of URL:PORT for all Appium's servers
-                        Use ODD Ports for iOS Parallel Tests.
-                        Use EVEN Ports for Android Parallel Tests.
-                        127.0.0.1 for localhost.
-                        Comma separated</description>
-                </hudson.model.StringParameterDefinition>
-                <hudson.model.ChoiceParameterDefinition>
-                    <choices class="java.util.Arrays$ArrayList">
-                        <a class="string-array">
-                            <string>none</string>
-                            <string>smoke</string>
-                            <string>sanity</string>
-                        </a>
-                    </choices>
-                    <name>METAFILTER</name>
-                    <description/>
-                </hudson.model.ChoiceParameterDefinition>
-                <hudson.model.BooleanParameterDefinition>
-                    <name>DONT_RESET_APP</name>
-                    <defaultValue>false</defaultValue>
-                    <description>Check this if you want to avoid resetting app between stories</description>
-                </hudson.model.BooleanParameterDefinition>
-                <hudson.model.StringParameterDefinition>
                     <name>GIT_BRANCH</name>
                     <defaultValue>dev</defaultValue>
                     <description>Name of the branch that will be checked out from SymphonyOSF/iOSTest Repo</description>
@@ -141,58 +33,53 @@
                         Make sure only one device is plugged.
                         UDID will be automatically fetched</description>
                 </hudson.model.BooleanParameterDefinition>
-                <hudson.model.StringParameterDefinition>
-                    <name>APP_VERSION</name>
-                    <defaultValue>latest-dev</defaultValue>
-                    <description>The version of the app used to run the tests against
-                        * The default value "latest-qa" gets the latest github tag starting with "qa-" for the android app repo
-                        * "latest-dev" gets the latest github tag starting with "dev-" from the app repo
-
-                        Examples:
-                        latest-qa
-                        latest-dev
-                        qa-123
-                        dev-321
-
-                        A list of available versions can be found here:
-                        https://github.com/SymphonyOSF/SANDROID-CLIENT-APP/tags</description>
-                </hudson.model.StringParameterDefinition>
+                choiceParam('PLATFORM', ['Android', 'iOS'], 'Select the platform to test')
+                <hudson.model.ChoiceParameterDefinition>
+                    <choices class="java.util.Arrays$ArrayList">
+                        <a class="string-array">
+                            <string>Android</string>
+                            <string>iOS</string>
+                        </a>
+                    </choices>
+                    <name>PLATFORM</name>
+                    <description>Select the platform to test</description>
+                </hudson.model.ChoiceParameterDefinition>
             </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>
         <com.coravy.hudson.plugins.github.GithubProjectProperty>
-            <projectUrl>https://github.com/SymphonyOSF/iOSTest/</projectUrl>
+            <projectUrl>https://github.com/alandoni/xml-job-to-dsl/</projectUrl>
         </com.coravy.hudson.plugins.github.GithubProjectProperty>
     </properties>
     <canRoam>true</canRoam>
-    <disabled>false</disabled>
+    <disabled>true</disabled>
     <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
     <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
     <triggers/>
     <concurrentBuild>false</concurrentBuild>
     <builders>
         <org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater plugin="build-name-setter@1.6.5">
-            <macroTemplate>Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}</macroTemplate>
+            <macroTemplate>Build App</macroTemplate>
             <fromFile>false</fromFile>
             <fromMacro>true</fromMacro>
             <macroFirst>true</macroFirst>
         </org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater>
         <hudson.tasks.Shell>
             <command>export PLATFORM=iOS
-                cd 'iOSTest-AppiumTests/src/scripts/'
-                fab -f test.py initialize_env run_appium run_tests kill_appium
+                cd 'xml-job-to-dsl/src/scripts/'
+                ./run.sh
             </command>
         </hudson.tasks.Shell>
     </builders>
     <publishers>
         <hudson.tasks.ArtifactArchiver>
-            <artifacts>iOSTest-AppiumTests/target/test-output/**/*</artifacts>
+            <artifacts>build/**/*</artifacts>
             <allowEmptyArchive>false</allowEmptyArchive>
             <defaultExcludes>true</defaultExcludes>
             <fingerprint>false</fingerprint>
             <onlyIfSuccessful>false</onlyIfSuccessful>
         </hudson.tasks.ArtifactArchiver>
         <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.4">
-            <stableText>${FILE:iOSTest-AppiumTests/testrail_report.html}
+            <stableText>${FILE:xml-job-to-dsl/tests_report.html}
                 ${FILE:build_variables.html}</stableText>
             <unstableText/>
             <failedText/>
@@ -223,8 +110,8 @@
     <scm class="hudson.plugins.git.GitSCM">
         <userRemoteConfigs>
             <hudson.plugins.git.UserRemoteConfig>
-                <url>https://github.com/SymphonyOSF/iOSTest.git</url>
-                <credentialsId>jenkins-mobile</credentialsId>
+                <url>https://github.com/alandoni/xml-job-to-dsl</url>
+                <credentialsId>jenkins</credentialsId>
             </hudson.plugins.git.UserRemoteConfig>
         </userRemoteConfigs>
         <branches>
@@ -239,7 +126,7 @@
             <hudson.plugins.git.extensions.impl.WipeWorkspace/>
         </extensions>
         <browser class="hudson.plugins.git.browser.GithubWeb">
-            <url>https://github.com/SymphonyOSF/iOSTest/</url>
+            <url>https://github.com/alandoni/xml-job-to-dsl</url>
         </browser>
     </scm>
 </project>

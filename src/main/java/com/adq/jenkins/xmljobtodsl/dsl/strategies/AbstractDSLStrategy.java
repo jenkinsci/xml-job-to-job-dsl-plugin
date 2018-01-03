@@ -2,6 +2,7 @@ package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
 import com.adq.jenkins.xmljobtodsl.IDescriptor;
 import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,8 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     public static final String TYPE_PARAMETER = "PARAMETER";
     public static final String TYPE_PROPERTY = "PROPERTY";
     public static final String TYPE_ARRAY = "ARRAY";
+    public static final String TYPE_VALUE = "VALUE";
+    public static final String TYPE_INNER_PARAMETER = "INNER_PARAMETER";
 
     private Properties syntaxProperties;
     private Properties translatorProperties;
@@ -54,17 +57,17 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     }
 
     public String getType(PropertyDescriptor propertyDescriptor) {
-        String key = String.format("%s%s", PREFIX_GROOVY, propertyDescriptor.getName());
-        String property = translatorProperties.getProperty(key);
+        Pair property = getProperty(propertyDescriptor);
 
-        if (property == null) {
+        if (property.getValue() == null) {
             return null;
         }
 
-        if (TYPE_INNER.equals(property)) {
+        if (TYPE_INNER.equals(property.getValue())) {
             return TYPE_INNER;
         }
-        String type = String.format("%s%s", key, SUFIX_GROOVY_TYPE);
+
+        String type = String.format("%s%s", property.getKey(), SUFIX_GROOVY_TYPE);
         String propertyType = translatorProperties.getProperty(type);
 
         if (propertyType == null) {
@@ -73,14 +76,28 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         return propertyType;
     }
 
+    private Pair<String, String> getProperty(PropertyDescriptor propertyDescriptor) {
+        String property = null;
+        String key = null;
+        if (propertyDescriptor.getParent() != null) {
+            key = String.format("%s%s.%s", PREFIX_GROOVY, propertyDescriptor.getParent().getName(), propertyDescriptor.getName());
+            property = translatorProperties.getProperty(key);
+        }
+        if (property == null) {
+            key = String.format("%s%s", PREFIX_GROOVY, propertyDescriptor.getName());
+            property = translatorProperties.getProperty(key);
+        }
+        return new Pair(key, property);
+    }
+
     public DSLStrategy getStrategyByPropertyDescriptorType(PropertyDescriptor propertyDescriptor) {
-        String key = String.format("%s%s", PREFIX_GROOVY, propertyDescriptor.getName());
-        String property = translatorProperties.getProperty(key);
         String type = getType(propertyDescriptor);
 
         if (type == null) {
             return null;
         }
+
+        String property = getProperty(propertyDescriptor).getValue();
 
         switch (type) {
             case TYPE_INNER:
@@ -95,6 +112,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
                 return new DSLPropertyStrategy(getTabs() + 1, propertyDescriptor, property);
             case TYPE_ARRAY:
                 return new DSLArrayStrategy(propertyDescriptor);
+            case TYPE_VALUE:
+                return new DSLValueStrategy(propertyDescriptor);
+            case TYPE_INNER_PARAMETER:
+                return new DSLInnerParameterStrategy(propertyDescriptor);
             default:
                 return new DSLMethodStrategy(getTabs() + 1, propertyDescriptor, property);
         }

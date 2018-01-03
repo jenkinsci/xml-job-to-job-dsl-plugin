@@ -69,6 +69,7 @@ public class XmlParser {
 
             if (firstChild.getNodeType() == Node.TEXT_NODE && !((Text) firstChild).isElementContentWhitespace()) {
                 String value = node.getFirstChild().getNodeValue();
+                value = value.replaceAll("\n", String.format("%n"));
                 PropertyDescriptor descriptor = new PropertyDescriptor(name, parent, value, attributes);
                 properties.add(descriptor);
                 continue;

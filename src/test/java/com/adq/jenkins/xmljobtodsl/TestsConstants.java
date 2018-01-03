@@ -102,6 +102,6 @@ public class TestsConstants {
                 "cd 'iOSTest-AppiumTests/src/scripts/'" + System.lineSeparator() +
                 "fab -f build.py fetch_git build_app upload_app\"\"\")" + System.lineSeparator() +
                 "\t}" + System.lineSeparator() +
-                "}" + System.lineSeparator() + System.lineSeparator();
+                "}";
     }
 }
