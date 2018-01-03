@@ -1,4 +1,5 @@
 job("test") {
+	description("This builds app from pull requests")
 	blockOn("""Build-iOS-App
 			Build-Android-App
 			Run-iOS-Tests
@@ -14,7 +15,12 @@ job("test") {
 						UDID will be automatically fetched""")
 		choiceParam(["Android", "iOS"], "PLATFORM", "Select the platform to test")
 	}
+	environmentVariables {
+		env("PLATFORM", "iOS")
+		keepBuildVariables(true)
+	}
 	disabled()
+	displayName("Pipeline")
 	steps {
 		buildNameUpdater {
             macroTemplate("Build App")
@@ -26,7 +32,7 @@ job("test") {
                 cd 'xml-job-to-dsl/src/scripts/'
                 ./run.sh""")
 		downstreamParameterized {
-			trigger("iOS-Pipeline") {
+			trigger("Pipeline") {
 				block {
 					buildStepFailure("FAILURE")
 					failure("FAILURE")
@@ -37,15 +43,9 @@ job("test") {
 					booleanParam("REAL_DEVICE", false)
 					predefinedProps([EMAILS: "alan_doni@hotmail.com",
 									 REMOTE_USER: "jenkins",
-									 STORIES: "all",
 									 LOG_LEVEL: "warn",
-									 URLS: "123.123.123.123",
-									 METAFILTER: "sanity",
-									 BUILD_HOST: "192.168.0.1",
-									 BUILD_REMOTE_USER: "jenkins",
-									 GIT_BRANCH: "master",
-									 SELECTED_BINARY: "none",
-									 APP_VERSION: "${ghprbActualCommit}"])
+									 GIT_BRANCH: "dev",
+									 SELECTED_BINARY: "none"])
 				}
 			}
 		}
@@ -77,7 +77,8 @@ job("test") {
 	scm {
 		git {
 			remote {
-				github("https://github.com/alandoni/xml-job-to-dsl", "https")
+				name("origin")
+				github("https://github.com/alandoni/xml-job-to-dsl.git", "https")
 				credentials("jenkins")
 			}
 			branch("*/${GIT_BRANCH}")
@@ -86,20 +87,15 @@ job("test") {
 			}
 		}
 	}
-	displayName("iOS-Pipeline")
-	environmentVariables {
-		env("PLATFORM", "iOS")
-		keepBuildVariables(true)
-	}
 	definition {
 		cpsScm {
 			scm {
 				git {
 					remote {
-						github("https://github.com/alandoni/xml-job-to-dsl", "https")
+						github("https://github.com/alandoni/xml-job-to-dsl.git", "https")
 						credentials("jenkins")
 					}
-					branch("${ghprbActualCommit}")
+					branch("*/${GIT_BRANCH}")
 					extensions {
 						wipeOutWorkspace()
 					}

@@ -3,9 +3,9 @@
 		<hudson.plugins.buildblocker.BuildBlockerProperty>
 			<useBuildBlocker>true</useBuildBlocker>
 			<blockingJobs>Build-iOS-App
-				Build-Android-App
-				Run-iOS-Tests
-				Run-Android-Tests
+			Build-Android-App
+			Run-iOS-Tests
+			Run-Android-Tests
 			</blockingJobs>
 			<blockLevel>GLOBAL</blockLevel>
 			<scanQueueFor>DISABLED</scanQueueFor>

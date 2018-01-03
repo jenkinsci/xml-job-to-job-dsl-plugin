@@ -16,23 +16,15 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     public static final String PREFIX_GROOVY = "groovy.";
     public static final String SUFIX_GROOVY_TYPE = ".type";
 
-    public static final String TYPE_CONST = "CONST";
-    public static final String TYPE_INNER = "INNER";
-    public static final String TYPE_OBJECT = "OBJECT";
-    public static final String TYPE_METHOD = "METHOD";
-    public static final String TYPE_PARAMETER = "PARAMETER";
-    public static final String TYPE_PROPERTY = "PROPERTY";
-    public static final String TYPE_ARRAY = "ARRAY";
-    public static final String TYPE_VALUE = "VALUE";
-    public static final String TYPE_INNER_PARAMETER = "INNER_PARAMETER";
-
     private Properties syntaxProperties;
     private Properties translatorProperties;
 
     private List<DSLStrategy> children = new ArrayList<>();
 
     private int tabs = 0;
+
     private List<PropertyDescriptor> notTranslatedList = new ArrayList<>();
+    private IDescriptor propertyDescriptor;
 
     public AbstractDSLStrategy(IDescriptor descriptor) {
        this(0, descriptor);
@@ -40,6 +32,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
     public AbstractDSLStrategy(int tabs, IDescriptor descriptor) {
         this.tabs = tabs;
+        this.propertyDescriptor = descriptor;
         try {
             initProperties();
         } catch (IOException e) {
@@ -65,15 +58,15 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
             return null;
         }
 
-        if (TYPE_INNER.equals(property.getValue())) {
-            return TYPE_INNER;
+        if (DSLStrategyFactory.TYPE_INNER.equals(property.getValue())) {
+            return DSLStrategyFactory.TYPE_INNER;
         }
 
         String type = String.format("%s%s", property.getKey(), SUFIX_GROOVY_TYPE);
         String propertyType = translatorProperties.getProperty(type);
 
         if (propertyType == null) {
-            propertyType = TYPE_METHOD;
+            propertyType = DSLStrategyFactory.TYPE_METHOD;
         }
         return propertyType;
     }
@@ -92,6 +85,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         return new Pair(key, property);
     }
 
+    protected String getPropertyByName(String name) {
+        return translatorProperties.getProperty(name);
+    }
+
     public DSLStrategy getStrategyByPropertyDescriptorType(PropertyDescriptor propertyDescriptor) {
         String type = getType(propertyDescriptor);
 
@@ -101,27 +98,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         }
 
         String property = getProperty(propertyDescriptor).getValue();
-
-        switch (type) {
-            case TYPE_INNER:
-                return new DSLInnerStrategy(getTabs(), propertyDescriptor);
-            case TYPE_CONST:
-                return new DSLConstantStrategy(propertyDescriptor, property);
-            case TYPE_OBJECT:
-                return new DSLObjectStrategy(getTabs() + 1, propertyDescriptor, property);
-            case TYPE_PARAMETER:
-                return new DSLParameterStrategy(propertyDescriptor);
-            case TYPE_PROPERTY:
-                return new DSLPropertyStrategy(getTabs() + 1, propertyDescriptor, property);
-            case TYPE_ARRAY:
-                return new DSLArrayStrategy(propertyDescriptor);
-            case TYPE_VALUE:
-                return new DSLValueStrategy(propertyDescriptor);
-            case TYPE_INNER_PARAMETER:
-                return new DSLInnerParameterStrategy(propertyDescriptor);
-            default:
-                return new DSLMethodStrategy(getTabs() + 1, propertyDescriptor, property);
-        }
+        return new DSLStrategyFactory().getDSLStrategy(type, propertyDescriptor, property, getTabs() + 1);
     }
 
     protected String getSyntax(String key) {
@@ -139,9 +116,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     }
 
     protected void initChildren(IDescriptor descriptor) {
-        if (descriptor.getProperties() == null) {
+        if (descriptor == null || descriptor.getProperties() == null) {
             return;
         }
+        children.clear();
         for (PropertyDescriptor propertyDescriptor : descriptor.getProperties()) {
             DSLStrategy strategy = getStrategyByPropertyDescriptorType(propertyDescriptor);
             if (strategy != null) {
@@ -209,5 +187,13 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
     public List<PropertyDescriptor> getNotTranslatedList() {
         return notTranslatedList;
+    }
+
+    public void setDescriptor(IDescriptor propertyDescriptor) {
+        this.propertyDescriptor = propertyDescriptor;
+    }
+
+    public IDescriptor getDescriptor() {
+        return propertyDescriptor;
     }
 }

@@ -9,30 +9,28 @@ import java.util.List;
 public class DSLMethodStrategy extends AbstractDSLStrategy {
 
     private final String methodName;
-    private final PropertyDescriptor propertyDescriptor;
 
     public DSLMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
         super(propertyDescriptor);
         this.methodName = methodName;
-        this.propertyDescriptor = propertyDescriptor;
         this.setTabs(tabs);
     }
 
     public DSLMethodStrategy(PropertyDescriptor descriptor) {
         super(descriptor);
         methodName = null;
-        propertyDescriptor = descriptor;
     }
 
     @Override
     public String toDSL() {
+        PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
         if (propertyDescriptor.getValue() != null) {
 
             boolean isParentAMethod = propertyDescriptor.getParent() != null &&
-                    getType(propertyDescriptor.getParent()).equals(TYPE_METHOD);
+                    getType(propertyDescriptor.getParent()).equals(DSLStrategyFactory.TYPE_METHOD);
 
             if (isParentAMethod) {
-                return getStrategyForObject().toDSL();
+                return getStrategyForObject(propertyDescriptor).toDSL();
             }
 
             return replaceTabs(String.format(getSyntax("syntax.method_call"),
@@ -43,16 +41,16 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
                 methodName, getChildrenDSL()), getTabs());
     }
 
-    private DSLStrategy getStrategyForObject() {
-        List<PropertyDescriptor> siblings = getChildrenOfType(propertyDescriptor.getParent(), TYPE_METHOD);
+    private DSLStrategy getStrategyForObject(PropertyDescriptor propertyDescriptor) {
+        List<PropertyDescriptor> siblings = getChildrenOfType(propertyDescriptor.getParent(), DSLStrategyFactory.TYPE_METHOD);
 
         propertyDescriptor.getParent().getProperties().clear();
 
         List<PropertyDescriptor> children = new ArrayList<>();
-        for (PropertyDescriptor propertyDescriptor : siblings) {
-            children.add(new PropertyDescriptor(propertyDescriptor.getName(), null,
-                    propertyDescriptor.getValue(), propertyDescriptor.getProperties(),
-                    propertyDescriptor.getAttributes()));
+        for (PropertyDescriptor descriptor : siblings) {
+            children.add(new PropertyDescriptor(descriptor.getName(), null,
+                    descriptor.getValue(), descriptor.getProperties(),
+                    descriptor.getAttributes()));
         }
         PropertyDescriptor object = new PropertyDescriptor(null, null, children);
         return new DSLObjectStrategy(getTabs(), object, null);
