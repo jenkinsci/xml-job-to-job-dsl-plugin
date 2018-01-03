@@ -4,9 +4,6 @@ import com.adq.jenkins.xmljobtodsl.JobDescriptor;
 
 public class DSLJobStrategy extends AbstractDSLStrategy {
 
-    public static final String JOB_TYPE_JOB = "job";
-    public static final String JOB_TYPE_PIPELINE = "pipelineJob";
-
     private final JobDescriptor jobDescriptor;
 
     public DSLJobStrategy(JobDescriptor jobDescriptor) {
@@ -16,7 +13,7 @@ public class DSLJobStrategy extends AbstractDSLStrategy {
 
     @Override
     public String toDSL() {
-        return String.format(getSyntax("syntax.job"),
-                JOB_TYPE_JOB, jobDescriptor.getName(), getChildrenDSL());
+        return String.format(getSyntax("syntax.job"), getProperty(jobDescriptor.getProperties().get(0)).getValue()
+                , jobDescriptor.getName(), getChildrenDSL());
     }
 }

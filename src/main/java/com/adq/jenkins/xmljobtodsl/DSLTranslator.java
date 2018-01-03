@@ -3,6 +3,8 @@ package com.adq.jenkins.xmljobtodsl;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLJobStrategy;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alanquintiliano on 20/12/17.
@@ -10,6 +12,7 @@ import java.io.IOException;
 public class DSLTranslator {
 
 	private JobDescriptor[] jobDescriptors;
+	private List<PropertyDescriptor> notTranslated = new ArrayList<>();
 
     public DSLTranslator(JobDescriptor[] jobDescriptors) throws IOException {
         this.jobDescriptors = jobDescriptors;
@@ -22,7 +25,9 @@ public class DSLTranslator {
     public String toDSL() {
         StringBuilder builder = new StringBuilder();
         for (JobDescriptor job : jobDescriptors) {
-            builder.append(new DSLJobStrategy(job).toDSL());
+            DSLJobStrategy jobStrategy = new DSLJobStrategy(job);
+            builder.append(jobStrategy.toDSL());
+            notTranslated.addAll(jobStrategy.getNotTranslatedList());
         }
         return builder.toString().trim();
     }

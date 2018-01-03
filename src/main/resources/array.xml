@@ -1,24 +1,26 @@
-<hudson.model.ChoiceParameterDefinition>
-    <choices class="java.util.Arrays$ArrayList">
-        <a class="string-array">
-            <string>cip1-qa</string>
-            <string>cip2-qa</string>
-            <string>cip3-qa</string>
-            <string>cip4-qa</string>
-            <string>qa4</string>
-            <string>qa3</string>
-            <string>qa5</string>
-            <string>qa6</string>
-            <string>qa10</string>
-            <string>qa12</string>
-            <string>qa20</string>
-            <string>qa22</string>
-            <string>qa24</string>
-            <string>qa26</string>
-            <string>qa27</string>
-            <string>warpdrive</string>
-        </a>
-    </choices>
-    <name>POD</name>
-    <description>OI</description>
-</hudson.model.ChoiceParameterDefinition>
+<project>
+    <hudson.model.ChoiceParameterDefinition>
+        <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+                <string>cip1-qa</string>
+                <string>cip2-qa</string>
+                <string>cip3-qa</string>
+                <string>cip4-qa</string>
+                <string>qa4</string>
+                <string>qa3</string>
+                <string>qa5</string>
+                <string>qa6</string>
+                <string>qa10</string>
+                <string>qa12</string>
+                <string>qa20</string>
+                <string>qa22</string>
+                <string>qa24</string>
+                <string>qa26</string>
+                <string>qa27</string>
+                <string>warpdrive</string>
+            </a>
+        </choices>
+        <name>POD</name>
+        <description>OI</description>
+    </hudson.model.ChoiceParameterDefinition>
+</project>

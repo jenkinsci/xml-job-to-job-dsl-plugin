@@ -1,22 +1,24 @@
-<scm class="hudson.plugins.git.GitSCM">
-	<userRemoteConfigs>
-		<hudson.plugins.git.UserRemoteConfig>
+<project>
+	<scm class="hudson.plugins.git.GitSCM">
+		<userRemoteConfigs>
+			<hudson.plugins.git.UserRemoteConfig>
+				<url>https://github.com/alandoni/xml-job-to-dsl</url>
+				<credentialsId>jenkins</credentialsId>
+			</hudson.plugins.git.UserRemoteConfig>
+		</userRemoteConfigs>
+		<branches>
+			<hudson.plugins.git.BranchSpec>
+				<name>*/${GIT_BRANCH}</name>
+			</hudson.plugins.git.BranchSpec>
+		</branches>
+		<configVersion>2</configVersion>
+		<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+		<gitTool>Default</gitTool>
+		<extensions>
+			<hudson.plugins.git.extensions.impl.WipeWorkspace/>
+		</extensions>
+		<browser class="hudson.plugins.git.browser.GithubWeb">
 			<url>https://github.com/alandoni/xml-job-to-dsl</url>
-			<credentialsId>jenkins</credentialsId>
-		</hudson.plugins.git.UserRemoteConfig>
-	</userRemoteConfigs>
-	<branches>
-		<hudson.plugins.git.BranchSpec>
-			<name>*/${GIT_BRANCH}</name>
-		</hudson.plugins.git.BranchSpec>
-	</branches>
-	<configVersion>2</configVersion>
-	<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-	<gitTool>Default</gitTool>
-	<extensions>
-		<hudson.plugins.git.extensions.impl.WipeWorkspace/>
-	</extensions>
-	<browser class="hudson.plugins.git.browser.GithubWeb">
-		<url>https://github.com/alandoni/xml-job-to-dsl</url>
-	</browser>
-</scm>
+		</browser>
+	</scm>
+</project>

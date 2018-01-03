@@ -1,15 +1,17 @@
-<properties>
-	<hudson.plugins.buildblocker.BuildBlockerProperty>
-		<useBuildBlocker>true</useBuildBlocker>
-		<blockingJobs>Build-iOS-App
-			Build-Android-App
-			Run-iOS-Tests
-			Run-Android-Tests
-		</blockingJobs>
-		<blockLevel>GLOBAL</blockLevel>
-		<scanQueueFor>DISABLED</scanQueueFor>
-	</hudson.plugins.buildblocker.BuildBlockerProperty>
-	<com.coravy.hudson.plugins.github.GithubProjectProperty>
-		<projectUrl>https://github.com/SymphonyOSF/iOSTest/</projectUrl>
-	</com.coravy.hudson.plugins.github.GithubProjectProperty>
-</properties>
+<project>
+	<properties>
+		<hudson.plugins.buildblocker.BuildBlockerProperty>
+			<useBuildBlocker>true</useBuildBlocker>
+			<blockingJobs>Build-iOS-App
+				Build-Android-App
+				Run-iOS-Tests
+				Run-Android-Tests
+			</blockingJobs>
+			<blockLevel>GLOBAL</blockLevel>
+			<scanQueueFor>DISABLED</scanQueueFor>
+		</hudson.plugins.buildblocker.BuildBlockerProperty>
+		<com.coravy.hudson.plugins.github.GithubProjectProperty>
+			<projectUrl>https://github.com/SymphonyOSF/iOSTest/</projectUrl>
+		</com.coravy.hudson.plugins.github.GithubProjectProperty>
+	</properties>
+</project>

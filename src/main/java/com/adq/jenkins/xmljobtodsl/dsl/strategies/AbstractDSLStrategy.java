@@ -7,6 +7,7 @@ import javafx.util.Pair;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,6 +32,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     private List<DSLStrategy> children = new ArrayList<>();
 
     private int tabs = 0;
+    private List<PropertyDescriptor> notTranslatedList = new ArrayList<>();
 
     public AbstractDSLStrategy(IDescriptor descriptor) {
        this(0, descriptor);
@@ -76,7 +78,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         return propertyType;
     }
 
-    private Pair<String, String> getProperty(PropertyDescriptor propertyDescriptor) {
+    protected Pair<String, String> getProperty(PropertyDescriptor propertyDescriptor) {
         String property = null;
         String key = null;
         if (propertyDescriptor.getParent() != null) {
@@ -94,6 +96,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         String type = getType(propertyDescriptor);
 
         if (type == null) {
+            notTranslatedList.add(propertyDescriptor);
             return null;
         }
 
@@ -143,6 +146,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
             DSLStrategy strategy = getStrategyByPropertyDescriptorType(propertyDescriptor);
             if (strategy != null) {
                 addChild(strategy);
+                notTranslatedList.addAll(strategy.getNotTranslatedList());
             }
         }
     }
@@ -201,5 +205,9 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
             builder.append(syntaxProperties.getProperty("syntax.tab"));
         }
         return builder.toString();
+    }
+
+    public List<PropertyDescriptor> getNotTranslatedList() {
+        return notTranslatedList;
     }
 }
