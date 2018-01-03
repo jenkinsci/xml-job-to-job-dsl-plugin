@@ -2,6 +2,9 @@
 package com.adq.jenkins.xmljobtodsl;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -28,7 +31,11 @@ public class TestsTranslator {
         JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
         String expectedDSL = TestsXmlParser.readFile("array.groovy");
 
-        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
     }
 
     @Test
@@ -37,7 +44,11 @@ public class TestsTranslator {
         JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
         String expectedDSL = TestsXmlParser.readFile("object_parameter.groovy");
 
-        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
     }
 
     @Test
@@ -46,7 +57,11 @@ public class TestsTranslator {
         JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
         String expectedDSL = TestsXmlParser.readFile("scm.groovy");
 
-        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
     }
 
     @Test
@@ -56,6 +71,16 @@ public class TestsTranslator {
 
         String expectedDSL = readExampleFile();
 
-        assertEquals(expectedDSL, new DSLTranslator(actualJobDescriptor).toDSL());
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
+    }
+
+    private void logAllNotKnownTags(List<PropertyDescriptor> notKnownTags) {
+        for (PropertyDescriptor property : notKnownTags) {
+            Logger.getAnonymousLogger().log(Level.WARNING, property.getName());
+        }
     }
 }

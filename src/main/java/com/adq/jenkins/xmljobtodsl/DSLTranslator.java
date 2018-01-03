@@ -31,4 +31,8 @@ public class DSLTranslator {
         }
         return builder.toString().trim();
     }
+
+    public List<PropertyDescriptor> getNotTranslated() {
+        return notTranslated;
+    }
 }
