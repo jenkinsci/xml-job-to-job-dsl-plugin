@@ -7,57 +7,6 @@ import java.util.Map;
 
 public class TestsConstants {
 
-    public static final JobDescriptor getJobDescriptor() {
-        List<PropertyDescriptor> propertiesProperties = new ArrayList<>();
-
-        List<PropertyDescriptor> buildBlockProperties = new ArrayList<>();
-
-        List<PropertyDescriptor> projectProperties = new ArrayList<>();
-        PropertyDescriptor projectProperty = new PropertyDescriptor("project", null, projectProperties);
-
-        projectProperties.add(new PropertyDescriptor("properties", projectProperty, propertiesProperties));
-
-        List<PropertyDescriptor> buildersProperties = new ArrayList<>();
-
-        PropertyDescriptor builder = new PropertyDescriptor("builders", projectProperty, buildersProperties);
-
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("plugin", "build-name-setter@1.6.5");
-
-        List<PropertyDescriptor> buildNameUpdaterProperties = new ArrayList<>();
-        PropertyDescriptor buildName = new PropertyDescriptor("org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater", builder,null, buildNameUpdaterProperties, attributes);
-
-        buildNameUpdaterProperties.add(new PropertyDescriptor("macroTemplate", buildName,"Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}"));
-        buildNameUpdaterProperties.add(new PropertyDescriptor("fromFile", buildName,"false"));
-        buildNameUpdaterProperties.add(new PropertyDescriptor("fromMacro", buildName,"true"));
-        buildNameUpdaterProperties.add(new PropertyDescriptor("macroFirst", buildName,"true"));
-        buildersProperties.add(buildName);
-
-        List<PropertyDescriptor> shellProperties = new ArrayList<>();
-        PropertyDescriptor shell = new PropertyDescriptor("hudson.tasks.Shell", builder, shellProperties);
-        shellProperties.add(new PropertyDescriptor("command", shell,
-                "export PLATFORM=${platform}" + System.lineSeparator() +
-                "cd 'iOSTest-AppiumTests/src/scripts/'" + System.lineSeparator() +
-                "fab -f build.py fetch_git build_app upload_app"));
-        buildersProperties.add(shell);
-
-        projectProperties.add(builder);
-
-        PropertyDescriptor buildBlocker = new PropertyDescriptor("hudson.plugins.buildblocker.BuildBlockerProperty", builder, buildBlockProperties);
-
-        buildBlockProperties.add(new PropertyDescriptor("useBuildBlocker", buildBlocker, "true"));
-        buildBlockProperties.add(new PropertyDescriptor("blockingJobs", buildBlocker,"Build-iOS-App"));
-        buildBlockProperties.add(new PropertyDescriptor("blockLevel", buildBlocker,"GLOBAL"));
-        buildBlockProperties.add(new PropertyDescriptor("scanQueueFor", buildBlocker,"DISABLED"));
-
-        propertiesProperties.add(buildBlocker);
-
-        List<PropertyDescriptor> properties = new ArrayList<>();
-        properties.add(projectProperty);
-
-        return new JobDescriptor("Test", properties);
-    }
-
     public static final String getXml() {
         return "<project>" + System.lineSeparator() +
                 "\t<properties>" + System.lineSeparator() +

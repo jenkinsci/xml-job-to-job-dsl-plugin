@@ -35,4 +35,9 @@ public class IOUtils {
         ClassLoader classLoader = getClass().getClassLoader();
         return readFromFile(new File(classLoader.getResource(path).getFile()));
     }
+
+    public File fileFromResource(String path) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        return new File(classLoader.getResource(path).getFile());
+    }
 }

@@ -1,8 +1,21 @@
 package com.adq.jenkins.xmljobtodsl;
 
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLJobStrategy;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
-import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,28 +24,30 @@ import java.util.List;
  */
 public class DSLTranslator {
 
-	private JobDescriptor[] jobDescriptors;
-	private List<PropertyDescriptor> notTranslated = new ArrayList<>();
+	private String xml;
 
-    public DSLTranslator(JobDescriptor[] jobDescriptors) throws IOException {
-        this.jobDescriptors = jobDescriptors;
+    public DSLTranslator(String xml) {
+        this.xml = xml;
     }
 
-    public DSLTranslator(JobDescriptor jobDescriptor) {
-        this.jobDescriptors = new JobDescriptor[] { jobDescriptor };
-    }
+    public String toDSL() throws IOException, ParserConfigurationException, SAXException, TransformerException {
+        File stylesheet = new IOUtils().fileFromResource("translate.xsl");
 
-    public String toDSL() {
-        StringBuilder builder = new StringBuilder();
-        for (JobDescriptor job : jobDescriptors) {
-            DSLJobStrategy jobStrategy = new DSLJobStrategy(job);
-            builder.append(jobStrategy.toDSL());
-            notTranslated.addAll(jobStrategy.getNotTranslatedList());
-        }
-        return builder.toString().trim();
-    }
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new InputSource(new StringReader(xml)));
 
-    public List<PropertyDescriptor> getNotTranslated() {
-        return notTranslated;
+        TransformerFactory tFactory = TransformerFactory.newInstance();
+        StreamSource stylesource = new StreamSource(stylesheet);
+        Transformer transformer = tFactory.newTransformer(stylesource);
+
+        DOMSource source = new DOMSource(document);
+
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+        transformer.transform(source, result);
+
+        StringBuffer sb = writer.getBuffer();
+        return sb.toString();
     }
 }
