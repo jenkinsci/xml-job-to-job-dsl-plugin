@@ -13,19 +13,21 @@ job("test") {
 		booleanParam("REAL_DEVICE", false, """Check this if you want to run on a plugged in device instead of the simulator
 						Make sure only one device is plugged.
 						UDID will be automatically fetched""")
-		choiceParam(["Android", "iOS"], "PLATFORM", "Select the platform to test")
+		choiceParam("PLATFORM", ["Android", "iOS"], "Select the platform to test")
 	}
 	environmentVariables {
 		env("PLATFORM", "iOS")
+		env("VARIABLE", "value")
 		keepBuildVariables(true)
 	}
 	disabled()
 	displayName("Pipeline")
 	steps {
 		buildNameUpdater {
-            macroTemplate("Build App")
+			buildName(null)
+			macroTemplate("Build App")
 			fromFile(false)
-            fromMacro(true)
+			fromMacro(true)
 			macroFirst(true)
 		}
 		shell("""export PLATFORM=iOS
@@ -78,7 +80,7 @@ job("test") {
 		git {
 			remote {
 				name("origin")
-				github("https://github.com/alandoni/xml-job-to-dsl.git", "https")
+				github("alandoni/xml-job-to-dsl", "https")
 				credentials("jenkins")
 			}
 			branch("*/${GIT_BRANCH}")
@@ -87,53 +89,11 @@ job("test") {
 			}
 		}
 	}
-	definition {
-		cpsScm {
-			scm {
-				git {
-					remote {
-						github("https://github.com/alandoni/xml-job-to-dsl.git", "https")
-						credentials("jenkins")
-					}
-					branch("*/${GIT_BRANCH}")
-					extensions {
-						wipeOutWorkspace()
-					}
-				}
-			}
-			scriptPath("xml-job-to-dsl/src/scripts/pipeline.groovy")
-		}
-	}
 	triggers {
 		githubPullRequest {
 			cron("H/5 * * * *")
 			triggerPhrase("\\QJenkins, build this please\\E")
 			permitAll()
 		}
-	}
-}
-
-listView("ViewTests") {
-	jobs {
-		name("Build-iOS-App")
-		name("Build-Android-App")
-		name("Run-iOS-Tests")
-		name("Run-Android-Tests")
-		name("Deploy-Android-App")
-		name("Deploy-iOS-App")
-		name("iOS-Pipeline")
-		name("Android-Pipeline")
-		name("DSL-Android-PR-Builder")
-		name("DSL-iOS-PR-Builder")
-		name("DSL-Mobile-Tests-PR-Builder")
-	}
-	columns {
-		status()
-		weather()
-		name()
-		lastSuccess()
-		lastFailure()
-		lastDuration()
-		buildButton()
 	}
 }

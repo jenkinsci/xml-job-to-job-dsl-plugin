@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<actions/>
+	<description>This builds app from pull requests</description>
+	<keepDependencies>false</keepDependencies>
+	<properties>
+		<hudson.plugins.buildblocker.BuildBlockerProperty>
+			<useBuildBlocker>true</useBuildBlocker>
+			<blockingJobs>Build-iOS-App
+				Build-Android-App
+				Run-iOS-Tests
+				Run-Android-Tests
+			</blockingJobs>
+			<blockLevel>GLOBAL</blockLevel>
+			<scanQueueFor>DISABLED</scanQueueFor>
+		</hudson.plugins.buildblocker.BuildBlockerProperty>
+		<jenkins.model.BuildDiscarderProperty>
+			<strategy class="hudson.tasks.LogRotator">
+				<daysToKeep>50</daysToKeep>
+				<numToKeep>-1</numToKeep>
+				<artifactDaysToKeep>-1</artifactDaysToKeep>
+				<artifactNumToKeep>-1</artifactNumToKeep>
+			</strategy>
+		</jenkins.model.BuildDiscarderProperty>
+		<hudson.model.ParametersDefinitionProperty>
+			<parameterDefinitions>
+				<hudson.model.StringParameterDefinition>
+					<name>GIT_BRANCH</name>
+					<defaultValue>dev</defaultValue>
+					<description>Name of the branch that will be checked out from Repo</description>
+				</hudson.model.StringParameterDefinition>
+				<hudson.model.StringParameterDefinition>
+					<name>SELECTED_BINARY</name>
+					<defaultValue>none</defaultValue>
+					<description>Local path of binary to run the tests against</description>
+				</hudson.model.StringParameterDefinition>
+				<hudson.model.BooleanParameterDefinition>
+					<name>REAL_DEVICE</name>
+					<defaultValue>false</defaultValue>
+					<description>Check this if you want to run on a plugged in device instead of the simulator
+						Make sure only one device is plugged.
+						UDID will be automatically fetched</description>
+				</hudson.model.BooleanParameterDefinition>
+				choiceParam('PLATFORM', ['Android', 'iOS'], 'Select the platform to test')
+				<hudson.model.ChoiceParameterDefinition>
+					<choices class="java.util.Arrays$ArrayList">
+						<a class="string-array">
+							<string>Android</string>
+							<string>iOS</string>
+						</a>
+					</choices>
+					<name>PLATFORM</name>
+					<description>Select the platform to test</description>
+				</hudson.model.ChoiceParameterDefinition>
+			</parameterDefinitions>
+		</hudson.model.ParametersDefinitionProperty>
+		<com.coravy.hudson.plugins.github.GithubProjectProperty>
+			<projectUrl>https://github.com/alandoni/xml-job-to-dsl/</projectUrl>
+		</com.coravy.hudson.plugins.github.GithubProjectProperty>
+		<EnvInjectJobProperty>
+			<info>
+				<propertiesContent>PLATFORM=iOS
+					VARIABLE=value</propertiesContent>
+				<loadFilesFromMaster>false</loadFilesFromMaster>
+				<secureGroovyScript plugin="script-security@1.39">
+					<script></script>
+					<sandbox>false</sandbox>
+				</secureGroovyScript>
+			</info>
+			<on>true</on>
+			<keepJenkinsSystemVariables>true</keepJenkinsSystemVariables>
+			<keepBuildVariables>true</keepBuildVariables>
+			<overrideBuildParameters>false</overrideBuildParameters>
+			<contributors/>
+		</EnvInjectJobProperty>
+		<com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+			<autoRebuild>false</autoRebuild>
+			<rebuildDisabled>false</rebuildDisabled>
+		</com.sonyericsson.rebuild.RebuildSettings>
+	</properties>
+	<canRoam>true</canRoam>
+	<disabled>true</disabled>
+	<blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+	<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+	<quietPeriod>5</quietPeriod>
+	<displayName>Pipeline</displayName>
+	<concurrentBuild>false</concurrentBuild>
+	<builders>
+		<javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.65">
+			<scriptText>def String gitUrl = &apos;alandoni/xml-job-to-dsl&apos;
+			</scriptText>
+			<usingScriptText>true</usingScriptText>
+			<sandbox>false</sandbox>
+			<ignoreExisting>false</ignoreExisting>
+			<ignoreMissingFiles>false</ignoreMissingFiles>
+			<failOnMissingPlugin>false</failOnMissingPlugin>
+			<unstableOnDeprecation>false</unstableOnDeprecation>
+			<removedJobAction>DELETE</removedJobAction>
+			<removedViewAction>IGNORE</removedViewAction>
+			<removedConfigFilesAction>IGNORE</removedConfigFilesAction>
+			<lookupStrategy>JENKINS_ROOT</lookupStrategy>
+		</javaposse.jobdsl.plugin.ExecuteDslScripts>
+		<org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater plugin="build-name-setter@1.6.5">
+			<macroTemplate>Build App</macroTemplate>
+			<fromFile>false</fromFile>
+			<fromMacro>true</fromMacro>
+			<macroFirst>true</macroFirst>
+		</org.jenkinsci.plugins.buildnameupdater.BuildNameUpdater>
+		<hudson.tasks.Shell>
+			<command>export PLATFORM=iOS
+				cd 'xml-job-to-dsl/src/scripts/'
+				./run.sh
+			</command>
+		</hudson.tasks.Shell>
+		<hudson.plugins.parameterizedtrigger.TriggerBuilder>
+			<configs>
+				<hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+					<projects>Pipeline</projects>
+					<condition>ALWAYS</condition>
+					<triggerWithNoParameters>false</triggerWithNoParameters>
+					<block>
+						<buildStepFailureThreshold>
+							<name>FAILURE</name>
+							<ordinal>2</ordinal>
+							<color>RED</color>
+							<completeBuild>true</completeBuild>
+						</buildStepFailureThreshold>
+						<failureThreshold>
+							<name>FAILURE</name>
+							<ordinal>2</ordinal>
+							<color>RED</color>
+							<completeBuild>true</completeBuild>
+						</failureThreshold>
+						<unstableThreshold>
+							<name>UNSTABLE</name>
+							<ordinal>1</ordinal>
+							<color>YELLOW</color>
+							<completeBuild>true</completeBuild>
+						</unstableThreshold>
+					</block>
+					<configs>
+						<hudson.plugins.parameterizedtrigger.BooleanParameters>
+							<configs>
+								<hudson.plugins.parameterizedtrigger.BooleanParameterConfig>
+									<name>DEPLOY_TO_CRASHLYTICS</name>
+									<value>false</value>
+								</hudson.plugins.parameterizedtrigger.BooleanParameterConfig>
+								<hudson.plugins.parameterizedtrigger.BooleanParameterConfig>
+									<name>REAL_DEVICE</name>
+									<value>false</value>
+								</hudson.plugins.parameterizedtrigger.BooleanParameterConfig>
+							</configs>
+						</hudson.plugins.parameterizedtrigger.BooleanParameters>
+						<hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+							<properties>EMAILS=alan_doni@hotmail.com
+								REMOTE_USER=jenkins
+								LOG_LEVEL=warn
+								GIT_BRANCH=dev
+								SELECTED_BINARY=none
+							</properties>
+						</hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
+					</configs>
+					<buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+				</hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+			</configs>
+		</hudson.plugins.parameterizedtrigger.TriggerBuilder>
+		<hudson.plugins.gradle.Gradle plugin="gradle@1.28">
+			<switches></switches>
+			<tasks>clean :apps:blackberry:assembleRelease :apps:blackberry:crashlyticsUploadDistributionRelease</tasks>
+			<rootBuildScriptDir></rootBuildScriptDir>
+			<buildFile></buildFile>
+			<gradleName>(Default)</gradleName>
+			<useWrapper>true</useWrapper>
+			<makeExecutable>true</makeExecutable>
+			<useWorkspaceAsHome>false</useWorkspaceAsHome>
+			<wrapperLocation></wrapperLocation>
+			<passAllAsSystemProperties>false</passAllAsSystemProperties>
+			<passAllAsProjectProperties>false</passAllAsProjectProperties>
+		</hudson.plugins.gradle.Gradle>
+		<EnvInjectBuilder plugin="envinject@2.1.5">
+			<info>
+				<propertiesFilePath>${WORKSPACE}/env_vars</propertiesFilePath>
+				<propertiesContent>Stuff like MARKETING_VERSION &amp; build date/time</propertiesContent>
+			</info>
+		</EnvInjectBuilder>
+		<au.com.rayh.XCodeBuilder plugin="xcode-plugin@2.0.0">
+			<cleanBeforeBuild>true</cleanBeforeBuild>
+			<cleanTestReports>false</cleanTestReports>
+			<configuration>Release</configuration>
+			<target></target>
+			<sdk></sdk>
+			<symRoot></symRoot>
+			<buildDir></buildDir>
+			<xcodeProjectPath>/Users/jenkins/jobs/job-name/workspace/Framework/FrameworkDemo</xcodeProjectPath>
+			<xcodeProjectFile></xcodeProjectFile>
+			<xcodebuildArguments></xcodebuildArguments>
+			<xcodeSchema>ios</xcodeSchema>
+			<xcodeWorkspaceFile>ios</xcodeWorkspaceFile>
+			<cfBundleVersionValue>${BUILD_NUMBER}</cfBundleVersionValue>
+			<cfBundleShortVersionStringValue></cfBundleShortVersionStringValue>
+			<buildIpa>false</buildIpa>
+			<ipaExportMethod>ad-hoc</ipaExportMethod>
+			<generateArchive>true</generateArchive>
+			<unlockKeychain>true</unlockKeychain>
+			<keychainName>none (specify one below)</keychainName>
+			<keychainPath>/Users/Shared/Jenkins/Library/Keychains/login.keychain</keychainPath>
+			<keychainPwd>App-Name</keychainPwd>
+			<developmentTeamName>none (specify one below)</developmentTeamName>
+			<developmentTeamID>ASD1321ASD</developmentTeamID>
+			<allowFailingBuildResults>false</allowFailingBuildResults>
+			<ipaName>${MARKETING_VERSION}-${VERSION}</ipaName>
+			<ipaOutputDirectory></ipaOutputDirectory>
+			<provideApplicationVersion>true</provideApplicationVersion>
+			<changeBundleID>false</changeBundleID>
+			<bundleID></bundleID>
+			<bundleIDInfoPlistPath></bundleIDInfoPlistPath>
+			<interpretTargetAsRegEx>false</interpretTargetAsRegEx>
+			<ipaManifestPlistUrl></ipaManifestPlistUrl>
+		</au.com.rayh.XCodeBuilder>
+	</builders>
+	<publishers>
+		<hudson.tasks.ArtifactArchiver>
+			<artifacts>build/**/*</artifacts>
+			<allowEmptyArchive>false</allowEmptyArchive>
+			<defaultExcludes>true</defaultExcludes>
+			<fingerprint>false</fingerprint>
+			<onlyIfSuccessful>false</onlyIfSuccessful>
+		</hudson.tasks.ArtifactArchiver>
+		<org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.4">
+			<stableText>${FILE:xml-job-to-dsl/tests_report.html}
+				${FILE:build_variables.html}</stableText>
+			<unstableText/>
+			<failedText/>
+			<abortedText/>
+			<nullAction/>
+			<unstableAsStable>true</unstableAsStable>
+			<failedAsStable>true</failedAsStable>
+			<abortedAsStable>true</abortedAsStable>
+			<parserName>HTML</parserName>
+		</org.korosoft.jenkins.plugin.rtp.RichTextPublisher>
+		<hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.57.2">
+			<recipientList>alan_doni@hotmail.com</recipientList>
+			<configuredTriggers>
+				<hudson.plugins.emailext.plugins.trigger.AlwaysTrigger>
+					<email>
+						<subject>$PROJECT_DEFAULT_SUBJECT</subject>
+						<body>$PROJECT_DEFAULT_CONTENT</body>
+						<recipientProviders>
+							<hudson.plugins.emailext.plugins.recipients.ListRecipientProvider/>
+						</recipientProviders>
+						<attachmentsPattern></attachmentsPattern>
+						<attachBuildLog>false</attachBuildLog>
+						<compressBuildLog>false</compressBuildLog>
+						<replyTo>$PROJECT_DEFAULT_REPLYTO</replyTo>
+						<contentType>project</contentType>
+					</email>
+				</hudson.plugins.emailext.plugins.trigger.AlwaysTrigger>
+			</configuredTriggers>
+			<contentType>default</contentType>
+			<defaultSubject>$DEFAULT_SUBJECT</defaultSubject>
+			<defaultContent>$DEFAULT_CONTENT</defaultContent>
+			<attachmentsPattern></attachmentsPattern>
+			<presendScript>$DEFAULT_PRESEND_SCRIPT</presendScript>
+			<postsendScript>$DEFAULT_POSTSEND_SCRIPT</postsendScript>
+			<attachBuildLog>true</attachBuildLog>
+			<compressBuildLog>false</compressBuildLog>
+			<replyTo>$DEFAULT_REPLYTO</replyTo>
+			<saveOutput>false</saveOutput>
+			<disabled>false</disabled>
+		</hudson.plugins.emailext.ExtendedEmailPublisher>
+		<hudson.plugins.postbuildtask.PostbuildTask plugin="postbuild-task@1.8">
+			<tasks>
+				<hudson.plugins.postbuildtask.TaskProperties>
+					<logTexts>
+						<hudson.plugins.postbuildtask.LogProperties>
+							<logText></logText>
+							<operator>AND</operator>
+						</hudson.plugins.postbuildtask.LogProperties>
+					</logTexts>
+					<EscalateStatus>false</EscalateStatus>
+					<RunIfJobSuccessful>true</RunIfJobSuccessful>
+					<script>git tag &quot;release-$BUILD_NUMBER&quot;&#xd;
+						git push origin --tags</script>
+				</hudson.plugins.postbuildtask.TaskProperties>
+			</tasks>
+		</hudson.plugins.postbuildtask.PostbuildTask>
+		<org.jenkinsci.plugins.postbuildscript.PostBuildScript plugin="postbuildscript@2.2.1">
+			<config>
+				<scriptFiles/>
+				<groovyScripts/>
+				<buildSteps>
+					<org.jenkinsci.plugins.postbuildscript.model.PostBuildStep>
+						<results>
+							<string>SUCCESS</string>
+						</results>
+						<role>BOTH</role>
+						<buildSteps>
+							<hudson.tasks.Shell>
+								<command>git tag &quot;beta-$BUILD_NUMBER&quot;
+									git push origin --tags
+									git remote prune origin</command>
+							</hudson.tasks.Shell>
+						</buildSteps>
+					</org.jenkinsci.plugins.postbuildscript.model.PostBuildStep>
+				</buildSteps>
+				<markBuildUnstable>false</markBuildUnstable>
+			</config>
+			<buildSteps>
+				<hudson.tasks.Shell reference="../../config/buildSteps/org.jenkinsci.plugins.postbuildscript.model.PostBuildStep/buildSteps/hudson.tasks.Shell"/>
+			</buildSteps>
+			<scriptOnlyIfSuccess>true</scriptOnlyIfSuccess>
+			<scriptOnlyIfFailure>false</scriptOnlyIfFailure>
+			<markBuildUnstable>false</markBuildUnstable>
+		</org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+		<hudson.tasks.Mailer plugin="mailer@1.20">
+			<recipients>alan_doni@hotmail.com.com</recipients>
+			<dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+			<sendToIndividuals>false</sendToIndividuals>
+		</hudson.tasks.Mailer>
+		<hudson.tasks.BuildTrigger>
+			<childProjects>Other-Project-Name</childProjects>
+			<threshold>
+				<name>SUCCESS</name>
+				<ordinal>0</ordinal>
+				<color>BLUE</color>
+				<completeBuild>true</completeBuild>
+			</threshold>
+		</hudson.tasks.BuildTrigger>
+		<hudson.tasks.junit.JUnitResultArchiver plugin="junit@1.23">
+			<testResults>*.xml</testResults>
+			<keepLongStdio>false</keepLongStdio>
+			<healthScaleFactor>1.0</healthScaleFactor>
+			<allowEmptyResults>false</allowEmptyResults>
+		</hudson.tasks.junit.JUnitResultArchiver>
+		<com.cloudbees.jenkins.GitHubCommitNotifier plugin="github@1.28.1">
+			<statusMessage>
+				<content></content>
+			</statusMessage>
+			<resultOnFailure>FAILURE</resultOnFailure>
+		</com.cloudbees.jenkins.GitHubCommitNotifier>
+	</publishers>
+	<buildWrappers>
+		<org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+			<bindings>
+				<org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+					<variable>PASSWORD</variable>
+					<credentialsId>${PASS_WORD}</credentialsId>
+				</org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+				<org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordBinding>
+					<variable>GITHUB_CREDENTIALS</variable>
+					<credentialsId>jenkins</credentialsId>
+				</org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordBinding>
+			</bindings>
+		</org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+		<EnvInjectBuildWrapper plugin="envinject@2.1.5">
+			<info>
+				<propertiesContent>ANDROID_HOME=/Users/jenkins/android-sdk-macosx/
+					JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/home
+
+					KEYSTORE_LOCATION=/Users/jenkins/release.jks
+					KEYSTORE_PASSWORD=devsonly
+					KEY_NAME=name
+					KEY_PASSWORD=pass</propertiesContent>
+				<loadFilesFromMaster>false</loadFilesFromMaster>
+			</info>
+		</EnvInjectBuildWrapper>
+		<hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.19">
+			<strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+				<timeoutMinutes>30</timeoutMinutes>
+			</strategy>
+			<operationList>
+				<hudson.plugins.build__timeout.operations.FailOperation/>
+			</operationList>
+		</hudson.plugins.build__timeout.BuildTimeoutWrapper>
+		<hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.8"/>
+		<hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.34">
+			<deleteDirs>false</deleteDirs>
+			<cleanupParameter></cleanupParameter>
+			<externalDelete></externalDelete>
+		</hudson.plugins.ws__cleanup.PreBuildCleanup>
+		<com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper plugin="ssh-agent@1.15">
+			<credentialIds>
+				<string>0bdbb6ac-187e-473b-a2c2-12e4c6e87568</string>
+			</credentialIds>
+			<ignoreMissing>false</ignoreMissing>
+		</com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper>
+	</buildWrappers>
+	<logRotator>
+		<daysToKeep>50</daysToKeep>
+		<numToKeep>-1</numToKeep>
+		<artifactDaysToKeep>-1</artifactDaysToKeep>
+		<artifactNumToKeep>-1</artifactNumToKeep>
+	</logRotator>
+	<scm class="hudson.plugins.git.GitSCM">
+		<userRemoteConfigs>
+			<hudson.plugins.git.UserRemoteConfig>
+				<name>origin</name>
+				<url>https://github.com/alandoni/xml-job-to-dsl.git</url>
+				<credentialsId>jenkins</credentialsId>
+			</hudson.plugins.git.UserRemoteConfig>
+		</userRemoteConfigs>
+		<branches>
+			<hudson.plugins.git.BranchSpec>
+				<name>*/${GIT_BRANCH}</name>
+			</hudson.plugins.git.BranchSpec>
+		</branches>
+		<configVersion>2</configVersion>
+		<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+		<gitTool>Default</gitTool>
+		<submoduleCfg class="list"/>
+		<extensions>
+			<hudson.plugins.git.extensions.impl.WipeWorkspace/>
+			<hudson.plugins.git.extensions.impl.CloneOption>
+				<shallow>true</shallow>
+				<noTags>false</noTags>
+				<reference></reference>
+				<timeout>30</timeout>
+				<depth>0</depth>
+				<honorRefspec>false</honorRefspec>
+			</hudson.plugins.git.extensions.impl.CloneOption>
+			<hudson.plugins.git.extensions.impl.SubmoduleOption>
+				<disableSubmodules>false</disableSubmodules>
+				<recursiveSubmodules>true</recursiveSubmodules>
+				<trackingSubmodules>true</trackingSubmodules>
+				<reference></reference>
+				<parentCredentials>false</parentCredentials>
+			</hudson.plugins.git.extensions.impl.SubmoduleOption>
+		</extensions>
+		<browser class="hudson.plugins.git.browser.GithubWeb">
+			<url>https://github.com/alandoni/xml-job-to-dsl</url>
+		</browser>
+	</scm>
+	<definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition">
+		<scm class="hudson.plugins.git.GitSCM">
+			<userRemoteConfigs>
+				<hudson.plugins.git.UserRemoteConfig>
+					<url>https://github.com/alandoni/xml-job-to-dsl.git</url>
+					<credentialsId>jenkins</credentialsId>
+				</hudson.plugins.git.UserRemoteConfig>
+			</userRemoteConfigs>
+			<branches>
+				<hudson.plugins.git.BranchSpec>
+					<name>*/${GIT_BRANCH}</name>
+				</hudson.plugins.git.BranchSpec>
+			</branches>
+			<configVersion>2</configVersion>
+			<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+			<gitTool>Default</gitTool>
+			<extensions>
+				<hudson.plugins.git.extensions.impl.WipeWorkspace/>
+			</extensions>
+			<browser class="hudson.plugins.git.browser.GithubWeb">
+				<url>https://github.com/alandoni/xml-job-to-dsl/</url>
+			</browser>
+		</scm>
+		<scriptPath>xml-job-to-dsl/src/scripts/pipeline.groovy</scriptPath>
+		<lightweight>false</lightweight>
+	</definition>
+	<triggers>
+		<hudson.triggers.TimerTrigger>
+			<spec>H H(2-4) * * 3,5,6</spec>
+		</hudson.triggers.TimerTrigger>
+		<org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.36.2">
+			<spec>H/5 * * * *</spec>
+			<latestVersion>3</latestVersion>
+			<configVersion>3</configVersion>
+			<adminlist/>
+			<allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
+			<orgslist/>
+			<cron>H/5 * * * *</cron>
+			<onlyTriggerPhrase>false</onlyTriggerPhrase>
+			<useGitHubHooks>false</useGitHubHooks>
+			<whitelist/>
+			<autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
+			<displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
+			<whiteListTargetBranches>
+				<org.jenkinsci.plugins.ghprb.GhprbBranch>
+					<branch></branch>
+				</org.jenkinsci.plugins.ghprb.GhprbBranch>
+			</whiteListTargetBranches>
+			<blackListTargetBranches>
+				<org.jenkinsci.plugins.ghprb.GhprbBranch>
+					<branch>eipoc</branch>
+				</org.jenkinsci.plugins.ghprb.GhprbBranch>
+			</blackListTargetBranches>
+			<triggerPhrase>\QJenkins, build this please\E</triggerPhrase>
+			<permitAll>true</permitAll>
+			<blackListLabels/>
+			<whiteListLabels/>
+			<extensions>
+				<org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+					<commitStatusContext/>
+					<triggeredStatus/>
+					<startedStatus/>
+					<statusUrl/>
+					<addTestResults>false</addTestResults>
+				</org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+			</extensions>
+		</org.jenkinsci.plugins.ghprb.GhprbTrigger>
+		<com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.28.1">
+			<spec></spec>
+		</com.cloudbees.jenkins.GitHubPushTrigger>
+		<hudson.triggers.SCMTrigger>
+			<spec>H/2 * * * *</spec>
+			<ignorePostCommitHooks>false</ignorePostCommitHooks>
+		</hudson.triggers.SCMTrigger>
+		<jenkins.triggers.ReverseBuildTrigger>
+			<spec></spec>
+			<upstreamProjects>Other-Project-Name</upstreamProjects>
+			<threshold>
+				<name>SUCCESS</name>
+				<ordinal>0</ordinal>
+				<color>BLUE</color>
+				<completeBuild>true</completeBuild>
+			</threshold>
+		</jenkins.triggers.ReverseBuildTrigger>
+	</triggers>
+</project>

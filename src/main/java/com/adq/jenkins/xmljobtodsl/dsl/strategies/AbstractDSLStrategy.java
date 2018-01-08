@@ -27,7 +27,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     private IDescriptor propertyDescriptor;
 
     public AbstractDSLStrategy(IDescriptor descriptor) {
-       this(0, descriptor);
+        this(0, descriptor);
     }
 
     public AbstractDSLStrategy(int tabs, IDescriptor descriptor) {
@@ -161,6 +161,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         }
         if (value.matches("[0-9.]+")) {
             return value;
+        }
+        value = value.replaceAll("\\\\", "\\\\\\\\");
+        if (value.contains("${") && value.contains("}")) {
+            return "'" + value + "'";
         }
         if (value.contains("\n")) {
             return "\"\"\"" + value + "\"\"\"";

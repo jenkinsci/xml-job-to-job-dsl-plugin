@@ -1,5 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
+import com.adq.jenkins.xmljobtodsl.IDescriptor;
 import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
 
 import java.util.Collection;
@@ -17,5 +18,7 @@ public interface DSLStrategy {
 
     void setTabs(int tabs);
 
-	List<PropertyDescriptor> getNotTranslatedList();
+    List<PropertyDescriptor> getNotTranslatedList();
+
+    IDescriptor getDescriptor();
 }

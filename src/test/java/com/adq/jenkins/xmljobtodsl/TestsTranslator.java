@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 public class TestsTranslator {
 
     public static String readExampleFile() {
-        return TestsXmlParser.readFile("example1.groovy");
+        return TestsXmlParser.readFile("example-job.groovy");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class TestsTranslator {
 
     @Test
     public void testReadingComplexFile() throws IOException, ParserConfigurationException, SAXException {
-        String xml = TestsXmlParser.readFile("example1.xml");
+        String xml = TestsXmlParser.readFile("example-job.xml");
         JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
 
         String expectedDSL = readExampleFile();

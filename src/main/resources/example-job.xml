@@ -59,7 +59,8 @@
         </com.coravy.hudson.plugins.github.GithubProjectProperty>
         <EnvInjectJobProperty>
             <info>
-                <propertiesContent>PLATFORM=Android</propertiesContent>
+                <propertiesContent>PLATFORM=iOS
+                    VARIABLE=value</propertiesContent>
                 <loadFilesFromMaster>false</loadFilesFromMaster>
                 <secureGroovyScript plugin="script-security@1.39">
                     <script></script>
@@ -81,65 +82,6 @@
     <disabled>true</disabled>
     <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
     <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-    <triggers>
-        <hudson.triggers.TimerTrigger>
-            <spec>H H(2-4) * * 3,5,6</spec>
-        </hudson.triggers.TimerTrigger>
-        <org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.36.2">
-            <spec>H/5 * * * *</spec>
-            <latestVersion>3</latestVersion>
-            <configVersion>3</configVersion>
-            <adminlist/>
-            <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
-            <orgslist/>
-            <cron>H/5 * * * *</cron>
-            <onlyTriggerPhrase>false</onlyTriggerPhrase>
-            <useGitHubHooks>false</useGitHubHooks>
-            <permitAll>true</permitAll>
-            <whitelist/>
-            <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
-            <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
-            <whiteListTargetBranches>
-                <org.jenkinsci.plugins.ghprb.GhprbBranch>
-                    <branch></branch>
-                </org.jenkinsci.plugins.ghprb.GhprbBranch>
-            </whiteListTargetBranches>
-            <blackListTargetBranches>
-                <org.jenkinsci.plugins.ghprb.GhprbBranch>
-                    <branch>eipoc</branch>
-                </org.jenkinsci.plugins.ghprb.GhprbBranch>
-            </blackListTargetBranches>
-            <triggerPhrase>\QJenkins, build this please\E</triggerPhrase>
-            <blackListLabels/>
-            <whiteListLabels/>
-            <extensions>
-                <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
-                    <commitStatusContext/>
-                    <triggeredStatus/>
-                    <startedStatus/>
-                    <statusUrl/>
-                    <addTestResults>false</addTestResults>
-                </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
-            </extensions>
-        </org.jenkinsci.plugins.ghprb.GhprbTrigger>
-        <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.28.1">
-            <spec></spec>
-        </com.cloudbees.jenkins.GitHubPushTrigger>
-        <hudson.triggers.SCMTrigger>
-            <spec>H/2 * * * *</spec>
-            <ignorePostCommitHooks>false</ignorePostCommitHooks>
-        </hudson.triggers.SCMTrigger>
-        <jenkins.triggers.ReverseBuildTrigger>
-            <spec></spec>
-            <upstreamProjects>Other-Project-Name</upstreamProjects>
-            <threshold>
-                <name>SUCCESS</name>
-                <ordinal>0</ordinal>
-                <color>BLUE</color>
-                <completeBuild>true</completeBuild>
-            </threshold>
-        </jenkins.triggers.ReverseBuildTrigger>
-    </triggers>
     <quietPeriod>5</quietPeriod>
     <displayName>Pipeline</displayName>
     <concurrentBuild>false</concurrentBuild>
@@ -285,8 +227,7 @@
             <onlyIfSuccessful>false</onlyIfSuccessful>
         </hudson.tasks.ArtifactArchiver>
         <org.korosoft.jenkins.plugin.rtp.RichTextPublisher plugin="rich-text-publisher-plugin@1.4">
-            <stableText>${FILE:xml-job-to-dsl/tests_report.html}
-                ${FILE:build_variables.html}</stableText>
+            <stableText>${FILE:xml-job-to-dsl/tests_report.html} ${FILE:build_variables.html}</stableText>
             <unstableText/>
             <failedText/>
             <abortedText/>
@@ -488,30 +429,63 @@
             <url>https://github.com/alandoni/xml-job-to-dsl</url>
         </browser>
     </scm>
-    <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition">
-        <scm class="hudson.plugins.git.GitSCM">
-            <userRemoteConfigs>
-                <hudson.plugins.git.UserRemoteConfig>
-                    <url>https://github.com/alandoni/xml-job-to-dsl.git</url>
-                    <credentialsId>jenkins</credentialsId>
-                </hudson.plugins.git.UserRemoteConfig>
-            </userRemoteConfigs>
-            <branches>
-                <hudson.plugins.git.BranchSpec>
-                    <name>*/${GIT_BRANCH}</name>
-                </hudson.plugins.git.BranchSpec>
-            </branches>
-            <configVersion>2</configVersion>
-            <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-            <gitTool>Default</gitTool>
+    <triggers>
+        <hudson.triggers.TimerTrigger>
+            <spec>H H(2-4) * * 3,5,6</spec>
+        </hudson.triggers.TimerTrigger>
+        <org.jenkinsci.plugins.ghprb.GhprbTrigger plugin="ghprb@1.36.2">
+            <spec>H/5 * * * *</spec>
+            <latestVersion>3</latestVersion>
+            <configVersion>3</configVersion>
+            <adminlist/>
+            <allowMembersOfWhitelistedOrgsAsAdmin>false</allowMembersOfWhitelistedOrgsAsAdmin>
+            <orgslist/>
+            <cron>H/5 * * * *</cron>
+            <onlyTriggerPhrase>false</onlyTriggerPhrase>
+            <useGitHubHooks>false</useGitHubHooks>
+            <whitelist/>
+            <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
+            <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
+            <whiteListTargetBranches>
+                <org.jenkinsci.plugins.ghprb.GhprbBranch>
+                    <branch></branch>
+                </org.jenkinsci.plugins.ghprb.GhprbBranch>
+            </whiteListTargetBranches>
+            <blackListTargetBranches>
+                <org.jenkinsci.plugins.ghprb.GhprbBranch>
+                    <branch>eipoc</branch>
+                </org.jenkinsci.plugins.ghprb.GhprbBranch>
+            </blackListTargetBranches>
+            <triggerPhrase>\QJenkins, build this please\E</triggerPhrase>
+            <permitAll>true</permitAll>
+            <blackListLabels/>
+            <whiteListLabels/>
             <extensions>
-                <hudson.plugins.git.extensions.impl.WipeWorkspace/>
+                <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+                    <commitStatusContext/>
+                    <triggeredStatus/>
+                    <startedStatus/>
+                    <statusUrl/>
+                    <addTestResults>false</addTestResults>
+                </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
             </extensions>
-            <browser class="hudson.plugins.git.browser.GithubWeb">
-                <url>https://github.com/alandoni/xml-job-to-dsl/</url>
-            </browser>
-        </scm>
-        <scriptPath>xml-job-to-dsl/src/scripts/pipeline.groovy</scriptPath>
-        <lightweight>false</lightweight>
-    </definition>
+        </org.jenkinsci.plugins.ghprb.GhprbTrigger>
+        <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.28.1">
+            <spec></spec>
+        </com.cloudbees.jenkins.GitHubPushTrigger>
+        <hudson.triggers.SCMTrigger>
+            <spec>H/2 * * * *</spec>
+            <ignorePostCommitHooks>false</ignorePostCommitHooks>
+        </hudson.triggers.SCMTrigger>
+        <jenkins.triggers.ReverseBuildTrigger>
+            <spec></spec>
+            <upstreamProjects>Other-Project-Name</upstreamProjects>
+            <threshold>
+                <name>SUCCESS</name>
+                <ordinal>0</ordinal>
+                <color>BLUE</color>
+                <completeBuild>true</completeBuild>
+            </threshold>
+        </jenkins.triggers.ReverseBuildTrigger>
+    </triggers>
 </project>

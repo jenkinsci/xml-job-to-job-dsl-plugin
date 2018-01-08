@@ -5,10 +5,6 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +14,7 @@ import static org.junit.Assert.assertNotEquals;
 public class TestsXmlParser {
 
     private static String readExampleFile() {
-        return readFile("example1.xml");
+        return readFile("example-job.xml");
     }
 
     public static String readFile(String name) {
