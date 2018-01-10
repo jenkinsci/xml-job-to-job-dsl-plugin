@@ -1,5 +1,8 @@
 package com.adq.jenkins.xmljobtodsl;
 
+import com.adq.jenkins.xmljobtodsl.parsers.JobDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

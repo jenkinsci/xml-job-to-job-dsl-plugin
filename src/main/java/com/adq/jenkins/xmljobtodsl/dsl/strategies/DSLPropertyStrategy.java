@@ -1,6 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
-import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 public class DSLPropertyStrategy extends AbstractDSLStrategy {
 

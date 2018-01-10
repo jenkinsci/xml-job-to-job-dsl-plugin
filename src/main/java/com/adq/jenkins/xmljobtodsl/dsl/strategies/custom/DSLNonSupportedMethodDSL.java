@@ -1,7 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 
-import com.adq.jenkins.xmljobtodsl.IDescriptor;
-import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.AbstractDSLStrategy;
 
 public class DSLNonSupportedMethodDSL extends AbstractDSLStrategy {

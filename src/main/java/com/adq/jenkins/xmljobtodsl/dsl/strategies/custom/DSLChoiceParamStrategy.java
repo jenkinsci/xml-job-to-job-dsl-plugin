@@ -1,6 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 
-import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLMethodStrategy;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLStrategy;
 

@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.adq.jenkins.xmljobtodsl.parsers.DSLTranslator;
+import com.adq.jenkins.xmljobtodsl.parsers.JobDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.XmlParser;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

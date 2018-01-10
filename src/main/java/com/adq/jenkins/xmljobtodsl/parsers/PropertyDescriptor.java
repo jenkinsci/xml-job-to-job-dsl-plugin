@@ -1,4 +1,4 @@
-package com.adq.jenkins.xmljobtodsl;
+package com.adq.jenkins.xmljobtodsl.parsers;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

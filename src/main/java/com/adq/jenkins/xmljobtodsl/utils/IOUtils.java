@@ -1,4 +1,4 @@
-package com.adq.jenkins.xmljobtodsl;
+package com.adq.jenkins.xmljobtodsl.utils;
 
 import java.io.*;
 import java.util.Scanner;

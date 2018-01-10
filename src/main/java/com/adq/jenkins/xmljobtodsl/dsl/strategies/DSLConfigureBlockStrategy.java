@@ -1,9 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
-import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
-import com.adq.jenkins.xmljobtodsl.dsl.strategies.AbstractDSLStrategy;
-
-import java.util.ArrayList;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 public class DSLConfigureBlockStrategy extends AbstractDSLStrategy {
 

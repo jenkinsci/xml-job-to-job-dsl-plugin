@@ -1,5 +1,8 @@
 package com.adq.jenkins.xmljobtodsl;
 
+import com.adq.jenkins.xmljobtodsl.parsers.JobDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.XmlParser;
+import com.adq.jenkins.xmljobtodsl.utils.IOUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

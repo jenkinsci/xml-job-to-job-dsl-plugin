@@ -1,9 +1,8 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
-import com.adq.jenkins.xmljobtodsl.IDescriptor;
-import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.IDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface DSLStrategy {

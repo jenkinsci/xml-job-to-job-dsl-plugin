@@ -1,9 +1,8 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
-import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 public class DSLStrategyFactory {
 

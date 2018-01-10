@@ -1,4 +1,4 @@
-package com.adq.jenkins.xmljobtodsl;
+package com.adq.jenkins.xmljobtodsl.parsers;
 
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLJobStrategy;
 
