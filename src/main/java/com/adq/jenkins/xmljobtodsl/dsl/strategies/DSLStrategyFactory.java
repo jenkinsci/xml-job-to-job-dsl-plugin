@@ -17,6 +17,7 @@ public class DSLStrategyFactory {
 	public static final String TYPE_VALUE = "VALUE";
 	public static final String TYPE_INNER_PARAMETER = "INNER_PARAMETER";
 	public static final String TYPE_CLOSURE = "CLOSURE";
+	public static final String TYPE_CONFIGURE = "CONFIGURE";
 
 	public DSLStrategy getDSLStrategy(String type, PropertyDescriptor propertyDescriptor, String property, int tabs) {
 		switch (type) {
@@ -40,6 +41,8 @@ public class DSLStrategyFactory {
 				return new DSLMethodStrategy(tabs, propertyDescriptor, property);
 			case TYPE_CLOSURE:
 				return new DSLClosureStrategy(tabs, propertyDescriptor, property);
+			case TYPE_CONFIGURE:
+				return new DSLConfigureBlockStrategy(tabs, propertyDescriptor, property);
 			default:
 				try {
 					Class<?> clazz = Class.forName(type);

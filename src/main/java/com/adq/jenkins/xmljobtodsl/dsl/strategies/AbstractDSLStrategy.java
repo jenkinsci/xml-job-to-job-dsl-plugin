@@ -10,7 +10,6 @@ import java.util.*;
 
 public abstract class AbstractDSLStrategy implements DSLStrategy {
 
-    public static final String PREFIX_GROOVY = "groovy.";
     public static final String SUFIX_GROOVY_TYPE = ".type";
 
     private Properties syntaxProperties;
@@ -78,11 +77,11 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         String property = null;
         String key = null;
         if (propertyDescriptor.getParent() != null) {
-            key = String.format("%s%s.%s", PREFIX_GROOVY, propertyDescriptor.getParent().getName(), propertyDescriptor.getName());
+            key = String.format("%s.%s", propertyDescriptor.getParent().getName(), propertyDescriptor.getName());
             property = translatorProperties.getProperty(key);
         }
         if (property == null) {
-            key = String.format("%s%s", PREFIX_GROOVY, propertyDescriptor.getName());
+            key = propertyDescriptor.getName();
             property = translatorProperties.getProperty(key);
         }
         return new Pair(key, property);

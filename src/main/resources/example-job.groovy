@@ -1,5 +1,6 @@
 job("test") {
 	description("This builds app from pull requests")
+	keepDependencies(false)
 	blockOn("""Build-iOS-App
 			Build-Android-App
 			Run-iOS-Tests
@@ -15,16 +16,36 @@ job("test") {
 						UDID will be automatically fetched""")
 		choiceParam("PLATFORM", ["Android", "iOS"], "Select the platform to test")
 	}
+	githubProjectUrl("https://github.com/alandoni/xml-job-to-dsl/")
 	environmentVariables {
 		env("PLATFORM", "iOS")
 		env("VARIABLE", "value")
+		loadFilesFromMaster(false)
+		groovy()
+		keepSystemVariables(true)
 		keepBuildVariables(true)
+		overrideBuildParameters(false)
 	}
-	disabled()
+	rebuild {
+		autoRebuild(false)
+		rebuildDisabled(false)
+	}
+	disabled(true)
+	blockOnDownstreamProjects(false)
+	blockOnUpstreamProjects(false)
+	quietPeriod(5)
 	displayName("Pipeline")
+	concurrentBuild(false)
 	steps {
+		dsl {
+			text("def String gitUrl = 'alandoni/xml-job-to-dsl'")
+			ignoreExisting(false)
+			removeAction("DELETE")
+			removeViewAction("IGNORE")
+			lookupStrategy("JENKINS_ROOT")
+		}
 		buildNameUpdater {
-			buildName(null)
+			buildName("")
 			macroTemplate("Build App")
 			fromFile(false)
 			fromMacro(true)
@@ -55,10 +76,13 @@ job("test") {
 	publishers {
 		archiveArtifacts {
 			pattern("build/**/*")
+			allowEmpty(false)
+			defaultExcludes(true)
+			fingerprint(false)
+			onlyIfSuccessful(false)
 		}
 		richTextPublisher {
-			stableText("""${FILE:xml-job-to-dsl/tests_report.html}
-				${FILE:build_variables.html}""")
+			stableText('${FILE:xml-job-to-dsl/tests_report.html} ${FILE:build_variables.html}')
 			unstableText("")
 			failedText("")
 			abortedText("")
@@ -68,12 +92,65 @@ job("test") {
 			abortedAsStable(true)
 			parserName("HTML")
 		}
+		extendedEmail {
+			recipientList("alan_doni@hotmail.com")
+			triggers {
+				always {
+					subject("$PROJECT_DEFAULT_SUBJECT")
+					content("$PROJECT_DEFAULT_CONTENT")
+					attachmentPatterns()
+					attachBuildLog(false)
+					compressBuildLog(false)
+					replyToList("$PROJECT_DEFAULT_REPLYTO")
+					contentType("project")
+				}
+			}
+			contentType("default")
+			defaultSubject("$DEFAULT_SUBJECT")
+			defaultContent("$DEFAULT_CONTENT")
+			attachmentPatterns()
+			preSendScript("$DEFAULT_PRESEND_SCRIPT")
+			attachBuildLog(true)
+			compressBuildLog(false)
+			replyToList("$DEFAULT_REPLYTO")
+			saveToWorkspace(false)
+			disabled(false)
+		}
+		postBuildScripts {
+			steps {
+				steps {
+					shell("""git tag "beta-$BUILD_NUMBER"
+                                    git push origin --tags
+                                    git remote prune origin""")
+				}
+			}
+			markBuildUnstable(false)
+			onlyIfBuildSucceeds(true)
+			onlyIfBuildFails(false)
+			markBuildUnstable(false)
+		}
+		mailer("alan_doni@hotmail.com.com", false, false)
+		downstream("Other-Project-Name", "SUCCESS")
+		archiveJunit("*.xml") {
+			healthScaleFactor(1.0)
+			allowEmptyResults(false)
+		}
+		githubCommitNotifier()
 	}
 	wrappers {
 		credentialsBinding {
-			string("PASSWORD", "${PASS_WORD}")
+			string("PASSWORD", '${PASS_WORD}')
 			usernamePassword("GITHUB_CREDENTIALS", "jenkins")
 		}
+		timeout {
+			absolute(30)
+		}
+		timestamps()
+		preBuildCleanup {
+			deleteDirectories(false)
+			cleanupParameter()
+		}
+		sshAgent("0bdbb6ac-187e-473b-a2c2-12e4c6e87568")
 	}
 	logRotator(50)
 	scm {
@@ -83,7 +160,7 @@ job("test") {
 				github("alandoni/xml-job-to-dsl", "https")
 				credentials("jenkins")
 			}
-			branch("*/${GIT_BRANCH}")
+			branch('*/${GIT_BRANCH}')
 			extensions {
 				wipeOutWorkspace()
 			}
@@ -93,7 +170,11 @@ job("test") {
 		githubPullRequest {
 			cron("H/5 * * * *")
 			triggerPhrase("\\QJenkins, build this please\\E")
-			permitAll()
+			permitAll(true)
+		}
+		githubPush()
+		scm("H/2 * * * *") {
+			ignorePostCommitHooks(false)
 		}
 	}
 }

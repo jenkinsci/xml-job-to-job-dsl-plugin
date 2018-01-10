@@ -14,7 +14,7 @@ public class DSLHiddenTagStrategy extends DSLObjectStrategy {
 		List<PropertyDescriptor> children = propertyDescriptor.getProperties();
 
 		PropertyDescriptor child = new PropertyDescriptor(
-				getPropertyByName(String.format("groovy.%s.hidden_tag", propertyDescriptor.getName())),
+				getPropertyByName(String.format("%s.hidden_tag", propertyDescriptor.getName())),
 				propertyDescriptor, children);
 		List<PropertyDescriptor> directChildren = new ArrayList<>();
 		directChildren.add(child);
