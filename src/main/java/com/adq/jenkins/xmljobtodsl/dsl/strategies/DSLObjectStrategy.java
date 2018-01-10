@@ -9,7 +9,11 @@ public class DSLObjectStrategy extends AbstractDSLStrategy {
     private final String name;
 
     public DSLObjectStrategy(int tabs, PropertyDescriptor propertyDescriptor, String name) {
-        super(tabs, propertyDescriptor);
+        this(tabs, propertyDescriptor, name, true);
+    }
+
+    public DSLObjectStrategy(int tabs, PropertyDescriptor propertyDescriptor, String name, boolean shouldInitChildren) {
+        super(tabs, propertyDescriptor, shouldInitChildren);
         this.name = name;
     }
 

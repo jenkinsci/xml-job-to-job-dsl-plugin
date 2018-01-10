@@ -10,18 +10,21 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
 
     private final String methodName;
 
-    public DSLMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
-        super(propertyDescriptor);
+    public DSLMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName, boolean shouldInitChildren) {
+        super(tabs, propertyDescriptor, shouldInitChildren);
         this.methodName = methodName;
         this.setTabs(tabs);
     }
 
-    public DSLMethodStrategy(PropertyDescriptor descriptor) {
-        super(descriptor);
-        methodName = null;
+    public DSLMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
+        this(tabs, propertyDescriptor, methodName, true);
     }
 
-    @Override
+    public DSLMethodStrategy(PropertyDescriptor descriptor) {
+        this(0, descriptor, null, true);
+    }
+
+	@Override
     public String toDSL() {
         PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
         if (propertyDescriptor.getValue() != null) {

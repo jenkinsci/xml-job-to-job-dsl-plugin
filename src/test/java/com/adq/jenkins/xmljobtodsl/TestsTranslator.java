@@ -65,11 +65,39 @@ public class TestsTranslator {
     }
 
     @Test
-    public void testReadingComplexFile() throws IOException, ParserConfigurationException, SAXException {
+    public void testReadingConfigureBlockFile() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("configure-block.xml");
+        JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
+
+        String expectedDSL = TestsXmlParser.readFile("configure-block.groovy");
+
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
+    }
+
+    @Test
+    public void testReadingJobFile() throws IOException, ParserConfigurationException, SAXException {
         String xml = TestsXmlParser.readFile("example-job.xml");
         JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
 
         String expectedDSL = readExampleFile();
+
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
+    }
+
+    @Test
+    public void testReadingPipelineJobFile() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("example-pipelinejob.xml");
+        JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
+
+        String expectedDSL = TestsXmlParser.readFile("example-pipelinejob.groovy");
 
         DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
         String actualDSL = dslTranslator.toDSL();

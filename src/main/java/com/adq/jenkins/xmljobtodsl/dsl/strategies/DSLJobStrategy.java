@@ -1,11 +1,14 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
 import com.adq.jenkins.xmljobtodsl.JobDescriptor;
+import com.adq.jenkins.xmljobtodsl.PropertyDescriptor;
+
+import java.util.ArrayList;
 
 public class DSLJobStrategy extends AbstractDSLStrategy {
 
     public DSLJobStrategy(JobDescriptor jobDescriptor) {
-        super(jobDescriptor);
+        super(0, jobDescriptor);
     }
 
     @Override

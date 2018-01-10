@@ -6,10 +6,7 @@ import javafx.util.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public abstract class AbstractDSLStrategy implements DSLStrategy {
 
@@ -27,10 +24,14 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
     private IDescriptor propertyDescriptor;
 
     public AbstractDSLStrategy(IDescriptor descriptor) {
-        this(0, descriptor);
+        this(0, descriptor, true);
     }
 
     public AbstractDSLStrategy(int tabs, IDescriptor descriptor) {
+        this(tabs, descriptor, true);
+    }
+
+    public AbstractDSLStrategy(int tabs, IDescriptor descriptor, boolean shouldInitChildren) {
         this.tabs = tabs;
         this.propertyDescriptor = descriptor;
         try {
@@ -38,7 +39,9 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        initChildren(descriptor);
+        if (shouldInitChildren) {
+            initChildren(descriptor);
+        }
     }
 
     private void initProperties() throws IOException {
@@ -120,7 +123,11 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
             return;
         }
         children.clear();
-        for (PropertyDescriptor propertyDescriptor : descriptor.getProperties()) {
+        List<PropertyDescriptor> properties = descriptor.getProperties();
+        Iterator<PropertyDescriptor> iterator = properties.iterator();
+
+        while (iterator.hasNext()) {
+            PropertyDescriptor propertyDescriptor = iterator.next();
             DSLStrategy strategy = getStrategyByPropertyDescriptorType(propertyDescriptor);
             if (strategy != null) {
                 addChild(strategy);

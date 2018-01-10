@@ -9,7 +9,7 @@ import java.util.List;
 public class DSLHiddenTagStrategy extends DSLObjectStrategy {
 
 	public DSLHiddenTagStrategy(int tabs, PropertyDescriptor propertyDescriptor, String name) {
-		super(tabs, propertyDescriptor, name);
+		super(tabs, propertyDescriptor, name, false);
 
 		List<PropertyDescriptor> children = propertyDescriptor.getProperties();
 

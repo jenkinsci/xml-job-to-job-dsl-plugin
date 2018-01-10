@@ -13,7 +13,7 @@ public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 	private static final Pattern pattern = Pattern.compile("\\w+\\:\\/\\/\\w+?\\.\\w+?\\.?\\w+?\\/(.+?)\\.\\w+");
 
 	public DSLGitHubMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
-		super(tabs, null, methodName);
+		super(tabs, null, methodName, false);
 
 		List<PropertyDescriptor> list = new ArrayList<>();
 		PropertyDescriptor newPropertyDescriptor = new PropertyDescriptor("url", propertyDescriptor.getParent(), list);
