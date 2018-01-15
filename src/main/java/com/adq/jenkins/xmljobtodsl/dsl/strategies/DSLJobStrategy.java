@@ -12,31 +12,31 @@ public class DSLJobStrategy extends AbstractDSLStrategy {
     public DSLJobStrategy(JobDescriptor jobDescriptor) {
         super(0, jobDescriptor, false);
 
-        checkNeedsConfigureBlockAndCreateIt(jobDescriptor);
-
+        checkNeedsBlockAndCreateIt(jobDescriptor, "configure", DSLStrategyFactory.TYPE_CONFIGURE);
+        checkNeedsBlockAndCreateIt(jobDescriptor, "properties", DSLStrategyFactory.TYPE_PROPERTIES);
         initChildren(jobDescriptor);
     }
 
-    private void checkNeedsConfigureBlockAndCreateIt(JobDescriptor jobDescriptor) {
-        List<PropertyDescriptor> configureBlocks = findConfigureBlockStrategyProperty(jobDescriptor.getProperties());
+    private void checkNeedsBlockAndCreateIt(JobDescriptor jobDescriptor, String blockName, String blockType) {
+        List<PropertyDescriptor> configureBlocks = findConfigureBlockStrategyProperty(jobDescriptor.getProperties(), blockType);
         if (configureBlocks.size() > 0) {
-            PropertyDescriptor configureBlockProperty = new PropertyDescriptor("configure", null, configureBlocks);
+            PropertyDescriptor configureBlockProperty = new PropertyDescriptor(blockName, null, configureBlocks);
             jobDescriptor.getProperties().add(configureBlockProperty);
         }
     }
 
-    private List<PropertyDescriptor> findConfigureBlockStrategyProperty(List<PropertyDescriptor> properties) {
+    private List<PropertyDescriptor> findConfigureBlockStrategyProperty(List<PropertyDescriptor> properties, String blockType) {
         List<PropertyDescriptor> configureBlocksList = new ArrayList<>();
         Iterator<PropertyDescriptor> iterator = properties.iterator();
         while (iterator.hasNext()) {
             PropertyDescriptor descriptor = iterator.next();
             String type = getType(descriptor);
-            if (DSLStrategyFactory.TYPE_CONFIGURE.equals(type)) {
+            if (blockType.equals(type)) {
                 configureBlocksList.add(descriptor);
                 iterator.remove();
             }
             if (descriptor.getProperties() != null && descriptor.getProperties().size() > 0) {
-                configureBlocksList.addAll(findConfigureBlockStrategyProperty(descriptor.getProperties()));
+                configureBlocksList.addAll(findConfigureBlockStrategyProperty(descriptor.getProperties(), blockType));
             }
         }
 

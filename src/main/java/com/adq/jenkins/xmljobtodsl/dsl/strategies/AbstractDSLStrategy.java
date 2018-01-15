@@ -7,6 +7,8 @@ import javafx.util.Pair;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public abstract class AbstractDSLStrategy implements DSLStrategy {
 
@@ -160,20 +162,26 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
     public String printValueAccordingOfItsType(String value) {
         if (value == null) {
-            return "null";
+            return "\"\"";
         }
-        if (value.equals("true") || value.equals("false")) {
+        if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
             return value;
         }
         if (value.matches("[0-9.]+")) {
             return value;
         }
-        value = value.replaceAll("\\\\", "\\\\\\\\");
-        if (value.contains("${") && value.contains("}")) {
-            return "'" + value + "'";
+        if (value.isEmpty()) {
+            return "\"\"";
         }
+
+        value = value.replaceAll("\\\\", "\\\\\\\\");
+        value = value.replaceAll(Pattern.quote("$("), Matcher.quoteReplacement("\\$("));
+
         if (value.contains("\n")) {
             return "\"\"\"" + value + "\"\"\"";
+        }
+        if (value.contains("${") && value.contains("}")) {
+            return "'" + value + "'";
         }
         return "\"" + value + "\"";
     }

@@ -1,7 +1,10 @@
 package com.adq.jenkins.xmljobtodsl.utils;
 
 import java.io.*;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by alanquintiliano on 19/12/17.
@@ -40,8 +43,18 @@ public class IOUtils {
         return readFromFile(new File(classLoader.getResource(path).getFile()));
     }
 
-    public String readFromUrl(String url) throws IOException {
-        return readFromStream(new InputStreamReader(new URL(url).openStream()));
+    public String readFromUrl(String urlString, final String username, final String password) throws IOException {
+        if (username != null && password != null) {
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password.toCharArray());
+                }
+            });
+        }
+        URL url = new URL(urlString);
+        URLConnection uc = url.openConnection();
+        return readFromStream(new InputStreamReader(uc.getInputStream()));
     }
 
     public void saveToFile(String text, String path) throws IOException {

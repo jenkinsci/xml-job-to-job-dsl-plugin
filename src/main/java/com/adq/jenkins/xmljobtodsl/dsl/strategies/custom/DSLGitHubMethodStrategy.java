@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 
-	private static final Pattern pattern = Pattern.compile("\\w+\\:\\/\\/\\w+?\\.\\w+?\\.?\\w+?\\/(.+?)\\.\\w+");
+	private static final Pattern pattern = Pattern.compile("(?:\\.com\\/?:?)(.+\\/.+)\\..+");
 
 	public DSLGitHubMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
 		super(tabs, null, methodName, false);
@@ -18,23 +18,35 @@ public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 		List<PropertyDescriptor> list = new ArrayList<>();
 		PropertyDescriptor newPropertyDescriptor = new PropertyDescriptor("url", propertyDescriptor.getParent(), list);
 
-		Matcher matcher = pattern.matcher(propertyDescriptor.getValue());
-		String url = propertyDescriptor.getValue();
-		if (matcher.find()) {
-			url = matcher.group(1);
-		}
+		String method = getMethod(propertyDescriptor.getValue());
+		String url = getRepositoryInformationFromUrl(propertyDescriptor.getValue());
 
 		PropertyDescriptor urlProperty = new PropertyDescriptor("github.url", newPropertyDescriptor, url);
 		list.add(urlProperty);
 
-		PropertyDescriptor method = new PropertyDescriptor("method", newPropertyDescriptor, getMethod(propertyDescriptor));
-		list.add(method);
+		PropertyDescriptor methodProperty = new PropertyDescriptor("method", newPropertyDescriptor, method);
+		list.add(methodProperty);
 
 		setDescriptor(newPropertyDescriptor);
 		initChildren(newPropertyDescriptor);
 	}
 
-	private String getMethod(PropertyDescriptor propertyDescriptor) {
-		return propertyDescriptor.getValue().split(":")[0];
+	public String getRepositoryInformationFromUrl(String url) {
+		Matcher matcher = pattern.matcher(url);
+		String repoInfo = url;
+		if (matcher.find()) {
+			repoInfo = matcher.group(1);
+		}
+		return repoInfo;
+	}
+
+	private String getMethod(String url) {
+		if (url.startsWith("https")) {
+			return "https";
+		}
+		if (url.startsWith("git@") || url.startsWith("ssh")) {
+			return "ssh";
+		}
+		return "";
 	}
 }

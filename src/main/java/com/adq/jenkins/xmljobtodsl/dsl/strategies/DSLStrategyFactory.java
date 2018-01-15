@@ -17,6 +17,7 @@ public class DSLStrategyFactory {
 	public static final String TYPE_INNER_PARAMETER = "INNER_PARAMETER";
 	public static final String TYPE_CLOSURE = "CLOSURE";
 	public static final String TYPE_CONFIGURE = "CONFIGURE";
+	public static final String TYPE_PROPERTIES = "PROPERTIES";
 
 	public DSLStrategy getDSLStrategy(String type, PropertyDescriptor propertyDescriptor, String property, int tabs) {
 		switch (type) {

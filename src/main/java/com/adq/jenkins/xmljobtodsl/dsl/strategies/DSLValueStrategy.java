@@ -8,7 +8,6 @@ public class DSLValueStrategy extends AbstractDSLStrategy implements IValueStrat
         super(propertyDescriptor);
     }
 
-
     @Override
     public String toDSL() {
         return printValueAccordingOfItsType(((PropertyDescriptor) getDescriptor()).getValue());

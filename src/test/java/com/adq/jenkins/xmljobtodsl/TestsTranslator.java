@@ -110,6 +110,20 @@ public class TestsTranslator {
         assertEquals(expectedDSL, actualDSL);
     }
 
+    @Test
+    public void testRealJobFile() throws IOException, ParserConfigurationException, SAXException {
+        String xml = TestsXmlParser.readFile("config2.xml");
+        JobDescriptor actualJobDescriptor = new XmlParser("test", xml).parse();
+
+        String expectedDSL = TestsXmlParser.readFile("config2.groovy");
+
+        DSLTranslator dslTranslator = new DSLTranslator(actualJobDescriptor);
+        String actualDSL = dslTranslator.toDSL();
+        logAllNotKnownTags(dslTranslator.getNotTranslated());
+
+        assertEquals(expectedDSL, actualDSL);
+    }
+
     private void logAllNotKnownTags(List<PropertyDescriptor> notKnownTags) {
         for (PropertyDescriptor property : notKnownTags) {
             Logger.getAnonymousLogger().log(Level.WARNING, property.getName());
