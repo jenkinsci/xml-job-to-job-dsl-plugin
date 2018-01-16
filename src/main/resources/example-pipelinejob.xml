@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<flow-definition>
 	<actions/>
 	<description>This builds app from pull requests</description>
 	<keepDependencies>false</keepDependencies>
@@ -515,4 +515,4 @@
 			</threshold>
 		</jenkins.triggers.ReverseBuildTrigger>
 	</triggers>
-</project>
+</flow-definition>

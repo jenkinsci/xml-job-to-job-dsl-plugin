@@ -1,6 +1,6 @@
 job("test") {
 	configure {
-		it \ 'properties' \ 'jenkins.model.BuildDiscarderProperty' {
+		it / 'properties' / 'jenkins.model.BuildDiscarderProperty' {
 			strategy {
 				'daysToKeep'('50')
 				'numToKeep'('-1')
@@ -8,7 +8,7 @@ job("test") {
 				'artifactNumToKeep'('-1')
 			}
 		}
-		it \ 'builders' \ 'au.com.rayh.XCodeBuilder' {
+		it / 'builders' / 'au.com.rayh.XCodeBuilder' {
 			'cleanBeforeBuild'('true')
 			'cleanTestReports'('false')
 			'configuration'('Release')

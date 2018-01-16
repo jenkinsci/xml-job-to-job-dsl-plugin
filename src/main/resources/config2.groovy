@@ -11,8 +11,6 @@ job("test") {
 		}
 	}
 	disabled(true)
-	blockOnDownstreamProjects(false)
-	blockOnUpstreamProjects(false)
 	triggers {
 		scm("H/45 * * * *") {
 			ignorePostCommitHooks(false)
@@ -31,6 +29,16 @@ echo "This build comes from the branch [${GIT_BRANCH}]" > dsl/notes.txt
 #disable release notes because they're constantly too long
 LAST_SUCCESS_REV=\$(curl --silent http://localhost:8080/job/DSL/lastSuccessfulBuild/api/xml?xpath=//lastBuiltRevision/SHA1| sed 's|.*<SHA1>\\(.*\\)</SHA1>|\\1|')
 git log --no-merges --format='%s [%cE]' $LAST_SUCCESS_REV..${GIT_COMMIT} >> dsl/notes.txt""")
+		gradle {
+			switches()
+			tasks("clean assembleDebug crashlyticsUploadDistributionDebug")
+			fromRootBuildScriptDir()
+			buildFile()
+			gradleName("(Default)")
+			useWrapper(true)
+			makeExecutable(true)
+			useWorkspaceAsHome(false)
+		}
 	}
 	publishers {
 		archiveArtifacts {

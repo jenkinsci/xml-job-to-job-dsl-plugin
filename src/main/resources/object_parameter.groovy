@@ -6,4 +6,9 @@ job("test") {
 		blockLevel("GLOBAL")
 		scanQueueFor("DISABLED")
 	})
+	configure {
+		it / 'properties' / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
+			'projectUrl'('https://github.com/SymphonyOSF/iOSTest/')
+		}
+	}
 }

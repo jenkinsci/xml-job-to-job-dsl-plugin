@@ -1,0 +1,6 @@
+<project>
+    <actions/>
+    <description>Builds a Crashlytics app from origin/master&#xd;
+    </description>
+    <keepDependencies>false</keepDependencies>
+</project>

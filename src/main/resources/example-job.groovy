@@ -2,21 +2,20 @@ job("test") {
 	description("This builds app from pull requests")
 	keepDependencies(false)
 	blockOn("""Build-iOS-App
-			Build-Android-App
-			Run-iOS-Tests
-			Run-Android-Tests""", {
+                Build-Android-App
+                Run-iOS-Tests
+                Run-Android-Tests""", {
 		blockLevel("GLOBAL")
 		scanQueueFor("DISABLED")
 	})
 	parameters {
-		stringParam("GIT_BRANCH", "dev", "Name of the branch that will be checked out from repo")
+		stringParam("GIT_BRANCH", "dev", "Name of the branch that will be checked out from Repo")
 		stringParam("SELECTED_BINARY", "none", "Local path of binary to run the tests against")
 		booleanParam("REAL_DEVICE", false, """Check this if you want to run on a plugged in device instead of the simulator
-						Make sure only one device is plugged.
-						UDID will be automatically fetched""")
+                        Make sure only one device is plugged.
+                        UDID will be automatically fetched""")
 		choiceParam("PLATFORM", ["Android", "iOS"], "Select the platform to test")
 	}
-	githubProjectUrl("https://github.com/alandoni/xml-job-to-dsl/")
 	environmentVariables {
 		env("PLATFORM", "iOS")
 		env("VARIABLE", "value")
@@ -26,13 +25,7 @@ job("test") {
 		keepBuildVariables(true)
 		overrideBuildParameters(false)
 	}
-	rebuild {
-		autoRebuild(false)
-		rebuildDisabled(false)
-	}
 	disabled(true)
-	blockOnDownstreamProjects(false)
-	blockOnUpstreamProjects(false)
 	quietPeriod(5)
 	displayName("Pipeline")
 	concurrentBuild(false)
@@ -65,12 +58,22 @@ job("test") {
 					booleanParam("DEPLOY_TO_CRASHLYTICS", false)
 					booleanParam("REAL_DEVICE", false)
 					predefinedProps([EMAILS: "alan_doni@hotmail.com",
-									 REMOTE_USER: "jenkins",
-									 LOG_LEVEL: "warn",
-									 GIT_BRANCH: "dev",
-									 SELECTED_BINARY: "none"])
+                                REMOTE_USER: "jenkins",
+                                LOG_LEVEL: "warn",
+                                GIT_BRANCH: "dev",
+                                SELECTED_BINARY: "none"])
 				}
 			}
+		}
+		gradle {
+			switches()
+			tasks("clean :apps:blackberry:assembleRelease :apps:blackberry:crashlyticsUploadDistributionRelease")
+			fromRootBuildScriptDir()
+			buildFile()
+			gradleName("(Default)")
+			useWrapper(true)
+			makeExecutable(true)
+			useWorkspaceAsHome(false)
 		}
 	}
 	publishers {
@@ -175,6 +178,15 @@ job("test") {
 		githubPush()
 		scm("H/2 * * * *") {
 			ignorePostCommitHooks(false)
+		}
+	}
+	configure {
+		it / 'properties' / 'com.coravy.hudson.plugins.github.GithubProjectProperty' {
+			'projectUrl'('https://github.com/alandoni/xml-job-to-dsl/')
+		}
+		it / 'properties' / 'com.sonyericsson.rebuild.RebuildSettings' {
+			'autoRebuild'('false')
+			'rebuildDisabled'('false')
 		}
 	}
 }

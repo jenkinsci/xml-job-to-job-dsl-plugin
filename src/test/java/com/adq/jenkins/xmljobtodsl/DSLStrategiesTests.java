@@ -14,10 +14,16 @@ public class DSLStrategiesTests {
 		DSLGitHubMethodStrategy strategy = new DSLGitHubMethodStrategy(0, descriptor,  null);
 
 		String repoInfo = strategy.getRepositoryInformationFromUrl("https://www.github.com/alandoni/xml-job-to-dsl.git");
-		Assert.assertEquals(repoInfo, "alandoni/xml-job-to-dsl");
+		Assert.assertEquals("alandoni/xml-job-to-dsl", repoInfo);
 
 		repoInfo = strategy.getRepositoryInformationFromUrl("git@github.com:alandoni/xml-job-to-dsl.git");
-		Assert.assertEquals(repoInfo, "alandoni/xml-job-to-dsl");
+		Assert.assertEquals("alandoni/xml-job-to-dsl", repoInfo);
+
+		repoInfo = strategy.getRepositoryInformationFromUrl("https://www.github.com/alandoni/xml-job-to-dsl");
+		Assert.assertEquals("alandoni/xml-job-to-dsl", repoInfo);
+
+		repoInfo = strategy.getRepositoryInformationFromUrl("git@github.com:alandoni/xml-job-to-dsl");
+		Assert.assertEquals("alandoni/xml-job-to-dsl", repoInfo);
 	}
 
 	@Test
@@ -65,5 +71,8 @@ public class DSLStrategiesTests {
 
 		actual = strategy.printValueAccordingOfItsType("$(echo \"test\")\n$(echo \"test\")");
 		Assert.assertEquals("\"\"\"\\$(echo \"test\")\n\\$(echo \"test\")\"\"\"", actual);
+
+		actual = strategy.printValueAccordingOfItsType("origin/master&#xd;");
+		Assert.assertEquals("\"origin/master&#xd;\"", actual);
 	}
 }

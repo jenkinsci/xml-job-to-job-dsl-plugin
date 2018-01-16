@@ -48,8 +48,8 @@ public class TestsConstants {
 
         PropertyDescriptor buildBlocker = new PropertyDescriptor("hudson.plugins.buildblocker.BuildBlockerProperty", builder, buildBlockProperties);
 
-        buildBlockProperties.add(new PropertyDescriptor("useBuildBlocker", buildBlocker, "true"));
         buildBlockProperties.add(new PropertyDescriptor("blockingJobs", buildBlocker,"Build-iOS-App"));
+        buildBlockProperties.add(new PropertyDescriptor("useBuildBlocker", buildBlocker, "true"));
         buildBlockProperties.add(new PropertyDescriptor("blockLevel", buildBlocker,"GLOBAL"));
         buildBlockProperties.add(new PropertyDescriptor("scanQueueFor", buildBlocker,"DISABLED"));
 
@@ -96,7 +96,8 @@ public class TestsConstants {
                 "\t})" + System.lineSeparator() +
                 "\tsteps {" + System.lineSeparator() +
                 "\t\tbuildNameUpdater {" + System.lineSeparator() +
-                "\t\t\tmacroTemplate(\"Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}\")" + System.lineSeparator() +
+                "\t\t\tbuildName(\"\")" + System.lineSeparator() +
+                "\t\t\tmacroTemplate('Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}')" + System.lineSeparator() +
                 "\t\t\tfromFile(false)" + System.lineSeparator() +
                 "\t\t\tfromMacro(true)" + System.lineSeparator() +
                 "\t\t\tmacroFirst(true)" + System.lineSeparator() +

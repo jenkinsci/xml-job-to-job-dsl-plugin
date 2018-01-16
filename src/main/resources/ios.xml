@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Builds a Crashlytics app from origin/master&#xd;
+</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>GLOBAL</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>200</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.28.1">
+      <projectUrl>https://github.com/alandoni/xml-job-to-dsl/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.27">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@3.6.4">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <url>https://github.com/alandoni/xml-job-to-dsl.git</url>
+        <credentialsId>abc123</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>refs/heads/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.WipeWorkspace/>
+      <hudson.plugins.git.extensions.impl.CloneOption>
+        <shallow>true</shallow>
+        <noTags>false</noTags>
+        <reference></reference>
+        <timeout>30</timeout>
+        <depth>0</depth>
+        <honorRefspec>false</honorRefspec>
+      </hudson.plugins.git.extensions.impl.CloneOption>
+    </extensions>
+  </scm>
+  <quietPeriod>5</quietPeriod>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <hudson.triggers.SCMTrigger>
+      <spec>H/30 * * * *</spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -ex
+
+env
+
+YEAR=`date -j -f &quot;%a %b %d %T %Z %Y&quot; &quot;\`date\`&quot; &quot;+%Y&quot;`
+MONTH=`date -j -f &quot;%a %b %d %T %Z %Y&quot; &quot;\`date\`&quot; &quot;+%m&quot;`
+DAY=`date -j -f &quot;%a %b %d %T %Z %Y&quot; &quot;\`date\`&quot; &quot;+%d&quot;`
+version=`/usr/libexec/PlistBuddy -c &quot;Print CFBundleShortVersionString&quot; &quot;${WORKSPACE}&quot;/ios/ios-Info.plist`
+bundleVersion=`/usr/libexec/PlistBuddy -c &quot;Print CFBundleVersion&quot; &quot;${WORKSPACE}&quot;/ios/ios-Info.plist`
+MARKETING_VERSION=$version.$bundleVersion
+
+LAST_SUCCESS_REV=$(curl --fail --silent http://localhost:8080/job/iOS-master/lastSuccessfulBuild/api/xml?xpath=//lastBuiltRevision/SHA1| sed &apos;s|.*&lt;SHA1&gt;\(.*\)&lt;/SHA1&gt;|\1|&apos;)
+
+# Store some environment variables in this file
+# A later build step ingests these env variables
+echo&quot;&quot;&gt;${WORKSPACE}/env_vars
+echo &quot;MARKETING_VERSION&quot;=$MARKETING_VERSION&gt;&gt;${WORKSPACE}/env_vars
+# Capture the MM DD YY at the beginning of the build in case the date changes during the build. (a midnight build)
+echo &quot;YEAR&quot;=$YEAR&gt;&gt;${WORKSPACE}/env_vars
+echo &quot;MONTH&quot;=$MONTH&gt;&gt;${WORKSPACE}/env_vars
+echo &quot;DAY&quot;=$DAY&gt;&gt;${WORKSPACE}/env_vars
+
+
+echo &quot;This build comes from the branch [${GIT_BRANCH}]&quot; &gt; notes.txt
+echo &quot;------------------&quot; &gt;&gt; notes.txt
+echo &quot;Marketing Version:&quot; &gt;&gt; notes.txt
+echo $MARKETING_VERSION &gt;&gt; notes.txt
+echo &quot;------------------&quot; &gt;&gt; notes.txt
+echo &quot;Commits:&quot; &gt;&gt; notes.txt
+
+# For what those %s &amp; %cE mean, see https://git-scm.com/docs/git-log
+# %s means subject (first line of commit)
+# %cE means committer&apos;s email address
+#git log --no-merges --format=&apos;%s [%cE]&apos; $LAST_SUCCESS_REV..${GIT_COMMIT} &gt;&gt; notes.txt
+
+# Below changes by Iwan:
+# Change to %cN to show committer&apos;s name
+# Get only the first 20 commits (avoid Crashlytics&apos; 16KB hard limit on changelog when building a different branch from last succesful build)
+git log --no-merges --format=&apos;%s [%cN]&apos; --max-count=20 $LAST_SUCCESS_REV..${GIT_COMMIT} &gt;&gt; notes.txt
+
+#echo &quot;Server: &quot; &gt;&gt; notes.txt
+#echo URL=&quot;$(cat &quot;${WORKSPACE}&quot;/ios/Constants.h  | grep &apos;^\#define defaultUrlPrefix &apos; | cut -c 26- )&quot; &gt;&gt; notes.txt
+
+
+#Manually cleaning out the DerivedData directory
+echo &quot;Manually cleaning out the DerivedData directory&quot;
+echo &quot;rm -rf /Users/jenkins/Library/Developer/Xcode/DerivedData&quot;
+rm -rf /Users/jenkins/Library/Developer/Xcode/DerivedData || true
+
+</command>
+    </hudson.tasks.Shell>
+    <EnvInjectBuilder plugin="envinject@2.1.5">
+      <info>
+        <propertiesFilePath>${WORKSPACE}/env_vars</propertiesFilePath>
+        <propertiesContent>Stuff like MARKETING_VERSION &amp; build date/time</propertiesContent>
+      </info>
+    </EnvInjectBuilder>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash -ex
+
+/usr/local/bin/pod install</command>
+    </hudson.tasks.Shell>
+    <au.com.rayh.XCodeBuilder plugin="xcode-plugin@2.0.0">
+      <cleanBeforeBuild>true</cleanBeforeBuild>
+      <cleanTestReports>false</cleanTestReports>
+      <configuration>Release</configuration>
+      <target></target>
+      <sdk></sdk>
+      <symRoot></symRoot>
+      <buildDir></buildDir>
+      <xcodeProjectPath></xcodeProjectPath>
+      <xcodeProjectFile></xcodeProjectFile>
+      <xcodebuildArguments></xcodebuildArguments>
+      <xcodeSchema>ios</xcodeSchema>
+      <xcodeWorkspaceFile>ios</xcodeWorkspaceFile>
+      <cfBundleVersionValue>${BUILD_NUMBER}</cfBundleVersionValue>
+      <cfBundleShortVersionStringValue></cfBundleShortVersionStringValue>
+      <buildIpa>true</buildIpa>
+      <ipaExportMethod>ad-hoc</ipaExportMethod>
+      <generateArchive>true</generateArchive>
+      <unlockKeychain>true</unlockKeychain>
+      <keychainName>none (specify one below)</keychainName>
+      <keychainPath>/Users/jenkins/Library/Keychains/login.keychain</keychainPath>
+      <keychainPwd>abc123</keychainPwd>
+      <developmentTeamName>none (specify one below)</developmentTeamName>
+      <developmentTeamID>abc123</developmentTeamID>
+      <allowFailingBuildResults>false</allowFailingBuildResults>
+      <ipaName>ios-master-${MARKETING_VERSION}-${BUILD_NUMBER}</ipaName>
+      <ipaOutputDirectory></ipaOutputDirectory>
+      <provideApplicationVersion>true</provideApplicationVersion>
+      <changeBundleID>false</changeBundleID>
+      <bundleID></bundleID>
+      <bundleIDInfoPlistPath></bundleIDInfoPlistPath>
+      <interpretTargetAsRegEx>false</interpretTargetAsRegEx>
+      <ipaManifestPlistUrl></ipaManifestPlistUrl>
+    </au.com.rayh.XCodeBuilder>
+    <hudson.tasks.Shell>
+      <command>ditto -c -k --keepParent -rsrc ${WORKSPACE}/Build/Intermediates/ArchiveIntermediates/ios/BuildProductsPath/Release-iphoneos/ios.app.dSYM ${WORKSPACE}/Build/Release-iphoneos/ios-master-${MARKETING_VERSION}-${BUILD_NUMBER}-dSYM.zip</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>echo &quot;${WORKSPACE}/iOS/Vendor/Crashlytics.framework/submit abc123 abc123 -ipaPath ${WORKSPACE}/Build/Release-iphoneos/*ipa -emails alan_doni@hotmail.com -notesPath ${WORKSPACE}/notes.txt -groupAliases Master -notifications YES&quot;
+${WORKSPACE}/iOS/Vendor/Crashlytics.framework/submit abc123 abc123 -ipaPath ${WORKSPACE}/Build/Release-iphoneos/*ipa -emails alan_doni@hotmail.com -notesPath ${WORKSPACE}/notes.txt -groupAliases Master -notifications YES
+
+
+# abc123
+echo find ${WORKSPACE}/Build/Intermediates/ArchiveIntermediates/ios/BuildProductsPath/Release-iphoneos -name &quot;*.dSYM&quot; -execdir ${WORKSPACE}/iOS/Vendor/upload-symbols -p ios -a abc123 {} \;
+find ${WORKSPACE}/Build/Intermediates/ArchiveIntermediates/ios/BuildProductsPath/Release-iphoneos -name &quot;*.dSYM&quot; -execdir ${WORKSPACE}/iOS/Vendor/upload-symbols -p ios -a abc123 {} \;</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#cp -v ${WORKSPACE}/Build/*.ipa $DROPBOX_DIR
+#cp -v ${WORKSPACE}/Build/*.zip $DROPBOX_DIR
+
+#cp -v ${WORKSPACE}/Build/*.ipa $DROPBOX_DIR
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>Build/Release-iphoneos/*zip,Build/Release-iphoneos/*ipa</artifacts>
+      <allowEmptyArchive>false</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+      <caseSensitive>false</caseSensitive>
+    </hudson.tasks.ArtifactArchiver>
+    <com.cloudbees.jenkins.GitHubCommitNotifier plugin="github@1.28.1">
+      <statusMessage>
+        <content></content>
+      </statusMessage>
+      <resultOnFailure>FAILURE</resultOnFailure>
+    </com.cloudbees.jenkins.GitHubCommitNotifier>
+    <org.jenkinsci.plugins.postbuildscript.PostBuildScript plugin="postbuildscript@2.2.1">
+      <config>
+        <scriptFiles/>
+        <groovyScripts/>
+        <buildSteps>
+          <org.jenkinsci.plugins.postbuildscript.model.PostBuildStep>
+            <results>
+              <string>SUCCESS</string>
+            </results>
+            <role>BOTH</role>
+            <buildSteps>
+              <hudson.tasks.Shell>
+                <command>git tag &quot;ios-master-$MARKETING_VERSION-$BUILD_NUMBER&quot;
+git push origin --tags</command>
+              </hudson.tasks.Shell>
+            </buildSteps>
+          </org.jenkinsci.plugins.postbuildscript.model.PostBuildStep>
+        </buildSteps>
+        <markBuildUnstable>false</markBuildUnstable>
+      </config>
+      <buildSteps>
+        <hudson.tasks.Shell reference="../../config/buildSteps/org.jenkinsci.plugins.postbuildscript.model.PostBuildStep/buildSteps/hudson.tasks.Shell"/>
+      </buildSteps>
+      <scriptOnlyIfSuccess>true</scriptOnlyIfSuccess>
+      <scriptOnlyIfFailure>false</scriptOnlyIfFailure>
+      <markBuildUnstable>false</markBuildUnstable>
+    </org.jenkinsci.plugins.postbuildscript.PostBuildScript>
+    <hudson.tasks.Mailer plugin="mailer@1.20">
+      <recipients>alan_doni@hotmail.com</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>true</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.19">
+      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
+        <timeoutMinutes>30</timeoutMinutes>
+      </strategy>
+      <operationList>
+        <hudson.plugins.build__timeout.operations.FailOperation/>
+      </operationList>
+    </hudson.plugins.build__timeout.BuildTimeoutWrapper>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@1.8.8"/>
+  </buildWrappers>
+</project>
