@@ -2,7 +2,7 @@ package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
 import com.adq.jenkins.xmljobtodsl.parsers.IDescriptor;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
-import javafx.util.Pair;
+import com.adq.jenkins.xmljobtodsl.utils.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
