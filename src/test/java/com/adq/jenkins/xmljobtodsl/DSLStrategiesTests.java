@@ -61,10 +61,10 @@ public class DSLStrategiesTests {
 		Assert.assertEquals("\"\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("test ${test}");
-		Assert.assertEquals("'test ${test}'", actual);
+		Assert.assertEquals("\"test \\${test}\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("test \n ${test}");
-		Assert.assertEquals("\"\"\"test \n ${test}\"\"\"", actual);
+		Assert.assertEquals("\"\"\"test \n \\${test}\"\"\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("$(echo \"test\")");
 		Assert.assertEquals("\"\\$(echo \"test\")\"", actual);
@@ -73,6 +73,9 @@ public class DSLStrategiesTests {
 		Assert.assertEquals("\"\"\"\\$(echo \"test\")\n\\$(echo \"test\")\"\"\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("origin/master&#xd;");
-		Assert.assertEquals("\"origin/master&#xd;\"", actual);
+		Assert.assertEquals(String.format("\"origin/master&#xd;\""), actual);
+
+		actual = strategy.printValueAccordingOfItsType("origin/$BRANCH");
+		Assert.assertEquals(String.format("\"origin/\\$BRANCH\""), actual);
 	}
 }

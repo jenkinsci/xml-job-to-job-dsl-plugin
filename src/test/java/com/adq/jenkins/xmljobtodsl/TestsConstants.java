@@ -65,8 +65,8 @@ public class TestsConstants {
         return "<project>" + System.lineSeparator() +
                 "\t<properties>" + System.lineSeparator() +
                 "\t\t<hudson.plugins.buildblocker.BuildBlockerProperty>" + System.lineSeparator() +
-                "\t\t\t<useBuildBlocker>true</useBuildBlocker>" + System.lineSeparator() +
                 "\t\t\t<blockingJobs>Build-iOS-App</blockingJobs>" + System.lineSeparator() +
+                "\t\t\t<useBuildBlocker>true</useBuildBlocker>" + System.lineSeparator() +
                 "\t\t\t<blockLevel>GLOBAL</blockLevel>" + System.lineSeparator() +
                 "\t\t\t<scanQueueFor>DISABLED</scanQueueFor>" + System.lineSeparator() +
                 "\t\t</hudson.plugins.buildblocker.BuildBlockerProperty>" + System.lineSeparator() +
@@ -97,12 +97,12 @@ public class TestsConstants {
                 "\tsteps {" + System.lineSeparator() +
                 "\t\tbuildNameUpdater {" + System.lineSeparator() +
                 "\t\t\tbuildName(\"\")" + System.lineSeparator() +
-                "\t\t\tmacroTemplate('Test iOS App #${BUILD_NUMBER} | ${APP_VERSION}')" + System.lineSeparator() +
+                "\t\t\tmacroTemplate(\"Test iOS App #\\${BUILD_NUMBER} | \\${APP_VERSION}\")" + System.lineSeparator() +
                 "\t\t\tfromFile(false)" + System.lineSeparator() +
                 "\t\t\tfromMacro(true)" + System.lineSeparator() +
                 "\t\t\tmacroFirst(true)" + System.lineSeparator() +
                 "\t\t}" + System.lineSeparator() +
-                "\t\tshell(\"\"\"export PLATFORM=${platform}" + System.lineSeparator() +
+                "\t\tshell(\"\"\"export PLATFORM=\\${platform}" + System.lineSeparator() +
                 "cd 'iOSTest-AppiumTests/src/scripts/'" + System.lineSeparator() +
                 "fab -f build.py fetch_git build_app upload_app\"\"\")" + System.lineSeparator() +
                 "\t}" + System.lineSeparator() +

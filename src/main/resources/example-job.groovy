@@ -85,7 +85,7 @@ job("test") {
 			onlyIfSuccessful(false)
 		}
 		richTextPublisher {
-			stableText('${FILE:xml-job-to-dsl/tests_report.html} ${FILE:build_variables.html}')
+			stableText("\${FILE:xml-job-to-dsl/tests_report.html} \${FILE:build_variables.html}")
 			unstableText("")
 			failedText("")
 			abortedText("")
@@ -99,30 +99,30 @@ job("test") {
 			recipientList("alan_doni@hotmail.com")
 			triggers {
 				always {
-					subject("$PROJECT_DEFAULT_SUBJECT")
-					content("$PROJECT_DEFAULT_CONTENT")
+					subject("\$PROJECT_DEFAULT_SUBJECT")
+					content("\$PROJECT_DEFAULT_CONTENT")
 					attachmentPatterns()
 					attachBuildLog(false)
 					compressBuildLog(false)
-					replyToList("$PROJECT_DEFAULT_REPLYTO")
+					replyToList("\$PROJECT_DEFAULT_REPLYTO")
 					contentType("project")
 				}
 			}
 			contentType("default")
-			defaultSubject("$DEFAULT_SUBJECT")
-			defaultContent("$DEFAULT_CONTENT")
+			defaultSubject("\$DEFAULT_SUBJECT")
+			defaultContent("\$DEFAULT_CONTENT")
 			attachmentPatterns()
-			preSendScript("$DEFAULT_PRESEND_SCRIPT")
+			preSendScript("\$DEFAULT_PRESEND_SCRIPT")
 			attachBuildLog(true)
 			compressBuildLog(false)
-			replyToList("$DEFAULT_REPLYTO")
+			replyToList("\$DEFAULT_REPLYTO")
 			saveToWorkspace(false)
 			disabled(false)
 		}
 		postBuildScripts {
 			steps {
 				steps {
-					shell("""git tag "beta-$BUILD_NUMBER"
+					shell("""git tag "beta-\$BUILD_NUMBER"
                                     git push origin --tags
                                     git remote prune origin""")
 				}
@@ -142,8 +142,17 @@ job("test") {
 	}
 	wrappers {
 		credentialsBinding {
-			string("PASSWORD", '${PASS_WORD}')
+			string("PASSWORD", "\${PASS_WORD}")
 			usernamePassword("GITHUB_CREDENTIALS", "jenkins")
+		}
+		environmentVariables {
+			env("ANDROID_HOME", "/Users/jenkins/android-sdk-macosx/")
+			env("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/home")
+			env("KEYSTORE_LOCATION", "/Users/jenkins/release.jks")
+			env("KEYSTORE_PASSWORD", "asd")
+			env("KEY_NAME", "name")
+			env("KEY_PASSWORD", "pass")
+			loadFilesFromMaster(false)
 		}
 		timeout {
 			absolute(30)
@@ -163,7 +172,7 @@ job("test") {
 				github("alandoni/xml-job-to-dsl", "https")
 				credentials("jenkins")
 			}
-			branch('*/${GIT_BRANCH}')
+			branch("*/\${GIT_BRANCH}")
 			extensions {
 				wipeOutWorkspace()
 			}

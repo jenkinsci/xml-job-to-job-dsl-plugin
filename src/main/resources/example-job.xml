@@ -315,7 +315,7 @@
                     JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/home
 
                     KEYSTORE_LOCATION=/Users/jenkins/release.jks
-                    KEYSTORE_PASSWORD=devsonly
+                    KEYSTORE_PASSWORD=asd
                     KEY_NAME=name
                     KEY_PASSWORD=pass</propertiesContent>
                 <loadFilesFromMaster>false</loadFilesFromMaster>

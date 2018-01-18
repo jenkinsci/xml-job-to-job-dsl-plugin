@@ -26,7 +26,9 @@ public class XmlParser {
     }
 
     private String prepareXml() {
-        return this.xml = this.xml.replaceAll(">%n", "").replaceAll("\\s*<", "<");
+        return this.xml = this.xml.replaceAll(">%n", "")
+                .replaceAll("\\s*<", "<")
+                .replaceAll("&#xd;", String.format("%n"));
     }
 
     public JobDescriptor parse() throws IOException, SAXException, ParserConfigurationException {

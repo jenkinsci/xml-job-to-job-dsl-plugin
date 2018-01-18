@@ -5,7 +5,7 @@ job("test") {
 				github("alandoni/xml-job-to-dsl", "https")
 				credentials("jenkins")
 			}
-			branch('*/${GIT_BRANCH}')
+			branch("*/\${GIT_BRANCH}")
 			extensions {
 				wipeOutWorkspace()
 			}

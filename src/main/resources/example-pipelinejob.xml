@@ -206,7 +206,7 @@
 			<keychainPath>/Users/Shared/Jenkins/Library/Keychains/login.keychain</keychainPath>
 			<keychainPwd>App-Name</keychainPwd>
 			<developmentTeamName>none (specify one below)</developmentTeamName>
-			<developmentTeamID>ASD1321ASD</developmentTeamID>
+			<developmentTeamID>asd</developmentTeamID>
 			<allowFailingBuildResults>false</allowFailingBuildResults>
 			<ipaName>${MARKETING_VERSION}-${VERSION}</ipaName>
 			<ipaOutputDirectory></ipaOutputDirectory>
@@ -358,7 +358,7 @@
 					JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/home
 
 					KEYSTORE_LOCATION=/Users/jenkins/release.jks
-					KEYSTORE_PASSWORD=devsonly
+					KEYSTORE_PASSWORD=asd
 					KEY_NAME=name
 					KEY_PASSWORD=pass</propertiesContent>
 				<loadFilesFromMaster>false</loadFilesFromMaster>
@@ -380,7 +380,7 @@
 		</hudson.plugins.ws__cleanup.PreBuildCleanup>
 		<com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper plugin="ssh-agent@1.15">
 			<credentialIds>
-				<string>0bdbb6ac-187e-473b-a2c2-12e4c6e87568</string>
+				<string>asd</string>
 			</credentialIds>
 			<ignoreMissing>false</ignoreMissing>
 		</com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper>

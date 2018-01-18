@@ -24,11 +24,11 @@ apiKey=asdasd" > app/fabric.properties
 
 cp app/fabric.properties dsl/fabric.properties
 
-echo "This build comes from the branch [${GIT_BRANCH}]" > dsl/notes.txt
+echo "This build comes from the branch [\${GIT_BRANCH}]" > dsl/notes.txt
 
 #disable release notes because they're constantly too long
 LAST_SUCCESS_REV=\$(curl --silent http://localhost:8080/job/DSL/lastSuccessfulBuild/api/xml?xpath=//lastBuiltRevision/SHA1| sed 's|.*<SHA1>\\(.*\\)</SHA1>|\\1|')
-git log --no-merges --format='%s [%cE]' $LAST_SUCCESS_REV..${GIT_COMMIT} >> dsl/notes.txt""")
+git log --no-merges --format='%s [%cE]' \$LAST_SUCCESS_REV..\${GIT_COMMIT} >> dsl/notes.txt""")
 		gradle {
 			switches()
 			tasks("clean assembleDebug crashlyticsUploadDistributionDebug")
@@ -49,6 +49,13 @@ git log --no-merges --format='%s [%cE]' $LAST_SUCCESS_REV..${GIT_COMMIT} >> dsl/
 			defaultExcludes(true)
 		}
 		mailer("alan_doni@hotmail.com", true, false)
+	}
+	wrappers {
+		environmentVariables {
+			env("ANDROID_HOME", "/Users/jenkins/android-sdk/")
+			env("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home")
+			loadFilesFromMaster(false)
+		}
 	}
 	configure {
 		it / 'properties' / 'jenkins.model.BuildDiscarderProperty' {

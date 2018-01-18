@@ -10,7 +10,7 @@ job("test") {
 				name("origin")
 				github("alandoni/xml-job-to-dsl", "ssh")
 			}
-			branch('*/${branch}')
+			branch("*/\${branch}")
 		}
 	}
 	disabled(false)

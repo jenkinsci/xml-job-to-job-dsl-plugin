@@ -175,13 +175,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         }
 
         value = value.replaceAll("\\\\", "\\\\\\\\");
-        value = value.replaceAll(Pattern.quote("$("), Matcher.quoteReplacement("\\$("));
+        value = value.replaceAll("\\$", Matcher.quoteReplacement("\\$"));
 
         if (value.contains("\n")) {
             return "\"\"\"" + value + "\"\"\"";
-        }
-        if (value.contains("${") && value.contains("}")) {
-            return "'" + value + "'";
         }
         return "\"" + value + "\"";
     }
