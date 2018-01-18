@@ -97,6 +97,11 @@ public class TestsTranslator {
         readFilesAndTest("ios.xml", "ios.groovy");
     }
 
+    @Test
+    public void testRealJobFile3() throws IOException, ParserConfigurationException, SAXException {
+        readFilesAndTest("android.xml", "android.groovy");
+    }
+
     private void logAllNotKnownTags(List<PropertyDescriptor> notKnownTags) {
         for (PropertyDescriptor property : notKnownTags) {
             Logger.getAnonymousLogger().log(Level.WARNING, property.getName());

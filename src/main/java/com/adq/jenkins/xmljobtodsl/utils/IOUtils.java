@@ -1,10 +1,7 @@
 package com.adq.jenkins.xmljobtodsl.utils;
 
 import java.io.*;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 
 /**
  * Created by alanquintiliano on 19/12/17.
@@ -40,7 +37,8 @@ public class IOUtils {
 
     public String readFromResource(String path) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
-        return readFromFile(new File(classLoader.getResource(path).getFile()));
+        String file = URLDecoder.decode(classLoader.getResource(path).getFile(), "UTF-8");
+        return readFromFile(new File(file));
     }
 
     public String readFromUrl(String urlString, final String username, final String password) throws IOException {
