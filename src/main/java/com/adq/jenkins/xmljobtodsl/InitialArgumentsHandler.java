@@ -10,6 +10,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class InitialArgumentsHandler {
 	private List<PropertyDescriptor> unknownTags;
 
 	private enum InputType {
-		WEB, FILE
+		WEB, FILE, DIRECTORY
 	}
 
 	public InitialArgumentsHandler(String[] args) {
@@ -49,6 +50,10 @@ public class InitialArgumentsHandler {
 		if (argsMap.containsKey("--url") || argsMap.containsKey("-u")) {
 			input = getValueForKeyOrAbbreviation(argsMap, "--url", "-u");
 			inputType = InputType.WEB;
+		}
+		if (argsMap.containsKey("--directory") || argsMap.containsKey("-d")) {
+			input = getValueForKeyOrAbbreviation(argsMap, "--directory", "-d");
+			inputType = InputType.DIRECTORY;
 		}
 		if (argsMap.containsKey("--save-file") || argsMap.containsKey("-s")) {
 			output = getValueForKeyOrAbbreviation(argsMap, "--save-file", "-s");
@@ -72,19 +77,32 @@ public class InitialArgumentsHandler {
 		String xml = null;
 		String jobName = null;
 		IOUtils ioUtils = new IOUtils();
+
+		JobDescriptor[] descriptors = null;
+
 		if (inputType == InputType.FILE) {
-			String pattern = Pattern.quote(File.separator);
-			String[] segments = new File(input).getAbsolutePath().split(pattern);
-			jobName = segments[segments.length - 2];
-			xml = ioUtils.readFromFile(input);
+			File file = new File(input);
+			File[] files = new File[1];
+			files[0] = file;
+			descriptors = getJobDescriptors(files);
 		}
+
 		if (inputType == InputType.WEB) {
 			String[] segments = input.split("/");
 			jobName = segments[segments.length - 2];
 			xml = ioUtils.readFromUrl(input, username, password);
+			JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
+
+			descriptors = new JobDescriptor[1];
+			descriptors[0] = descriptor;
 		}
-		JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
-		DSLTranslator translator = new DSLTranslator(descriptor);
+		if (inputType == InputType.DIRECTORY) {
+			File[] files = ioUtils.getJobXmlFilesInDirectory(input);
+			descriptors = getJobDescriptors(files);
+		}
+
+		DSLTranslator translator = new DSLTranslator(descriptors);
+
 		String dsl = translator.toDSL();
 		if (output != null) {
 			ioUtils.saveToFile(dsl, output);
@@ -96,5 +114,26 @@ public class InitialArgumentsHandler {
 		for (PropertyDescriptor property : unknownTags) {
 			System.out.println(String.format("* %s", property.getName()));
 		}
+	}
+
+	private String getJobNameBasedOnPath(File file) {
+		String pattern = File.separator;
+		String[] segments = file.getAbsolutePath().split(pattern);
+		return segments[segments.length - 2];
+	}
+
+	private JobDescriptor[] getJobDescriptors(File[] files)
+			throws IOException, ParserConfigurationException, SAXException {
+		IOUtils ioUtils = new IOUtils();
+
+		List<JobDescriptor> descriptors = new ArrayList<>();
+
+		for (File file : files) {
+			String jobName = getJobNameBasedOnPath(file);
+			String xml = ioUtils.readFromFile(file);
+			JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
+			descriptors.add(descriptor);
+		}
+		return descriptors.toArray(new JobDescriptor[descriptors.size()]);
 	}
 }

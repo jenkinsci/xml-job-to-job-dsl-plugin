@@ -2,6 +2,9 @@ package com.adq.jenkins.xmljobtodsl.utils;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by alanquintiliano on 19/12/17.
@@ -63,5 +66,29 @@ public class IOUtils {
         PrintWriter out = new PrintWriter(file);
         out.println(text);
         out.close();
+    }
+
+    public File[] getJobXmlFilesInDirectory(String directory) {
+        File dir = new File(directory);
+        if (!dir.isDirectory()) {
+            throw new RuntimeException(directory + " is not a directory");
+        }
+        File[] directories = dir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isDirectory();
+            }
+        });
+        List<File> files = new ArrayList<>();
+        for (File innerDirectory : directories) {
+            File[] innerFiles = innerDirectory.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return pathname.getPath().endsWith("config.xml");
+                }
+            });
+            files.addAll(Arrays.asList(innerFiles));
+        }
+        return files.toArray(new File[files.size()]);
     }
 }
