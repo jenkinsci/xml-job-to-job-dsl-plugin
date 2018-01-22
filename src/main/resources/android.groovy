@@ -2,7 +2,7 @@ job("test") {
 	description("Build Android")
 	keepDependencies(false)
 	parameters {
-		stringParam("branch", "", "master")
+		stringParam("branch", "master", "")
 	}
 	scm {
 		git {

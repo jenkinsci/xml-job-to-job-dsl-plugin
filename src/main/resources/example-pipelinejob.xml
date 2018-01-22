@@ -24,6 +24,13 @@
 		</jenkins.model.BuildDiscarderProperty>
 		<hudson.model.ParametersDefinitionProperty>
 			<parameterDefinitions>
+				<com.cloudbees.plugins.credentials.CredentialsParameterDefinition>
+					<name>PASS_WORD</name>
+					<description>Credential of type "Secret Text" with the password used to log in slave machines</description>
+					<defaultValue>JenkinsMachinePassword</defaultValue>
+					<credentialType>org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl</credentialType>
+					<required>false</required>
+				</com.cloudbees.plugins.credentials.CredentialsParameterDefinition>
 				<hudson.model.StringParameterDefinition>
 					<name>GIT_BRANCH</name>
 					<defaultValue>dev</defaultValue>
@@ -344,12 +351,20 @@
 			<bindings>
 				<org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
 					<variable>PASSWORD</variable>
-					<credentialsId>${PASS_WORD}</credentialsId>
+					<credentialsId>${BUILD_PASS_WORD}</credentialsId>
 				</org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
 				<org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordBinding>
 					<variable>GITHUB_CREDENTIALS</variable>
-					<credentialsId>jenkins</credentialsId>
+					<credentialsId>jenkins-mobile</credentialsId>
 				</org.jenkinsci.plugins.credentialsbinding.impl.UsernamePasswordBinding>
+			</bindings>
+		</org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+		<org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
+			<bindings>
+				<org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
+					<variable>PASSWORD</variable>
+					<credentialsId>${PASS_WORD}</credentialsId>
+				</org.jenkinsci.plugins.credentialsbinding.impl.StringBinding>
 			</bindings>
 		</org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper>
 		<EnvInjectBuildWrapper plugin="envinject@2.1.5">

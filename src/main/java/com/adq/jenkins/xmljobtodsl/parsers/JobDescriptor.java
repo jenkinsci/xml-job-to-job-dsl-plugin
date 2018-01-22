@@ -5,6 +5,8 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JobDescriptor implements IDescriptor {
 
@@ -52,6 +54,6 @@ public class JobDescriptor implements IDescriptor {
             }
         });
         builder.setPrettyPrinting();
-        return builder.create().toJson(this);
+        return builder.create().toJson(this).replaceAll(Pattern.quote("\\r"), Matcher.quoteReplacement(""));
     }
 }

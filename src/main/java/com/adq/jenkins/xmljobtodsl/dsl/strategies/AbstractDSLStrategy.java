@@ -167,7 +167,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
             return value;
         }
-        if (value.matches("[0-9.]+")) {
+        if (value.matches("[0-9.]+") && countChar('.', value) < 2) {
             return value;
         }
         if (value.isEmpty()) {
@@ -178,9 +178,22 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
         value = value.replaceAll("\\$", Matcher.quoteReplacement("\\$"));
 
         if (value.contains("\n")) {
+            value = value.replaceAll(Pattern.quote("\"\"\""), Matcher.quoteReplacement("\\\"\\\"\\\""));
             return "\"\"\"" + value + "\"\"\"";
+        } else {
+            value = value.replaceAll(Pattern.quote("\""), Matcher.quoteReplacement("\\\""));
         }
         return "\"" + value + "\"";
+    }
+
+    private int countChar(char lookAt, String str) {
+        int count = 0;
+        for (char chr : str.toCharArray()) {
+            if (chr == lookAt) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

@@ -9,6 +9,7 @@ pipelineJob("test") {
 		scanQueueFor("DISABLED")
 	})
 	parameters {
+		credentialsParam("PASS_WORD", "Credential of type \"Secret Text\" with the password used to log in slave machines", "JenkinsMachinePassword", "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl")
 		stringParam("GIT_BRANCH", "dev", "Name of the branch that will be checked out from Repo")
 		stringParam("SELECTED_BINARY", "none", "Local path of binary to run the tests against")
 		booleanParam("REAL_DEVICE", false, """Check this if you want to run on a plugged in device instead of the simulator
@@ -143,8 +144,11 @@ pipelineJob("test") {
 	}
 	wrappers {
 		credentialsBinding {
+			string("PASSWORD", "\${BUILD_PASS_WORD}")
+			usernamePassword("GITHUB_CREDENTIALS", "jenkins-mobile")
+		}
+		credentialsBinding {
 			string("PASSWORD", "\${PASS_WORD}")
-			usernamePassword("GITHUB_CREDENTIALS", "jenkins")
 		}
 		environmentVariables {
 			env("ANDROID_HOME", "/Users/jenkins/android-sdk-macosx/")

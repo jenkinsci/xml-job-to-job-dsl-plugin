@@ -6,6 +6,8 @@ import com.google.gson.GsonBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PropertyDescriptor implements IDescriptor {
 
@@ -112,6 +114,6 @@ public class PropertyDescriptor implements IDescriptor {
                 return false;
             }
         });
-        return builder.create().toJson(this);
+        return builder.create().toJson(this).replaceAll(Pattern.quote("\\r"), Matcher.quoteReplacement(""));
     }
 }

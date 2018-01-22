@@ -45,6 +45,12 @@ public class DSLStrategiesTests {
 		actual = strategy.printValueAccordingOfItsType("1.2");
 		Assert.assertEquals("1.2", actual);
 
+		actual = strategy.printValueAccordingOfItsType("10.240.50.36");
+		Assert.assertEquals("\"10.240.50.36\"", actual);
+
+		actual = strategy.printValueAccordingOfItsType("1.2.1");
+		Assert.assertEquals("\"1.2.1\"", actual);
+
 		actual = strategy.printValueAccordingOfItsType("1,2");
 		Assert.assertEquals("\"1,2\"", actual);
 
@@ -53,6 +59,9 @@ public class DSLStrategiesTests {
 
 		actual = strategy.printValueAccordingOfItsType("test");
 		Assert.assertEquals("\"test\"", actual);
+
+		actual = strategy.printValueAccordingOfItsType("hey \"test\" it");
+		Assert.assertEquals("\"hey \\\"test\\\" it\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("test\ntest");
 		Assert.assertEquals("\"\"\"test\ntest\"\"\"", actual);
@@ -67,7 +76,7 @@ public class DSLStrategiesTests {
 		Assert.assertEquals("\"\"\"test \n \\${test}\"\"\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("$(echo \"test\")");
-		Assert.assertEquals("\"\\$(echo \"test\")\"", actual);
+		Assert.assertEquals("\"\\$(echo \\\"test\\\")\"", actual);
 
 		actual = strategy.printValueAccordingOfItsType("$(echo \"test\")\n$(echo \"test\")");
 		Assert.assertEquals("\"\"\"\\$(echo \"test\")\n\\$(echo \"test\")\"\"\"", actual);
@@ -77,5 +86,8 @@ public class DSLStrategiesTests {
 
 		actual = strategy.printValueAccordingOfItsType("origin/$BRANCH");
 		Assert.assertEquals(String.format("\"origin/\\$BRANCH\""), actual);
+
+		actual = strategy.printValueAccordingOfItsType("test \"\"\" test \n test \"\"\" test");
+		Assert.assertEquals("\"\"\"test \\\"\\\"\\\" test \n test \\\"\\\"\\\" test\"\"\"", actual);
 	}
 }
