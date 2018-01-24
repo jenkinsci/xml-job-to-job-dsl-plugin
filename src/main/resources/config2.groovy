@@ -54,7 +54,6 @@ git log --no-merges --format='%s [%cE]' \$LAST_SUCCESS_REV..\${GIT_COMMIT} >> ds
 		environmentVariables {
 			env("ANDROID_HOME", "/Users/jenkins/android-sdk/")
 			env("JAVA_HOME", "/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home")
-			loadFilesFromMaster(false)
 		}
 	}
 	configure {

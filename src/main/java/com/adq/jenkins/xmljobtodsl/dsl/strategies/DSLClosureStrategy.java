@@ -8,7 +8,7 @@ public class DSLClosureStrategy extends AbstractDSLStrategy {
 	private String parameter;
 
 	public DSLClosureStrategy(int tabs, PropertyDescriptor propertyDescriptor, String name) {
-		super(tabs, propertyDescriptor);
+		super(tabs, propertyDescriptor, false);
 		this.name = name;
 		parameter = propertyDescriptor.getProperties().get(0).getValue();
 		propertyDescriptor.getProperties().remove(0);

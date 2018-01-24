@@ -62,7 +62,6 @@ job("test") {
 			env("KEY_NAME", "androidDevs")
 			env("KEY_PASSWORD", "androidDevsOnly")
 			groovy()
-			loadFilesFromMaster(false)
 		}
 	}
 	configure {

@@ -152,7 +152,6 @@ job("test") {
 			env("KEYSTORE_PASSWORD", "asd")
 			env("KEY_NAME", "name")
 			env("KEY_PASSWORD", "pass")
-			loadFilesFromMaster(false)
 		}
 		timeout {
 			absolute(30)

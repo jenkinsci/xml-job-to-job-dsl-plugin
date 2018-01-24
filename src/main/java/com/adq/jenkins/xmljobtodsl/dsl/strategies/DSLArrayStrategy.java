@@ -4,12 +4,12 @@ import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 public class DSLArrayStrategy extends DSLMethodStrategy implements IValueStrategy {
 
-    public DSLArrayStrategy(PropertyDescriptor descriptor) {
-        super(descriptor);
-    }
+	public DSLArrayStrategy(PropertyDescriptor descriptor) {
+		super(descriptor);
+	}
 
-    @Override
-    public String toDSL() {
-        return String.format(getSyntax("syntax.array"), getChildrenDSL());
-    }
+	@Override
+	public String toDSL() {
+		return String.format(getSyntax("syntax.array"), getChildrenDSL());
+	}
 }

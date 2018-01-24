@@ -102,6 +102,11 @@ public class TestsTranslator {
         readFilesAndTest("android.xml", "android.groovy");
     }
 
+    @Test
+    public void testMultijobJobFile() throws IOException, ParserConfigurationException, SAXException {
+        readFilesAndTest("example-multijob.xml", "example-multijob.groovy");
+    }
+
     private void logAllNotKnownTags(List<PropertyDescriptor> notKnownTags) {
         for (PropertyDescriptor property : notKnownTags) {
             Logger.getAnonymousLogger().log(Level.WARNING, property.getName());

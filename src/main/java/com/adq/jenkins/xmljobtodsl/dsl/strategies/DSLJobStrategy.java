@@ -45,7 +45,8 @@ public class DSLJobStrategy extends AbstractDSLStrategy {
 
     @Override
     public String toDSL() {
-        return String.format(getSyntax("syntax.job"), getProperty(getDescriptor().getProperties().get(0)).getValue()
-                , getDescriptor().getName(), getChildrenDSL());
+        return String.format(getSyntax("syntax.job"),
+                getProperty(getDescriptor().getProperties().get(0)).getValue(),
+                getDescriptor().getName(), getChildrenDSL());
     }
 }

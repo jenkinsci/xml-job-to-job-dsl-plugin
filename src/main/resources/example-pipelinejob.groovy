@@ -9,7 +9,12 @@ pipelineJob("test") {
 		scanQueueFor("DISABLED")
 	})
 	parameters {
-		credentialsParam("PASS_WORD", "Credential of type \"Secret Text\" with the password used to log in slave machines", "JenkinsMachinePassword", "org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl")
+		credentialsParam("PASS_WORD") {
+			description("Credential of type \"Secret Text\" with the password used to log in slave machines")
+			defaultValue("JenkinsMachinePassword")
+			type("org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl")
+			required(false)
+		}
 		stringParam("GIT_BRANCH", "dev", "Name of the branch that will be checked out from Repo")
 		stringParam("SELECTED_BINARY", "none", "Local path of binary to run the tests against")
 		booleanParam("REAL_DEVICE", false, """Check this if you want to run on a plugged in device instead of the simulator
@@ -89,13 +94,13 @@ pipelineJob("test") {
 			stableText("""\${FILE:xml-job-to-dsl/tests_report.html}
 				\${FILE:build_variables.html}""")
 			unstableText("")
-			failedText("")
-			abortedText("")
-			nullAction("")
 			unstableAsStable(true)
 			failedAsStable(true)
 			abortedAsStable(true)
 			parserName("HTML")
+			failedText("")
+			abortedText("")
+			nullAction("")
 		}
 		extendedEmail {
 			recipientList("alan_doni@hotmail.com")
@@ -157,7 +162,6 @@ pipelineJob("test") {
 			env("KEYSTORE_PASSWORD", "asd")
 			env("KEY_NAME", "name")
 			env("KEY_PASSWORD", "pass")
-			loadFilesFromMaster(false)
 		}
 		timeout {
 			absolute(30)
