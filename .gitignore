@@ -38,3 +38,7 @@ target/*
 .project
 .settings
 .settings/*
+
+# Jenkins
+work
+work/*
