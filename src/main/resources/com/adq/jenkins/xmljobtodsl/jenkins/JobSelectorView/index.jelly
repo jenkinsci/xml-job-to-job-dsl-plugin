@@ -47,7 +47,7 @@
 				<br/>
 				<br/>
 
-				<input type="checkbox" onclick="enableViewName(this.checked)"/>${%Create view for all selected jobs}
+				<input type="checkbox" onclick="enableViewName(this.checked)"/>${%Create view for all selected jobs: }
 
 				<span id="viewName" style="display: none">
 					<input type="text" placeholder="${%View name}" id="viewNameText" />
