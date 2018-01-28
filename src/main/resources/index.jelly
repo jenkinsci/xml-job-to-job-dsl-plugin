@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+    ${%Use this plugin to convert your jobs into DSL Groovy scripts}
+</div>

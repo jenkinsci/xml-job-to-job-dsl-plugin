@@ -63,7 +63,7 @@ public class TestsTranslator {
 
     @Test
     public void testReadingConfigureBlockFile() throws IOException, ParserConfigurationException, SAXException {
-        readFilesAndTest("configure-block.xml","configure-block.groovy");
+        readFilesAndTest("configure-block.xml", "configure-block.groovy");
     }
 
     @Test
@@ -84,12 +84,12 @@ public class TestsTranslator {
 
     @Test
     public void testReadingPipelineJobFile() throws IOException, ParserConfigurationException, SAXException {
-        readFilesAndTest("example-pipelinejob.xml","example-pipelinejob.groovy");
+        readFilesAndTest("example-pipelinejob.xml", "example-pipelinejob.groovy");
     }
 
     @Test
     public void testRealJobFile() throws IOException, ParserConfigurationException, SAXException {
-        readFilesAndTest("config2.xml","config2.groovy");
+        readFilesAndTest("config2.xml", "config2.groovy");
     }
 
     @Test

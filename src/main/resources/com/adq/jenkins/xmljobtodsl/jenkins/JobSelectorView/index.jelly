@@ -1,0 +1,137 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+		 xmlns:t="/lib/hudson" xmlns:f="/lib/form" >
+
+	<l:layout xmlns:local="local" norefresh="true">
+		<st:include it="${app}" page="sidepanel.jelly"/><!--Implements the sidepanel of the default-view-->
+		<l:main-panel>
+			<j:set var="data" value="${it.data}"/>
+			<j:set var="jobs" value="${data.jobs}"/>
+			<j:set var="numberOfJobs" value="${data.numberOfJobs}"/>
+			<j:set var="count" value="0"/>
+
+			<div id="content">
+				${%Number of Jobs}: ${numberOfJobs} | ${%Selected Jobs}: <span id="selectedNumber">${data.numberOfSelectedJobs}</span>
+				<br/>
+				<hr/>
+				<h1>${%Select jobs to parse to DSL}</h1>
+				<table class="sortable bigtable" border="solid #bbb;" id="jobsSelectorTable" width="60%">
+					<thead>
+						<tr>
+							<th style="width: 20%;">
+								${%Select}
+							</th>
+							<th>
+								${%Job}
+							</th>
+						</tr>
+					</thead>
+
+					<tbody id="jobsSelectorTableBody">
+						<j:if test="${numberOfJobs > 0}">
+							<j:forEach var="j" items="${jobs}">
+								<tr>
+									<td align="center" style="vertical-align:middle;">
+										<input type="checkbox" onclick="selectJob(this.checked, ${count})"/>
+									</td>
+									<td align="center" style="vertical-align:middle;">
+										<a href="${app.rootUrl}${project.url}">${j.displayName}</a>
+									</td>
+								</tr>
+								<j:set var="count" value="${count+1}"/>
+							</j:forEach>
+						</j:if>
+					 </tbody>
+				</table>
+
+				<br/>
+				<br/>
+
+				<input type="checkbox" onclick="enableViewName(this.checked)"/>${%Create view for all selected jobs}
+
+				<span id="viewName" style="display: none">
+					<input type="text" placeholder="${%View name}" id="viewNameText" />
+				</span>
+
+				<br/>
+				<br/>
+
+				<input type="submit" name="exco" id="exco" value="${%Convert selected to DSL}" onclick="startConverting()"/>
+				<br/>
+				<br/>
+				<span id="status"></span>
+
+			</div>
+
+		</l:main-panel>
+	</l:layout>
+
+	<script>
+
+		var data = <st:bind value="${it.data}"/>
+
+		function selectJob(checked, index) {
+			if (checked) {
+				data.add(index, function(t) {
+					updateNumberOfSelected();
+				});
+			} else {
+				data.remove(index, function(t) {
+					updateNumberOfSelected();
+				});
+			}
+		}
+
+		function updateNumberOfSelected() {
+			data.getNumberOfSelectedJobs(function(t) {
+				document.getElementById("selectedNumber").innerHTML = t.responseObject();
+			});
+		}
+
+		function enableViewName(checked) {
+			var viewNameDiv = document.getElementById("viewName")
+			if (checked) {
+				viewNameDiv.style.display = '';
+			} else {
+				viewNameDiv.style.display = 'none';
+			}
+		}
+
+		function startConverting() {
+			<?jelly escape-by-default='true'?>
+			document.getElementById("status").innerHTML = "${%Parsing XML to DSL... Please wait...}";
+			var viewName = null;
+			var viewNameValue =	document.getElementById("viewNameText").value;
+			if (viewNameValue !== "") {
+				viewName = viewNameValue;
+			}
+
+			data.startOperation(viewName, function(t) {
+				if (t.responseObject()) {
+					handleSuccess();
+				} else {
+					handleError();
+				}
+			});
+		}
+
+		function handleSuccess() {
+			document.getElementById("content").innerHTML = '<div id="filePath"></div><br /><br /><div id="dsl"></div><br /><br /><div id="nonTranslated"></div>';
+			data.getDslFilePath(function(t) {
+				document.getElementById("filePath").innerHTML = '<a href="' + t.responseObject() + '">Download DSL file</a>';
+			});
+			data.getParsedItems(function(t) {
+				document.getElementById("dsl").innerHTML = '<pre>' + t.responseObject() + '</pre>';
+			});
+			data.getNonTranslatedTags(function(t) {
+				document.getElementById("nonTranslated").innerHTML = t.responseObject();
+			});
+		}
+
+		function handleError() {
+			data.getError(function(t) {
+				document.getElementById("status").innerHTML = '<font color="red">' + t.responseObject() + '</font>';
+			});
+		}
+	</script>
+</j:jelly>

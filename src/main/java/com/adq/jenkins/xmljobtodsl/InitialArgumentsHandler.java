@@ -116,9 +116,9 @@ public class InitialArgumentsHandler {
 		}
 	}
 
-	private String getJobNameBasedOnPath(File file) {
+	public static String getJobNameBasedOnPath(File file) {
 		String pattern = File.separator;
-		String[] segments = file.getAbsolutePath().split(pattern);
+		String[] segments = file.getAbsolutePath().split(Pattern.quote(pattern));
 		return segments[segments.length - 2];
 	}
 
