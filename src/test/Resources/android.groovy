@@ -24,6 +24,7 @@ job("test") {
 
                 tools/buildnotes.sh""")
 		gradle {
+			description()
 			switches()
 			tasks("clean assembleRelease")
 			fromRootBuildScriptDir()
@@ -34,6 +35,7 @@ job("test") {
 			useWorkspaceAsHome(false)
 		}
 		gradle {
+			description()
 			switches()
 			tasks("crashlyticsUploadDistributionRelease")
 			fromRootBuildScriptDir()
