@@ -2,6 +2,8 @@ package com.adq.jenkins.xmljobtodsl.utils;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +19,7 @@ public class IOUtils {
     }
 
     public String readFromFile(File file) throws IOException {
-        return readFromStream(new FileReader(file));
+        return readFromStream(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
     }
 
     private String readFromStream(InputStreamReader stream) throws IOException {
@@ -33,6 +35,7 @@ public class IOUtils {
             }
         } finally {
             br.close();
+            stream.close();
         }
 
         return result.toString();
@@ -40,7 +43,7 @@ public class IOUtils {
 
     public String readFromResource(String path) throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
-        String file = URLDecoder.decode(classLoader.getResource(path).getFile(), "UTF-8");
+        String file = URLDecoder.decode(classLoader.getResource(path).getFile(), StandardCharsets.UTF_8.displayName());
         return readFromFile(new File(file));
     }
 
@@ -55,15 +58,18 @@ public class IOUtils {
         }
         URL url = new URL(urlString);
         URLConnection uc = url.openConnection();
-        return readFromStream(new InputStreamReader(uc.getInputStream()));
+        return readFromStream(new InputStreamReader(uc.getInputStream(), StandardCharsets.UTF_8));
     }
 
     public void saveToFile(String text, String path) throws IOException {
         File file = new File(path);
         if (!file.exists()) {
-            file.createNewFile();
+            boolean createdNewFile = file.createNewFile();
+            if (!createdNewFile) {
+                throw new IOException("Couldn't create file at path: " + path);
+            }
         }
-        PrintWriter out = new PrintWriter(file);
+        PrintWriter out = new PrintWriter(file, StandardCharsets.UTF_8.displayName());
         out.println(text);
         out.close();
     }
@@ -79,6 +85,11 @@ public class IOUtils {
                 return pathname.isDirectory();
             }
         });
+
+        if (directories == null) {
+            return null;
+        }
+
         List<File> files = new ArrayList<>();
         for (File innerDirectory : directories) {
             File[] innerFiles = innerDirectory.listFiles(new FileFilter() {
@@ -87,8 +98,14 @@ public class IOUtils {
                     return pathname.getPath().endsWith("config.xml");
                 }
             });
+
+            if (innerFiles == null) {
+                continue;
+            }
+
             files.addAll(Arrays.asList(innerFiles));
         }
+
         return files.toArray(new File[files.size()]);
     }
 }

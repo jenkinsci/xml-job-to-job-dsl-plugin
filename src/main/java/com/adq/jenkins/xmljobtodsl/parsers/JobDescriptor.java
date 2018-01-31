@@ -56,4 +56,11 @@ public class JobDescriptor implements IDescriptor {
         builder.setPrettyPrinting();
         return builder.create().toJson(this).replaceAll(Pattern.quote("\\r"), Matcher.quoteReplacement(""));
     }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        return result;
+    }
 }

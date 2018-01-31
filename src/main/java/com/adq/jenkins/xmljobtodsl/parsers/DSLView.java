@@ -21,7 +21,7 @@ public class DSLView {
 	private Properties syntaxProperties;
 
 	public DSLView(String name, String[] jobNames) {
-		this.jobNames = jobNames;
+		this.jobNames = jobNames.clone();
 		this.name = name;
 		init();
 	}

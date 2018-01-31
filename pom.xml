@@ -14,7 +14,7 @@
 
 	<groupId>com.adq.jenkins</groupId>
 	<artifactId>xml-job-to-job-dsl</artifactId>
-	<version>1.0</version>
+	<version>0.1.1</version>
 
 	<!-- Jenkins packaging and properties -->
 	<packaging>hpi</packaging>
