@@ -13,7 +13,6 @@ public class DSLJobStrategy extends AbstractDSLStrategy {
         super(0, jobDescriptor, false);
 
         checkNeedsBlockAndCreateIt(jobDescriptor, "configure", DSLStrategyFactory.TYPE_CONFIGURE);
-        checkNeedsBlockAndCreateIt(jobDescriptor, "properties", DSLStrategyFactory.TYPE_PROPERTIES);
         initChildren(jobDescriptor);
     }
 

@@ -13,11 +13,8 @@ public class DSLStrategyFactory {
 	public static final String TYPE_PARAMETER = "PARAMETER";
 	public static final String TYPE_PROPERTY = "PROPERTY";
 	public static final String TYPE_ARRAY = "ARRAY";
-	public static final String TYPE_VALUE = "VALUE";
-	public static final String TYPE_INNER_PARAMETER = "INNER_PARAMETER";
 	public static final String TYPE_CLOSURE = "CLOSURE";
 	public static final String TYPE_CONFIGURE = "CONFIGURE";
-	public static final String TYPE_PROPERTIES = "PROPERTIES";
 
 	public DSLStrategy getDSLStrategy(String type, PropertyDescriptor propertyDescriptor, String property, int tabs) {
 		switch (type) {
@@ -33,10 +30,6 @@ public class DSLStrategyFactory {
 				return new DSLPropertyStrategy(tabs, propertyDescriptor, property);
 			case TYPE_ARRAY:
 				return new DSLArrayStrategy(propertyDescriptor);
-			case TYPE_VALUE:
-				return new DSLValueStrategy(propertyDescriptor);
-			case TYPE_INNER_PARAMETER:
-				return new DSLInnerParameterStrategy(propertyDescriptor);
 			case TYPE_METHOD:
 				return new DSLMethodStrategy(tabs, propertyDescriptor, property);
 			case TYPE_CLOSURE:

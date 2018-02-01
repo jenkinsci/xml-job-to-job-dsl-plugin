@@ -1,6 +1,6 @@
 package com.adq.jenkins.xmljobtodsl;
 
-import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLValueStrategy;
+import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLParameterStrategy;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.custom.DSLGitHubMethodStrategy;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 import org.junit.Assert;
@@ -28,7 +28,7 @@ public class DSLStrategiesTests {
 
 	@Test
 	public void testPrintValueAccordingOfItsType() {
-		DSLValueStrategy strategy = new DSLValueStrategy(null);
+		DSLParameterStrategy strategy = new DSLParameterStrategy(null);
 
 		String actual = strategy.printValueAccordingOfItsType(null);
 		Assert.assertEquals("\"\"", actual);
