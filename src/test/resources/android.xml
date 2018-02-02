@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description>Build Android</description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <jenkins.model.BuildDiscarderProperty>
+            <strategy class="hudson.tasks.LogRotator">
+                <daysToKeep>-1</daysToKeep>
+                <numToKeep>200</numToKeep>
+                <artifactDaysToKeep>-1</artifactDaysToKeep>
+                <artifactNumToKeep>-1</artifactNumToKeep>
+            </strategy>
+        </jenkins.model.BuildDiscarderProperty>
+        <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+                <hudson.model.StringParameterDefinition>
+                    <name>branch</name>
+                    <description></description>
+                    <defaultValue>master</defaultValue>
+                </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+        </hudson.model.ParametersDefinitionProperty>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@3.2.0">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <name>origin</name>
+                <url>git@github.com:alandoni/xml-job-to-dsl.git</url>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>*/${branch}</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+        <extensions/>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <triggers/>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>touch app/fabric.properties
+                echo &quot;apiSecret=asd
+                apiKey=asd&quot; &gt; app/fabric.properties
+
+                cp app/fabric.properties messagingapp/fabric.properties
+
+                tools/buildnotes.sh</command>
+        </hudson.tasks.Shell>
+        <hudson.plugins.gradle.Gradle plugin="gradle@1.26">
+            <description></description>
+            <switches></switches>
+            <tasks>clean assembleRelease</tasks>
+            <rootBuildScriptDir></rootBuildScriptDir>
+            <buildFile></buildFile>
+            <gradleName>(Default)</gradleName>
+            <useWrapper>true</useWrapper>
+            <makeExecutable>true</makeExecutable>
+            <useWorkspaceAsHome>false</useWorkspaceAsHome>
+            <wrapperLocation></wrapperLocation>
+            <passAsProperties>false</passAsProperties>
+        </hudson.plugins.gradle.Gradle>
+        <hudson.plugins.gradle.Gradle plugin="gradle@1.26">
+            <description></description>
+            <switches></switches>
+            <tasks>crashlyticsUploadDistributionRelease</tasks>
+            <rootBuildScriptDir></rootBuildScriptDir>
+            <buildFile></buildFile>
+            <gradleName>(Default)</gradleName>
+            <useWrapper>true</useWrapper>
+            <makeExecutable>true</makeExecutable>
+            <useWorkspaceAsHome>false</useWorkspaceAsHome>
+            <wrapperLocation></wrapperLocation>
+            <passAsProperties>false</passAsProperties>
+        </hudson.plugins.gradle.Gradle>
+    </builders>
+    <publishers>
+        <hudson.tasks.ArtifactArchiver>
+            <artifacts>job/build/outputs/apk/release/*.apk</artifacts>
+            <allowEmptyArchive>false</allowEmptyArchive>
+            <onlyIfSuccessful>false</onlyIfSuccessful>
+            <fingerprint>false</fingerprint>
+            <defaultExcludes>true</defaultExcludes>
+            <caseSensitive>true</caseSensitive>
+        </hudson.tasks.ArtifactArchiver>
+        <hudson.tasks.Mailer plugin="mailer@1.20">
+            <recipients>alan_doni@hotmail.com</recipients>
+            <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+            <sendToIndividuals>false</sendToIndividuals>
+        </hudson.tasks.Mailer>
+    </publishers>
+    <buildWrappers>
+        <EnvInjectBuildWrapper plugin="envinject@2.0">
+            <info>
+                <propertiesContent>ANDROID_HOME=/Users/Shared/Jenkins/android-sdk-macosx/
+
+                    KEYSTORE_LOCATION=/Users/Shared/Jenkins/release.jks
+                    KEYSTORE_PASSWORD=devsonly
+                    KEY_NAME=androidDevs
+                    KEY_PASSWORD=androidDevsOnly</propertiesContent>
+                <secureGroovyScript plugin="script-security@1.27">
+                    <script></script>
+                    <sandbox>false</sandbox>
+                </secureGroovyScript>
+                <loadFilesFromMaster>false</loadFilesFromMaster>
+            </info>
+        </EnvInjectBuildWrapper>
+    </buildWrappers>
+</project>
