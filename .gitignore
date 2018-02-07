@@ -42,3 +42,7 @@ target/*
 # Jenkins
 work
 work/*
+
+# MVN
+pom.xml.releaseBackup
+release.properties
