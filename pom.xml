@@ -43,10 +43,10 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/jenkinsci/xml-job-to-dsl-plugin.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/xml-job-to-dsl-plugin.git</developerConnection>
+		<connection>scm:git:http://github.com/jenkinsci/xml-job-to-dsl-plugin.git</connection>
+		<developerConnection>scm:git:http://github.com/jenkinsci/xml-job-to-dsl-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/xml-job-to-dsl-plugin</url>
-  </scm>
+  	</scm>
 
 	<build>
 		<plugins>
