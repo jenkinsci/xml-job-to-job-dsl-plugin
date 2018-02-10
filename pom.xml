@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +13,7 @@
 
 	<groupId>com.adq.jenkins</groupId>
 	<artifactId>xml-job-to-job-dsl</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 
 	<!-- Jenkins packaging and properties -->
 	<packaging>hpi</packaging>
@@ -23,8 +21,7 @@
 		<!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
 		<jenkins.version>2.7.3</jenkins.version>
 		<!-- Other properties you may want to use:
-		  ~ java.level: set to 6 if your jenkins.version <= 1.611
-		  ~ jenkins-test-harness.version: Jenkins Test Harness version you use to test the plugin. For Jenkins version >= 1.580.1 use JTH 2.0 or higher.
+		  ~ java.level: set to 6 if your jenkins.version <= 1.611 ~ jenkins-test-harness.version: Jenkins Test Harness version you use to test the plugin. For Jenkins version >= 1.580.1 use JTH 2.0 or higher.
 		  ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
 		  ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
 	 -->
@@ -46,7 +43,8 @@
 		<connection>scm:git:http://github.com/jenkinsci/xml-job-to-dsl-plugin.git</connection>
 		<developerConnection>scm:git:http://github.com/jenkinsci/xml-job-to-dsl-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/xml-job-to-dsl-plugin</url>
-  	</scm>
+  	  <tag>xml-job-to-job-dsl-0.1.1</tag>
+  </scm>
 
 	<build>
 		<plugins>
