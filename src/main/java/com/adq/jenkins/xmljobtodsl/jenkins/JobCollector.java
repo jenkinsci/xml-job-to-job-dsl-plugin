@@ -6,6 +6,7 @@ import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 import com.adq.jenkins.xmljobtodsl.parsers.XmlParser;
 import com.adq.jenkins.xmljobtodsl.utils.IOUtils;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import jenkins.model.Jenkins;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.kohsuke.stapler.bind.JavaScriptMethod;
@@ -21,8 +22,8 @@ public class JobCollector {
 
 	public static final String DSL_GROOVY = "dsl.groovy";
 	public static final String USER_CONTENT_FOLDER = "userContent";
-	private final List<AbstractProject> allItems;
-	private final List<AbstractProject> selectedItems = new ArrayList<>();
+	private final List<Job> allItems;
+	private final List<Job> selectedItems = new ArrayList<>();
 
 	private String parsedItems = null;
 	private String nonTranslatedTags = null;
@@ -30,14 +31,14 @@ public class JobCollector {
 	private String error = null;
 
 	public JobCollector() {
-		allItems = Jenkins.getInstance().getAllItems(AbstractProject.class);
+		allItems = Jenkins.getInstance().getAllItems(Job.class);
 	}
 
-	public List<AbstractProject> getJobs() {
+	public List<Job> getJobs() {
 		return allItems;
 	}
 
-	public List<AbstractProject> getSelectedJobs() {
+	public List<Job> getSelectedJobs() {
 		return selectedItems;
 	}
 
@@ -51,7 +52,7 @@ public class JobCollector {
 		return selectedItems.size();
 	}
 
-	public void add(AbstractProject job) {
+	public void add(Job job) {
 		selectedItems.add(job);
 	}
 
@@ -60,7 +61,7 @@ public class JobCollector {
 		add(allItems.get(jobIndex));
 	}
 
-	public void remove(AbstractProject job) {
+	public void remove(Job job) {
 		selectedItems.remove(job);
 	}
 
@@ -105,7 +106,7 @@ public class JobCollector {
 
 	private void convertXmlToDSL(String viewName) throws IOException, SAXException, ParserConfigurationException {
 		List<JobDescriptor> jobDescriptorsList = new ArrayList<>();
-		for (AbstractProject job : selectedItems) {
+		for (Job job : selectedItems) {
 			String xml = job.getConfigFile().asString();
 			XmlParser parser = new XmlParser(job.getDisplayName(), xml);
 			JobDescriptor descriptor = parser.parse();
