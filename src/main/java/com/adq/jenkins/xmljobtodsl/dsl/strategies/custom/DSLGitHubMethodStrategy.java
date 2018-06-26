@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 
-	private static final Pattern pattern = Pattern.compile("(?:github\\.com/?:?)/?([a-zA-Z0-9\\-_]+/[a-zA-Z0-9\\-_]+).git");
+	private static final Pattern pattern = Pattern.compile("(?:github\\.com\\/?:?)\\/?([a-zA-Z0-9\\-_]+\\/[a-zA-Z0-9\\-_]+)");
 
 	public DSLGitHubMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
 		super(tabs, null, methodName, false);
