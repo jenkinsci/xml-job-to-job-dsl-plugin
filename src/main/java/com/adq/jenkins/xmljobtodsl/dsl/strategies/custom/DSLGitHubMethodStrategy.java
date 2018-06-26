@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 
-	private static final Pattern pattern = Pattern.compile("(?:\\.com/?:?)([a-zA-Z0-9\\-_]+/[a-zA-Z0-9\\-_]+)");
+	private static final Pattern pattern = Pattern.compile("(?:github\\.com/?:?)/?([a-zA-Z0-9\\-_]+/[a-zA-Z0-9\\-_]+).git");
 
 	public DSLGitHubMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
 		super(tabs, null, methodName, false);
@@ -18,10 +18,11 @@ public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 		List<PropertyDescriptor> list = new ArrayList<>();
 		PropertyDescriptor newPropertyDescriptor = new PropertyDescriptor("url", propertyDescriptor.getParent(), list);
 
-		String method = getMethod(propertyDescriptor.getValue());
-		String url = getRepositoryInformationFromUrl(propertyDescriptor.getValue());
+		String url = removeSpaces(propertyDescriptor.getValue());
+		String method = getMethod(url);
+		String repository = getRepositoryInformationFromUrl(url);
 
-		PropertyDescriptor urlProperty = new PropertyDescriptor("github.url", newPropertyDescriptor, url);
+		PropertyDescriptor urlProperty = new PropertyDescriptor("github.url", newPropertyDescriptor, repository);
 		list.add(urlProperty);
 
 		PropertyDescriptor methodProperty = new PropertyDescriptor("method", newPropertyDescriptor, method);
@@ -48,5 +49,9 @@ public class DSLGitHubMethodStrategy extends DSLMethodStrategy {
 			return "ssh";
 		}
 		return "";
+	}
+
+	private String removeSpaces(String url) {
+		return url.replaceAll("\\t", "").replaceAll("\\n", "").trim();
 	}
 }

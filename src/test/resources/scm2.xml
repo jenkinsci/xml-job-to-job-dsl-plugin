@@ -1,0 +1,21 @@
+<project>
+	<scm class="hudson.plugins.git.GitSCM" plugin="git@3.9.1">
+		<configVersion>2</configVersion>
+		<userRemoteConfigs>
+			<hudson.plugins.git.UserRemoteConfig>
+				<url>
+					https://git.ourdomain.com:8444/scm/chef/chef-job-dsl-config.git
+				</url>
+				<credentialsId>gituser</credentialsId>
+			</hudson.plugins.git.UserRemoteConfig>
+		</userRemoteConfigs>
+		<branches>
+			<hudson.plugins.git.BranchSpec>
+				<name>branches/INFRA-2353</name>
+			</hudson.plugins.git.BranchSpec>
+		</branches>
+		<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+		<submoduleCfg class="list"/>
+		<extensions/>
+	</scm>
+</project>

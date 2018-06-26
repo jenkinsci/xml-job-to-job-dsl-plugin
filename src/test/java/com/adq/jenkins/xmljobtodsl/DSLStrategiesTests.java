@@ -24,6 +24,9 @@ public class DSLStrategiesTests {
 
 		repoInfo = strategy.getRepositoryInformationFromUrl("git@github.com:alandoni/xml-job-to-dsl");
 		Assert.assertEquals("alandoni/xml-job-to-dsl", repoInfo);
+
+		repoInfo = strategy.getRepositoryInformationFromUrl("https://git.ourdomain.com:8444/scm/chef/chef-job-dsl-config.git");
+		Assert.assertEquals("https://git.ourdomain.com:8444/scm/chef/chef-job-dsl-config.git", repoInfo);
 	}
 
 	@Test

@@ -57,6 +57,11 @@ public class TestsTranslator {
     }
 
     @Test
+    public void testDSLScm2() throws IOException, ParserConfigurationException, SAXException {
+        readFilesAndTest("scm2.xml", "scm2.groovy");
+    }
+
+    @Test
     public void testDSLDescription() throws IOException, ParserConfigurationException, SAXException {
         readFilesAndTest("description.xml", "description.groovy");
     }
