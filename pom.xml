@@ -13,7 +13,7 @@
 
 	<groupId>com.adq.jenkins</groupId>
 	<artifactId>xml-job-to-job-dsl</artifactId>
-	<version>0.1.10</version>
+	<version>0.1.11-SNAPSHOT</version>
 
 	<!-- Jenkins packaging and properties -->
 	<packaging>hpi</packaging>
@@ -43,7 +43,7 @@
 		<connection>scm:git:http://github.com/jenkinsci/xml-job-to-dsl-plugin.git</connection>
 		<developerConnection>scm:git:http://github.com/jenkinsci/xml-job-to-dsl-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/xml-job-to-dsl-plugin</url>
-		<tag>xml-job-to-job-dsl-0.1.10</tag>
+		<tag>xml-job-to-job-dsl-0.1.6</tag>
   	</scm>
 
 	<build>
