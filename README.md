@@ -1,4 +1,4 @@
-# xml-job-to-dsl
+# XML job to Job DSL plugin
 A Jenkins plugin to convert XML jobs in scripts of Job DSL Plugin
 
 ## Steps
@@ -6,7 +6,7 @@ A Jenkins plugin to convert XML jobs in scripts of Job DSL Plugin
 2. Translate the internal class set to DSL and save it to file, it should be easy to read and easy to mantain (DONE)
 3. Make this program run on command line and test if it works with some XML files (DONE)
 4. Create a view where the user can select which jobs he wants to convert to DSL and generate a file to download (DONE)
-5. Turn it into a Jenkins plugin (IN PROGRESS - Waiting for the review from Jenkins admins)
+5. Turn it into a Jenkins plugin (DONE)
 6. Increase the number of known tags to translate and improve the plugin
 7. Automatically refactor the generated code to avoid duplicated blocks
 
