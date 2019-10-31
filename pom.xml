@@ -30,7 +30,7 @@
 	<!-- Jenkins name, description, URL and licenses -->
 	<name>XML Job to Job DSL Plugin</name>
 	<description>XML Job to Job DSL converts the selected job into Groovy Job DSL</description>
-	<url>https://wiki.jenkins-ci.org/display/JENKINS/xml-job-to-dsl-plugin</url>
+	<url>https://github.com/jenkinsci/xml-job-to-job-dsl-plugin</url>
 	<!-- The default licence for Jenkins OSS Plugins is MIT. Substitute for the applicable one if needed. -->
 	<licenses>
 		<license>
