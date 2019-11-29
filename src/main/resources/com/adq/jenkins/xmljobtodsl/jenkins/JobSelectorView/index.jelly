@@ -35,7 +35,7 @@
 										<input type="checkbox" onclick="selectJob(this.checked, ${count})"/>
 									</td>
 									<td align="center" style="vertical-align:middle;">
-										<a href="${app.rootUrl}${project.url}">${j.displayName}</a>
+										<a href="${app.rootUrl}${project.url}">${j.fullName}</a>
 									</td>
 								</tr>
 								<j:set var="count" value="${count+1}"/>
