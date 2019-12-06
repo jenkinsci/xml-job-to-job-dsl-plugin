@@ -20,23 +20,31 @@ public class DSLReferencedParameterStrategy extends DSLMethodStrategy {
     @Override
     public String toDSL() {
 
-        // tokenize referenceParameters in to multiple referencedParameter
+        // tokenize referenceParameters into multiple referencedParameter calls
 
         StringBuilder dsl = new StringBuilder();
         PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
 
         String referencedParams  = propertyDescriptor.getValue();
 
-        String[] splitParams = referencedParams.split(",");
+        if (referencedParams == null) {
+            return "";
+        }
 
-        for (String param : splitParams) {
-          dsl.append(replaceTabs(String.format(getSyntax("syntax.method_call"), 
-                  methodName, '"' + param.trim() + '"'), getTabs()));
+        if (referencedParams.indexOf(',') > -1) {
+            String[] splitParams = referencedParams.split(",");
+
+            for (String param : splitParams) {
+                dsl.append(replaceTabs(String.format(getSyntax("syntax.method_call"), 
+                                methodName, '"' + param.trim() + '"'), getTabs()));
+            }
+        } else {
+            return referencedParams;
         }
 
         return dsl.toString();
     }
-  
-  private static final Logger LOGGER = Logger.getLogger(DSLReferencedParameterStrategy.class.getName());
+
+    private static final Logger LOGGER = Logger.getLogger(DSLReferencedParameterStrategy.class.getName());
 }
 
