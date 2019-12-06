@@ -39,7 +39,8 @@ public class DSLReferencedParameterStrategy extends DSLMethodStrategy {
                                 methodName, '"' + param.trim() + '"'), getTabs()));
             }
         } else {
-            return referencedParams;
+            dsl.append(replaceTabs(String.format(getSyntax("syntax.method_call"),
+                            methodName, '"' + referencedParams.trim() + '"'), getTabs()));
         }
 
         return dsl.toString();
