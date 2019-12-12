@@ -25,6 +25,10 @@
 		  ~ hpi-plugin.version: The HPI Maven Plugin version used by the plugin..
 		  ~ stapler-plugin.version: The Stapler Maven plugin version required by the plugin.
 	 -->
+		<!-- This plugin intentionally does not deliver javadoc. -->
+		<!-- No API's intended to be used, none should be called from outside. -->
+		<!-- Java 11 javadoc command fails from maven. -->
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 	</properties>
 
 	<!-- Jenkins name, description, URL and licenses -->
