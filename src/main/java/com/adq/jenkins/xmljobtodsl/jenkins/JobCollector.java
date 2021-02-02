@@ -134,9 +134,6 @@ public class JobCollector {
 			builder.append("</li>");
 		}
 		builder.append("</ul>");
-		builder.append("<br />");
-		builder.append("If you need some of them to be translated, please create an issue on our ");
-		builder.append("<a href=\"https://github.com/alandoni/xml-job-to-dsl\">GitHub</a>.<br />");
 		return builder.toString();
 	}
 
