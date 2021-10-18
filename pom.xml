@@ -52,6 +52,12 @@
 
 	<build>
 		<plugins>
+			<!-- findbugs-maven-plugin <3.0.4 is incompatible with maven 3.6+ -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.4</version>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
