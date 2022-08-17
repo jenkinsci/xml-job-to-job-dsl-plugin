@@ -1,10 +1,14 @@
 # XML job to Job DSL plugin
 A Jenkins plugin to convert XML jobs in scripts of Job DSL Plugin
 
-
-
 ## Steps
 1. Read the XML file and parse to an internal class set (DONE)
+2. Translate the internal class set to DSL and save it to file, it should be easy to read and easy to mantain (DONE)
+3. Make this program run on command line and test if it works with some XML files (DONE)
+4. Create a view where the user can select which jobs he wants to convert to DSL and generate a file to download (DONE)
+5. Turn it into a Jenkins plugin (DONE)
+6. Increase the number of known tags to translate and improve the plugin
+7. Automatically refactor the generated code to avoid duplicated blocks
 
 ## Do you want to help?
 You can find the list of known tags in the file translator.properties under the path /src/main/resources
@@ -26,7 +30,6 @@ flow-definition.description = description
 The key yet can have a sufix ".type":
 ```
 blockingJobs.type = PARAMETER
-
 ```
 
 These are the possible types:
@@ -152,4 +155,3 @@ public String toDSL() {
     return ""; //This renders the text in the script
 }
 ```
-
