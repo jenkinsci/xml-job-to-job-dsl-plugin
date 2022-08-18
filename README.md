@@ -27,7 +27,7 @@ project.description = description
 flow-definition.description = description
 ```
 
-The key yet can have a sufix ".type":
+The key yet can have a suffix ".type":
 ```
 blockingJobs.type = PARAMETER
 ```
@@ -54,7 +54,7 @@ Let's describe each type:
 hudson.tasks.Shell = INNER
 ```
 
-The type can be the type of the tag, because it don't have a DSL tag, we will just render it children tags
+The type can be the type of the tag, because it doesn't have a DSL tag, we will just render its children tags
 
 ### OBJECT
 It renders an object in groovy like:
