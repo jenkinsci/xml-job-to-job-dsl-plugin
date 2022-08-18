@@ -10,10 +10,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.Key;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class InitialArgumentsHandler {
@@ -107,12 +106,21 @@ public class InitialArgumentsHandler {
 		if (output != null) {
 			ioUtils.saveToFile(dsl, output);
 		} else {
-			System.out.println(dsl);
+			//System.out.println(dsl);
 		}
 		unknownTags = translator.getNotTranslated();
+		HashMap<String,Integer> uniqueUnknownTags = new HashMap<String, Integer>();
 		System.out.println("\n\nWARNING:\nThe following tags couldn't be translated:");
 		for (PropertyDescriptor property : unknownTags) {
-			System.out.println(String.format("* %s", property.getName()));
+			if (!uniqueUnknownTags.containsKey(property.getName())) uniqueUnknownTags.put(property.getName(), 1);
+			else {
+				uniqueUnknownTags.put(property.getName(), uniqueUnknownTags.get(property.getName()) + 1);
+				continue;
+			}
+		}
+
+		for (Map.Entry<String, Integer> entry : uniqueUnknownTags.entrySet()) {
+			System.out.println(String.format("%s %d", entry.getKey(), entry.getValue()));
 		}
 	}
 
