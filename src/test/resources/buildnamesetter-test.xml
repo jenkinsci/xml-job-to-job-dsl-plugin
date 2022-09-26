@@ -4,6 +4,7 @@
             <template>#${BUILD_NUMBER} (${GIT_BRANCH})</template>
             <runAtStart>true</runAtStart>
             <runAtEnd>true</runAtEnd>
+            <descriptionTemplate/>
         </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
     </buildWrappers>
 </project>
