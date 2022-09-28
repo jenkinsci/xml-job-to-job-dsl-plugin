@@ -1,5 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies;
 
+import com.adq.jenkins.xmljobtodsl.dsl.strategies.custom.himom;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 import java.lang.reflect.Constructor;
@@ -15,6 +16,8 @@ public class DSLStrategyFactory {
 	public static final String TYPE_ARRAY = "ARRAY";
 	public static final String TYPE_CLOSURE = "CLOSURE";
 	public static final String TYPE_CONFIGURE = "CONFIGURE";
+
+	public static final String TYPE_PROMOTION = "PROMOTION";
 
 	public DSLStrategy getDSLStrategy(String type, PropertyDescriptor propertyDescriptor, String property, int tabs) {
 		switch (type) {
@@ -36,6 +39,8 @@ public class DSLStrategyFactory {
 				return new DSLClosureStrategy(tabs, propertyDescriptor, property);
 			case TYPE_CONFIGURE:
 				return new DSLConfigureBlockStrategy(tabs, propertyDescriptor, property);
+			case TYPE_PROMOTION:
+				return new himom(tabs, propertyDescriptor, property);
 			default:
 				try {
 					Class<?> clazz = Class.forName(type);

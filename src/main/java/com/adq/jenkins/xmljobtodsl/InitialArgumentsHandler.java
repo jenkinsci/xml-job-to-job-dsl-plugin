@@ -130,6 +130,31 @@ public class InitialArgumentsHandler {
 		return segments[segments.length - 2];
 	}
 
+	public static String getJobPromotedBuildsXMLs(File file)
+		throws IOException {
+
+		IOUtils ioUtils = new IOUtils();
+
+		File directoryPath = file.getAbsoluteFile().getParentFile();
+
+		String returnXML = "";
+
+		if(new File(directoryPath, "promotions").exists()){
+			File promotionsPath = new File(directoryPath.getAbsolutePath() + "/promotions");
+			for(File promotionStepDir : promotionsPath.listFiles()){
+				if(new File(promotionStepDir, "config.xml").exists()){
+					// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise wont parse
+					String promotionStepXML = ioUtils.readFromFile(promotionStepDir.getAbsolutePath() + "/config.xml");
+					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
+
+					returnXML += promotionStepXML.substring(endOfXMLHeadingIndex);
+				}
+			}
+		}
+
+		return returnXML;
+	}
+
 	private JobDescriptor[] getJobDescriptors(File[] files)
 			throws IOException, ParserConfigurationException, SAXException {
 		IOUtils ioUtils = new IOUtils();
@@ -138,7 +163,10 @@ public class InitialArgumentsHandler {
 
 		for (File file : files) {
 			String jobName = getJobNameBasedOnPath(file);
+
 			String xml = ioUtils.readFromFile(file);
+			xml += getJobPromotedBuildsXMLs(file);
+
 			JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
 			descriptors.add(descriptor);
 		}

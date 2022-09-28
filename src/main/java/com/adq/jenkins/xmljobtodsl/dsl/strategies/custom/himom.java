@@ -2,6 +2,7 @@ package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLObjectStrategy;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
+import com.adq.jenkins.xmljobtodsl.parsers.XmlParser;
 
 import java.util.List;
 
@@ -20,9 +21,7 @@ public class himom extends DSLObjectStrategy {
         String himomRet = "";
 
         for(PropertyDescriptor step : this.promoSteps){
-            step.set(0, "name");
-            himomRet += replaceTabs(String.format(getSyntax("syntax.object_with_name"), "promotion", step), getTabs());
-            // Here get DSL from child config.xml
+            himomRet += replaceTabs(String.format(getSyntax("syntax.object_with_name"), "promotion", null), getTabs());
         }
         return himomRet;
     }
