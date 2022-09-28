@@ -143,11 +143,16 @@ public class InitialArgumentsHandler {
 			File promotionsPath = new File(directoryPath.getAbsolutePath() + "/promotions");
 			for(File promotionStepDir : promotionsPath.listFiles()){
 				if(new File(promotionStepDir, "config.xml").exists()){
+					String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
 					// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise wont parse
-					String promotionStepXML = ioUtils.readFromFile(promotionStepDir.getAbsolutePath() + "/config.xml");
+					String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
 					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
 
-					returnXML += promotionStepXML.substring(endOfXMLHeadingIndex).trim();
+					String headingXML = String.format("<promotedBuildStep>\n	<promotedBuildStepName>%s</promotedBuildStepName>\n", getJobNameBasedOnPath(new File(promotionConfigPath)));
+					String newSubStringXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
+					String footerXML = "</promotedBuildStep>";
+
+					returnXML += headingXML + newSubStringXML + footerXML;
 				}
 			}
 		}

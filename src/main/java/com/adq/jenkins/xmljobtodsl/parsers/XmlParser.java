@@ -31,10 +31,17 @@ public class XmlParser {
         this.xml = xml;
         this.promotedBuildsXml = promotedBuildsXml;
         prepareXml();
+        preparePromotedBuilds();
     }
 
     private String prepareXml() {
         return this.xml = this.xml.replaceAll(">%n", "")
+                .replaceAll("\\s*<", "<")
+                .replaceAll("&#xd;", String.format("%n"));
+    }
+
+    private String preparePromotedBuilds(){
+        return this.promotedBuildsXml = this.promotedBuildsXml.replaceAll(">%n", "")
                 .replaceAll("\\s*<", "<")
                 .replaceAll("&#xd;", String.format("%n"));
     }
