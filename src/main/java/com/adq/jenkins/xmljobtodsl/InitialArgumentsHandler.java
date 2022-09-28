@@ -147,7 +147,7 @@ public class InitialArgumentsHandler {
 					String promotionStepXML = ioUtils.readFromFile(promotionStepDir.getAbsolutePath() + "/config.xml");
 					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
 
-					returnXML += promotionStepXML.substring(endOfXMLHeadingIndex);
+					returnXML += promotionStepXML.substring(endOfXMLHeadingIndex).trim();
 				}
 			}
 		}
@@ -165,9 +165,9 @@ public class InitialArgumentsHandler {
 			String jobName = getJobNameBasedOnPath(file);
 
 			String xml = ioUtils.readFromFile(file);
-			xml += getJobPromotedBuildsXMLs(file);
 
-			JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
+			JobDescriptor descriptor = new XmlParser(jobName, xml, getJobPromotedBuildsXMLs(file)).parse();
+
 			descriptors.add(descriptor);
 		}
 		return descriptors.toArray(new JobDescriptor[descriptors.size()]);
