@@ -148,11 +148,15 @@ public class InitialArgumentsHandler {
 					String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
 					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
 
-					String headingXML = String.format("<promotedBuildStep>\n	<promotedBuildStepName>%s</promotedBuildStepName>\n", getJobNameBasedOnPath(new File(promotionConfigPath)));
-					String newSubStringXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
-					String footerXML = "</promotedBuildStep>";
+					String versionHeadingRemovedXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
 
-					returnXML += headingXML + newSubStringXML + footerXML;
+					// Insert name of job in between first line in promoted job and the rest of the file
+					int endOfNewSubstringXML = versionHeadingRemovedXML.indexOf("\n");
+					String firstHalfString = versionHeadingRemovedXML.substring(0, endOfNewSubstringXML).trim();
+					String secondHalfString = versionHeadingRemovedXML.substring(endOfNewSubstringXML).trim();
+					String buildStepName = String.format("<promotedBuildStepName>%s</promotedBuildStepName>\n", getJobNameBasedOnPath(new File(promotionConfigPath)));
+
+					returnXML += firstHalfString + buildStepName + secondHalfString;
 				}
 			}
 		}
