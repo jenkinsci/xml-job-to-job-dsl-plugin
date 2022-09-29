@@ -109,18 +109,20 @@ public class InitialArgumentsHandler {
 			//System.out.println(dsl);
 		}
 		unknownTags = translator.getNotTranslated();
-		HashMap<String,Integer> uniqueUnknownTags = new HashMap<String, Integer>();
-		System.out.println("\n\nWARNING:\nThe following tags couldn't be translated:");
-		for (PropertyDescriptor property : unknownTags) {
-			if (!uniqueUnknownTags.containsKey(property.getName())) uniqueUnknownTags.put(property.getName(), 1);
-			else {
-				uniqueUnknownTags.put(property.getName(), uniqueUnknownTags.get(property.getName()) + 1);
-				continue;
+		if (!unknownTags.isEmpty()) {
+			HashMap<String,Integer> uniqueUnknownTags = new HashMap<String, Integer>();
+			System.out.println("\n\nWARNING:\nThe following tags couldn't be translated:");
+			for (PropertyDescriptor property : unknownTags) {
+				if (!uniqueUnknownTags.containsKey(property.getName())) uniqueUnknownTags.put(property.getName(), 1);
+				else {
+					uniqueUnknownTags.put(property.getName(), uniqueUnknownTags.get(property.getName()) + 1);
+					continue;
+				}
 			}
-		}
 
-		for (Map.Entry<String, Integer> entry : uniqueUnknownTags.entrySet()) {
-			System.out.println(String.format("%s %d", entry.getKey(), entry.getValue()));
+			for (Map.Entry<String, Integer> entry : uniqueUnknownTags.entrySet()) {
+				System.out.println(String.format("%s %d", entry.getKey(), entry.getValue()));
+			}
 		}
 	}
 
