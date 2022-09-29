@@ -112,6 +112,11 @@ public class TestsTranslator {
         readFilesAndTest("example-multijob.xml", "example-multijob.groovy");
     }
 
+    @Test
+    public void testBuildNameSetter() throws IOException, ParserConfigurationException, SAXException {
+        readFilesAndTest("buildnamesetter-test.xml", "buildnamesetter-test.groovy");
+    }
+
     private void logAllNotKnownTags(List<PropertyDescriptor> notKnownTags) {
         for (PropertyDescriptor property : notKnownTags) {
             Logger.getAnonymousLogger().log(Level.WARNING, property.getName());
