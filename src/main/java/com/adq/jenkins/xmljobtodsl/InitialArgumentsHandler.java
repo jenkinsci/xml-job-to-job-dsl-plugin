@@ -139,10 +139,10 @@ public class InitialArgumentsHandler {
 
 		String returnXML = "";
 
-		if(new File(directoryPath, "promotions").exists()){
+		if(new File(directoryPath, "promotions").exists()) {
 			File promotionsPath = new File(directoryPath.getAbsolutePath() + "/promotions");
-			for(File promotionStepDir : promotionsPath.listFiles()){
-				if(new File(promotionStepDir, "config.xml").exists()){
+			for (File promotionStepDir : promotionsPath.listFiles()) {
+				if (new File(promotionStepDir, "config.xml").exists()) {
 					String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
 					// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise wont parse
 					String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
@@ -159,10 +159,9 @@ public class InitialArgumentsHandler {
 					returnXML += firstHalfString + buildStepName + secondHalfString;
 				}
 			}
-			return returnXML;
-		} else {
-			return null;
 		}
+
+		return returnXML;
 	}
 
 	private JobDescriptor[] getJobDescriptors(File[] files)
@@ -178,13 +177,13 @@ public class InitialArgumentsHandler {
 
 			String jobPromotedBuildsXML = getJobPromotedBuildsXMLs(file);
 
-			if(jobPromotedBuildsXML != null) {
-				JobDescriptor descriptor = new XmlParser(jobName, xml, jobPromotedBuildsXML).parse();
-				descriptors.add(descriptor);
+			JobDescriptor descriptor;
+			if(jobPromotedBuildsXML.isEmpty()) {
+				descriptor = new XmlParser(jobName, xml).parse();
 			} else {
-				JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
-				descriptors.add(descriptor);
+				descriptor = new XmlParser(jobName, xml, jobPromotedBuildsXML).parse();
 			}
+			descriptors.add(descriptor);
 		}
 		return descriptors.toArray(new JobDescriptor[descriptors.size()]);
 	}
