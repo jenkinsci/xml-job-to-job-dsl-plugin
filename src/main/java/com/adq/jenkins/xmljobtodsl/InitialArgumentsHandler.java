@@ -159,9 +159,10 @@ public class InitialArgumentsHandler {
 					returnXML += firstHalfString + buildStepName + secondHalfString;
 				}
 			}
+			return returnXML;
+		} else {
+			return null;
 		}
-
-		return returnXML;
 	}
 
 	private JobDescriptor[] getJobDescriptors(File[] files)
@@ -175,9 +176,15 @@ public class InitialArgumentsHandler {
 
 			String xml = ioUtils.readFromFile(file);
 
-			JobDescriptor descriptor = new XmlParser(jobName, xml, getJobPromotedBuildsXMLs(file)).parse();
+			String jobPromotedBuildsXML = getJobPromotedBuildsXMLs(file);
 
-			descriptors.add(descriptor);
+			if(jobPromotedBuildsXML != null) {
+				JobDescriptor descriptor = new XmlParser(jobName, xml, jobPromotedBuildsXML).parse();
+				descriptors.add(descriptor);
+			} else {
+				JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
+				descriptors.add(descriptor);
+			}
 		}
 		return descriptors.toArray(new JobDescriptor[descriptors.size()]);
 	}

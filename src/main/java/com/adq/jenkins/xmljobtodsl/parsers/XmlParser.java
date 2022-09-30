@@ -53,13 +53,16 @@ public class XmlParser {
         Document doc = docBuilder.parse(is);
         doc.getDocumentElement().normalize();
 
-        InputSource promotedBuildsInputSource = new InputSource(new StringReader(promotedBuildsXml));
-        Document promotedBuildsDoc = docBuilder.parse(promotedBuildsInputSource);
-        promotedBuildsDoc.getDocumentElement().normalize();
-
         List<PropertyDescriptor> properties = new ArrayList<>();
 
-        properties.addAll(getChildNodes(null, doc.getChildNodes(), promotedBuildsDoc.getChildNodes()));
+        if(promotedBuildsXml != null) {
+            InputSource promotedBuildsInputSource = new InputSource(new StringReader(promotedBuildsXml));
+            Document promotedBuildsDoc = docBuilder.parse(promotedBuildsInputSource);
+            promotedBuildsDoc.getDocumentElement().normalize();
+            properties.addAll(getChildNodes(null, doc.getChildNodes(), promotedBuildsDoc.getChildNodes()));
+        } else {
+            properties.addAll(getChildNodes(null, doc.getChildNodes()));
+        }
 
         return new JobDescriptor(jobName, properties);
     }
