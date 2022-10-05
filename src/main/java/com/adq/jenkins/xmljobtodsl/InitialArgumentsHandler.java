@@ -150,7 +150,7 @@ public class InitialArgumentsHandler {
 					String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
 					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
 
-					String versionHeadingRemovedXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();q
+					String versionHeadingRemovedXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
 
 					// Insert name of job in between first line in promoted job and the rest of the file
 					int endOfNewSubstringXML = versionHeadingRemovedXML.indexOf("\n");
@@ -163,6 +163,7 @@ public class InitialArgumentsHandler {
 			}
 		}
 		String completeXML = "<root>\n"+ returnXML + "\n</root>";
+		System.out.println(completeXML);
 		return completeXML;
 	}
 
