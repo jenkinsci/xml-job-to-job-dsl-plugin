@@ -163,7 +163,6 @@ public class InitialArgumentsHandler {
 			}
 		}
 		String completeXML = "<root>\n"+ returnXML + "\n</root>";
-		System.out.println(completeXML);
 		return completeXML;
 	}
 
