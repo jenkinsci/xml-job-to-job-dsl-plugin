@@ -49,10 +49,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("caseSensitive");
 		propertiesToBeSkipped.add("EnvInjectPasswordWrapper");
 		propertiesToBeSkipped.add("followSymlinks");
-        propertiesToBeSkipped.add("paramsToUseForLimit");
-		propertiesToBeSkipped.add("limitOneJobWithMatchingParams");
-		propertiesToBeSkipped.add("categories");
-		propertiesToBeSkipped.add("throttleOption");
 		propertiesToBeSkipped.add("completeBuild");
 		propertiesToBeSkipped.add("externalDelete");
 		propertiesToBeSkipped.add("skipWhenFailed");
