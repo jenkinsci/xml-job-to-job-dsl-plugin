@@ -48,7 +48,6 @@ public class XmlParser {
 
     public JobDescriptor parse() throws IOException, SAXException, ParserConfigurationException {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-
         InputSource is = new InputSource(new StringReader(xml));
         Document doc = docBuilder.parse(is);
         doc.getDocumentElement().normalize();
