@@ -96,6 +96,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		String type = String.format("%s%s", property.getKey(), SUFIX_GROOVY_TYPE);
 		String propertyType = translatorProperties.getProperty(type);
 
+		if (propertyDescriptor.getName() == "pattern" && propertyDescriptor.getProperties() != null) {
+			propertyType = DSLStrategyFactory.TYPE_OBJECT;
+		}
+
 		if (propertyType == null) {
 			propertyType = DSLStrategyFactory.TYPE_METHOD;
 		}
