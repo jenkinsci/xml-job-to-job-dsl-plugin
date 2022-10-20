@@ -45,7 +45,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("canRoam");
 		propertiesToBeSkipped.add("sandbox");
 		propertiesToBeSkipped.add("operationList");
-		propertiesToBeSkipped.add("spec");
 		propertiesToBeSkipped.add("caseSensitive");
 		propertiesToBeSkipped.add("EnvInjectPasswordWrapper");
 		propertiesToBeSkipped.add("followSymlinks");
@@ -57,6 +56,8 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("hudson.plugins.git.extensions.impl.PathRestriction");
 		propertiesToBeSkipped.add("unstableReturn");
 		propertiesToBeSkipped.add("ignoreMissing");
+		propertiesToBeSkipped.add("ordinal");
+		propertiesToBeSkipped.add("color");
 
 		try {
 			initProperties();
