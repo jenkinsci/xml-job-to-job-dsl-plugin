@@ -38,7 +38,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		this.tabs = tabs;
 		this.propertyDescriptor = descriptor;
 		propertiesToBeSkipped.add("actions");
-		propertiesToBeSkipped.add("trim");
 		propertiesToBeSkipped.add("configVersion");
 		propertiesToBeSkipped.add("submoduleCfg");
 		propertiesToBeSkipped.add("doGenerateSubmoduleConfigurations");
