@@ -3,8 +3,6 @@ package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLMethodStrategy;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
-import static java.lang.Integer.parseInt;
-
 public class DSLIntStrategy extends DSLMethodStrategy {
 
     private final String methodName;
