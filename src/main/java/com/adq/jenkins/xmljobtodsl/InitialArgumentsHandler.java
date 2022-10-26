@@ -132,6 +132,40 @@ public class InitialArgumentsHandler {
 		return segments[segments.length - 2];
 	}
 
+	public static String getJobPromotedBuildsXMLs(File file)
+		throws IOException {
+
+		IOUtils ioUtils = new IOUtils();
+
+		File directoryPath = file.getAbsoluteFile().getParentFile();
+
+		String returnXML = "";
+
+		if(new File(directoryPath, "promotions").exists()) {
+			File promotionsPath = new File(directoryPath.getAbsolutePath() + "/promotions");
+			for (File promotionStepDir : promotionsPath.listFiles()) {
+				if (new File(promotionStepDir, "config.xml").exists()) {
+					String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
+					// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise wont parse
+					String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
+					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
+
+					String versionHeadingRemovedXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
+
+					// Insert name of job in between first line in promoted job and the rest of the file
+					int endOfNewSubstringXML = versionHeadingRemovedXML.indexOf("\n");
+					String firstHalfString = versionHeadingRemovedXML.substring(0, endOfNewSubstringXML).trim();
+					String secondHalfString = versionHeadingRemovedXML.substring(endOfNewSubstringXML).trim();
+					String buildStepName = String.format("<promotedBuildStepName>%s</promotedBuildStepName>\n", getJobNameBasedOnPath(new File(promotionConfigPath)));
+
+					returnXML += firstHalfString + buildStepName + secondHalfString;
+				}
+			}
+		}
+		String completeXML = "<root>\n"+ returnXML + "\n</root>";
+		return completeXML;
+	}
+
 	private JobDescriptor[] getJobDescriptors(File[] files)
 			throws IOException, ParserConfigurationException, SAXException {
 		IOUtils ioUtils = new IOUtils();
@@ -140,8 +174,17 @@ public class InitialArgumentsHandler {
 
 		for (File file : files) {
 			String jobName = getJobNameBasedOnPath(file);
+
 			String xml = ioUtils.readFromFile(file);
-			JobDescriptor descriptor = new XmlParser(jobName, xml).parse();
+
+			String jobPromotedBuildsXML = getJobPromotedBuildsXMLs(file);
+
+			JobDescriptor descriptor;
+			if(jobPromotedBuildsXML.isEmpty()) {
+				descriptor = new XmlParser(jobName, xml).parse();
+			} else {
+				descriptor = new XmlParser(jobName, xml, jobPromotedBuildsXML).parse();
+			}
 			descriptors.add(descriptor);
 		}
 		return descriptors.toArray(new JobDescriptor[descriptors.size()]);
