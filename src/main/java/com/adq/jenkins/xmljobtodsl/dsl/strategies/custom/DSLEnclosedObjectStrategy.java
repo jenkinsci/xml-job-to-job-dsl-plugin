@@ -1,7 +1,6 @@
 package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLObjectStrategy;
-import com.adq.jenkins.xmljobtodsl.dsl.strategies.DSLStrategy;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 import java.util.ArrayList;
@@ -45,15 +44,16 @@ public class DSLEnclosedObjectStrategy extends DSLObjectStrategy {
         // It's easier to grab all the siblings and place them under the same parent at once.
         List<PropertyDescriptor> children = propertyDescriptor.getParent().getProperties();
         List<PropertyDescriptor> renamedChildren = new ArrayList<>();
+        List<PropertyDescriptor> leftoverProperties = new ArrayList<>();
 
         String enclosingTagName = getPropertyByName(String.format("%s.enclosing_tag", propertyDescriptor.getName()));
 
-        // check if we've done this before
-        if(children.size() == 1 && children.get(0).getName().equals(enclosingTagName)){
-            this.name = null;
-        } else {
-            // Rename the children so we can give them a new type in translator.properties
-            for(PropertyDescriptor child : children){
+        // Rename the children, so we can give them a new type in translator.properties
+        for(PropertyDescriptor child : children){
+            // Make sure the enclosing tag of each sibling matches the current tag / exists
+            String childEnclosingTag = getPropertyByName(String.format("%s.enclosing_tag", child.getName()));
+
+            if(childEnclosingTag != null && childEnclosingTag.equals(enclosingTagName)) {
                 PropertyDescriptor newChild = new PropertyDescriptor(
                         String.format("%sEnclosed", child.getName()),
                         child.getParent(),
@@ -61,15 +61,20 @@ public class DSLEnclosedObjectStrategy extends DSLObjectStrategy {
                         child.getProperties(),
                         child.getAttributes());
                 renamedChildren.add(newChild);
+            } else {
+                leftoverProperties.add(child);
             }
+        }
 
+        if(renamedChildren.size() == 0){
+            this.name = null;
+        } else {
             this.name = enclosingTagName;
             PropertyDescriptor enclosingPropertyDescriptor = new PropertyDescriptor(enclosingTagName, propertyDescriptor.getParent(), renamedChildren);
 
-            // Replace the parent's properties w/ our new parent so we know if we've done this before
-            List<PropertyDescriptor> newProperties = new ArrayList<>();
-            newProperties.add(enclosingPropertyDescriptor);
-            propertyDescriptor.getParent().replaceProperties(newProperties);
+            // Add the new parent to the children properties and attach to the "grandparent" so we know if we've done this before
+            leftoverProperties.add(enclosingPropertyDescriptor);
+            propertyDescriptor.getParent().replaceProperties(leftoverProperties);
 
             initChildren(enclosingPropertyDescriptor);
         }
