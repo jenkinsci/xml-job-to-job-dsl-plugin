@@ -69,10 +69,6 @@ public class PropertyDescriptor implements IDescriptor {
         return parent;
     }
 
-    public PropertyDescriptor changeParent(PropertyDescriptor newParent){
-        return this.parent = newParent;
-    }
-
     public List<PropertyDescriptor> replaceProperties(List<PropertyDescriptor> newProperties){
         return this.properties = newProperties;
     }
