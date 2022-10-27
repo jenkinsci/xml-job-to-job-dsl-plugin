@@ -25,15 +25,11 @@ selector {
 So we inject an enclosing tag called "buildParameter"
 
 You will need to define the property twice in translator.properties -- once as its true name, again as trueNameEnclosed
-Then define the enclosing tag & its type. Example:
+Example:
 
 hudson.plugins.copyartifact.CopyArtifact.selector.parameterName = parameterName
 hudson.plugins.copyartifact.CopyArtifact.selector.parameterName.type = com.adq.jenkins.xmljobtodsl.dsl.strategies.custom.DSLEnclosedObjectStrategy
 parameterName.enclosing_tag = buildParameter
-
-buildParameter = buildParameter
-buildParameter.type = OBJECT
-
 parameterNameEnclosed = parameterName
  */
 public class DSLEnclosedObjectStrategy extends DSLObjectStrategy {
@@ -66,6 +62,7 @@ public class DSLEnclosedObjectStrategy extends DSLObjectStrategy {
             }
         }
 
+        // Check if we needed to do anything further first
         if(renamedChildren.size() == 0){
             this.name = null;
         } else {
