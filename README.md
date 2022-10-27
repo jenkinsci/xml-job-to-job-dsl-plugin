@@ -10,19 +10,6 @@ A Jenkins plugin to convert XML jobs in scripts of Job DSL Plugin
 6. Increase the number of known tags to translate and improve the plugin
 7. Automatically refactor the generated code to avoid duplicated blocks
 
-## Set up
-It will be easier to work with Java with IntelliJ IDE. The community edition is fine for working with this plugin.
-
-1. Install Java `brew install java` -- install latest version jdk11
-  - Check version with `java --version`
-2. Install Maven `brew install maven`
-  - Check version with `mvn -version`
-3. Edit run configurations -- you may select XML files by file, URL or directory. 
-   - Directory: `--directory xml/` where `xml` is a directory of job directories with config.xml files inside.
-   - File: `--file xml/jobname/config.xml` where the name of the enclosing directory is the name of the job.
-   - See InitialArgumentsHandler.java for more options
-4. Run `pom.xml` by opening it as a project in IntelliJ
-
 ## Do you want to help?
 You can find the list of known tags in the file translator.properties under the path /src/main/resources
 
@@ -40,7 +27,7 @@ project.description = description
 flow-definition.description = description
 ```
 
-The key yet can have a suffix ".type":
+The key yet can have a sufix ".type":
 ```
 blockingJobs.type = PARAMETER
 ```
@@ -67,7 +54,7 @@ Let's describe each type:
 hudson.tasks.Shell = INNER
 ```
 
-The type can be the type of the tag, because it doesn't have a DSL tag, we will just render its children tags
+The type can be the type of the tag, because it don't have a DSL tag, we will just render it children tags
 
 ### OBJECT
 It renders an object in groovy like:

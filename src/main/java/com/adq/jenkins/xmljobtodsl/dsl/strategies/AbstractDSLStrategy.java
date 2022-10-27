@@ -14,8 +14,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
 	public static final String SUFIX_GROOVY_TYPE = ".type";
 
-	private static final HashSet<String> propertiesToBeSkipped = new HashSet<String>();
-
 	private Properties syntaxProperties;
 	private Properties translatorProperties;
 
@@ -37,28 +35,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 	public AbstractDSLStrategy(int tabs, IDescriptor descriptor, boolean shouldInitChildren) {
 		this.tabs = tabs;
 		this.propertyDescriptor = descriptor;
-		propertiesToBeSkipped.add("actions");
-		propertiesToBeSkipped.add("trim");
-		propertiesToBeSkipped.add("configVersion");
-		propertiesToBeSkipped.add("submoduleCfg");
-		propertiesToBeSkipped.add("doGenerateSubmoduleConfigurations");
-		propertiesToBeSkipped.add("canRoam");
-		propertiesToBeSkipped.add("sandbox");
-		propertiesToBeSkipped.add("operationList");
-		propertiesToBeSkipped.add("spec");
-		propertiesToBeSkipped.add("caseSensitive");
-		propertiesToBeSkipped.add("EnvInjectPasswordWrapper");
-		propertiesToBeSkipped.add("followSymlinks");
-		propertiesToBeSkipped.add("completeBuild");
-		propertiesToBeSkipped.add("externalDelete");
-		propertiesToBeSkipped.add("skipWhenFailed");
-		propertiesToBeSkipped.add("notFailBuild");
-		propertiesToBeSkipped.add("browser");
-		propertiesToBeSkipped.add("hudson.plugins.git.extensions.impl.PathRestriction");
-		propertiesToBeSkipped.add("unstableReturn");
-		propertiesToBeSkipped.add("ignoreMissing");
-		propertiesToBeSkipped.add("activeProcessNames");
-
 		try {
 			initProperties();
 		} catch (IOException e) {
@@ -92,10 +68,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
 		String type = String.format("%s%s", property.getKey(), SUFIX_GROOVY_TYPE);
 		String propertyType = translatorProperties.getProperty(type);
-
-		if (propertyDescriptor.getName() == "pattern" && propertyDescriptor.getProperties() != null) {
-			propertyType = DSLStrategyFactory.TYPE_OBJECT;
-		}
 
 		if (propertyType == null) {
 			propertyType = DSLStrategyFactory.TYPE_METHOD;
@@ -134,7 +106,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 	}
 
 	public DSLStrategy getStrategyByPropertyDescriptorType(PropertyDescriptor propertyDescriptor) {
-
 		String type = getType(propertyDescriptor);
 
 		if (type == null) {
@@ -170,11 +141,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
 		while (iterator.hasNext()) {
 			PropertyDescriptor propertyDescriptor = iterator.next();
-
-			if (propertiesToBeSkipped.contains(propertyDescriptor.getName())) {
-				continue;
-			}
-
 			DSLStrategy strategy = getStrategyByPropertyDescriptorType(propertyDescriptor);
 			if (strategy != null) {
 				addChild(strategy);
