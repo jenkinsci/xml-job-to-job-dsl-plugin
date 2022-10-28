@@ -69,6 +69,10 @@ public class PropertyDescriptor implements IDescriptor {
         return parent;
     }
 
+    public List<PropertyDescriptor> replaceProperties(List<PropertyDescriptor> newProperties){
+        return this.properties = newProperties;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PropertyDescriptor)) {
