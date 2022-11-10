@@ -168,7 +168,7 @@ public class InitialArgumentsHandler {
 			File promotionsPath = new File(directoryPath.getAbsolutePath() + "/promotions");
 			File[] promotionPaths = promotionsPath.listFiles();
 			// for each promotion name, get the corresponding promotion path
-			for (Object promotionName : promotionNames) {
+			for (String promotionName : promotionNames) {
 				for (File promotionStepDir : promotionPaths) {
 					if (promotionStepDir.toString().endsWith(promotionName.toString())) {
 						String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
