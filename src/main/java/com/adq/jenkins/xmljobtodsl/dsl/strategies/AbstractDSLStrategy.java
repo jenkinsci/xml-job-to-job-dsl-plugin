@@ -44,7 +44,6 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("canRoam");
 		propertiesToBeSkipped.add("sandbox");
 		propertiesToBeSkipped.add("operationList");
-		propertiesToBeSkipped.add("spec");
 		propertiesToBeSkipped.add("caseSensitive");
 		propertiesToBeSkipped.add("EnvInjectPasswordWrapper");
 		propertiesToBeSkipped.add("followSymlinks");
