@@ -56,6 +56,8 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("unstableReturn");
 		propertiesToBeSkipped.add("ignoreMissing");
 		propertiesToBeSkipped.add("activeProcessNames");
+		propertiesToBeSkipped.add("ordinal");
+		propertiesToBeSkipped.add("color");
 
 		try {
 			initProperties();
