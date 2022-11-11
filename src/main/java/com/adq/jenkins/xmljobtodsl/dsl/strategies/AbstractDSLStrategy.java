@@ -39,13 +39,13 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		this.propertyDescriptor = descriptor;
 		propertiesToBeSkipped.add("actions");
 		propertiesToBeSkipped.add("trim");
-		propertiesToBeSkipped.add("spec");
 		propertiesToBeSkipped.add("configVersion");
 		propertiesToBeSkipped.add("submoduleCfg");
 		propertiesToBeSkipped.add("doGenerateSubmoduleConfigurations");
 		propertiesToBeSkipped.add("canRoam");
 		propertiesToBeSkipped.add("sandbox");
 		propertiesToBeSkipped.add("operationList");
+		propertiesToBeSkipped.add("spec");
 		propertiesToBeSkipped.add("caseSensitive");
 		propertiesToBeSkipped.add("EnvInjectPasswordWrapper");
 		propertiesToBeSkipped.add("followSymlinks");
