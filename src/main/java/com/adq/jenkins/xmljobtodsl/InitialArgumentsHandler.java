@@ -170,7 +170,7 @@ public class InitialArgumentsHandler {
 			// for each promotion name, get the corresponding promotion path
 			for (String promotionName : promotionNames) {
 				for (File promotionStepDir : promotionPaths) {
-					if (promotionStepDir.toString().endsWith(promotionName.toString())) {
+					if (promotionStepDir.toString().endsWith(promotionName)) {
 						String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
 						// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise won't parse
 						String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
