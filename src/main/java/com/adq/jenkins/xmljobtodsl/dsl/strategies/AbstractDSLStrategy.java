@@ -53,6 +53,8 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("hudson.plugins.git.extensions.impl.PathRestriction");
 		propertiesToBeSkipped.add("unstableReturn");
 		propertiesToBeSkipped.add("ignoreMissing");
+		propertiesToBeSkipped.add("ordinal");
+		propertiesToBeSkipped.add("color");
 		propertiesToBeSkipped.add("activeProcessNames");
 		propertiesToBeSkipped.add("ordinal");
 		propertiesToBeSkipped.add("color");
