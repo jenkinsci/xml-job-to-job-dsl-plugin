@@ -56,8 +56,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("ordinal");
 		propertiesToBeSkipped.add("color");
 		propertiesToBeSkipped.add("activeProcessNames");
-		propertiesToBeSkipped.add("ordinal");
-		propertiesToBeSkipped.add("color");
+		propertiesToBeSkipped.add("trim");
 
 		try {
 			initProperties();
