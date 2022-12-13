@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.adq.jenkins.xmljobtodsl.InitialArgumentsHandler.getJobPromotedBuildsXMLs;
+
 public class JobCollector {
 
 	public static final String DSL_GROOVY = "dsl.groovy";
@@ -108,8 +110,16 @@ public class JobCollector {
 		List<JobDescriptor> jobDescriptorsList = new ArrayList<>();
 		for (Job job : selectedItems) {
 			String xml = job.getConfigFile().asString();
-			XmlParser parser = new XmlParser(job.getDisplayName(), xml);
-			JobDescriptor descriptor = parser.parse();
+
+			String jobPromotedBuildsXML = getJobPromotedBuildsXMLs(job.getConfigFile().getFile());
+
+			JobDescriptor descriptor;
+
+			if (jobPromotedBuildsXML.isEmpty()) {
+				descriptor = new XmlParser(job.getDisplayName(), xml).parse();
+			} else {
+				descriptor = new XmlParser(job.getDisplayName(), xml, jobPromotedBuildsXML).parse();
+			}
 			jobDescriptorsList.add(descriptor);
 		}
 		JobDescriptor[] jobDescriptors = jobDescriptorsList.toArray(new JobDescriptor[jobDescriptorsList.size()]);
