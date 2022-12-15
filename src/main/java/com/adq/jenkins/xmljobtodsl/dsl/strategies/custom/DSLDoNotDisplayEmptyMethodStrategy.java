@@ -1,29 +1,28 @@
-package com.adq.jenkins.xmljobtodsl.dsl.strategies;
+package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 
+import com.adq.jenkins.xmljobtodsl.dsl.strategies.*;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DSLMethodStrategy extends AbstractDSLStrategy {
-
+public class DSLDoNotDisplayEmptyMethodStrategy extends DSLMethodStrategy {
     private final String methodName;
 
-    public DSLMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName, boolean shouldInitChildren) {
-        super(tabs, propertyDescriptor, shouldInitChildren);
+    public DSLDoNotDisplayEmptyMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName, boolean shouldInitChildren) {
+        super(tabs, propertyDescriptor, methodName, shouldInitChildren);
         this.methodName = methodName;
         this.setTabs(tabs);
     }
-
-    public DSLMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
+    public DSLDoNotDisplayEmptyMethodStrategy(int tabs, PropertyDescriptor propertyDescriptor, String methodName) {
         this(tabs, propertyDescriptor, methodName, true);
     }
 
-    public DSLMethodStrategy(PropertyDescriptor descriptor) {
+    public DSLDoNotDisplayEmptyMethodStrategy(PropertyDescriptor descriptor) {
         this(0, descriptor, null, true);
     }
 
-	@Override
+    @Override
     public String toDSL() {
         PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
         if (propertyDescriptor.getValue() != null) {
@@ -37,9 +36,10 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
 
             return replaceTabs(String.format(getSyntax("syntax.method_call"),
                     methodName, printValueAccordingOfItsType(propertyDescriptor.getValue())), getTabs());
-            
-        }
 
+        } else if (propertyDescriptor.getValue() == null) {
+            return "";
+        }
         return replaceTabs(String.format(getSyntax("syntax.method_call"),
                 methodName, getChildrenDSL()), getTabs());
     }
@@ -59,20 +59,4 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
         return new DSLObjectStrategy(getTabs(), object, null);
     }
 
-    @Override
-    protected String getChildrenDSL() {
-        StringBuilder dsl = new StringBuilder();
-
-        int size = getChildren().size();
-
-        for (int index = 0; index < size; index++) {
-            DSLStrategy strategy = getChildren().get(index);
-            String strategyDsl = strategy.toDSL();
-            dsl.append(strategyDsl);
-            if (index < size - 1 && (strategy instanceof IValueStrategy)) {
-                dsl.append(", ");
-            }
-        }
-        return dsl.toString();
-    }
 }
