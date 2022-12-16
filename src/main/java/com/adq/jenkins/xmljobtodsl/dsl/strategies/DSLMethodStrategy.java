@@ -37,7 +37,6 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
 
             return replaceTabs(String.format(getSyntax("syntax.method_call"),
                     methodName, printValueAccordingOfItsType(propertyDescriptor.getValue())), getTabs());
-            
         }
 
         return replaceTabs(String.format(getSyntax("syntax.method_call"),
