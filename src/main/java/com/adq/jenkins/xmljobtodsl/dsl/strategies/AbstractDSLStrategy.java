@@ -57,6 +57,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("color");
 		propertiesToBeSkipped.add("activeProcessNames");
 		propertiesToBeSkipped.add("trim");
+		propertiesToBeSkipped.add("disableDeferredWipeout");
 
 		try {
 			initProperties();
