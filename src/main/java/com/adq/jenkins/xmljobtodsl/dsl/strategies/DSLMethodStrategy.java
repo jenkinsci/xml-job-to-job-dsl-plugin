@@ -43,7 +43,7 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
                 methodName, getChildrenDSL()), getTabs());
     }
 
-    private DSLStrategy getStrategyForObject(PropertyDescriptor propertyDescriptor) {
+    protected DSLStrategy getStrategyForObject(PropertyDescriptor propertyDescriptor) {
         List<PropertyDescriptor> siblings = getChildrenOfType(propertyDescriptor.getParent(), DSLStrategyFactory.TYPE_METHOD);
 
         propertyDescriptor.getParent().getProperties().clear();

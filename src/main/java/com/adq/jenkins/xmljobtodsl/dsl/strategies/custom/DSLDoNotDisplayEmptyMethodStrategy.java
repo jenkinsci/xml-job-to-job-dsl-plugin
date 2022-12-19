@@ -3,9 +3,8 @@ package com.adq.jenkins.xmljobtodsl.dsl.strategies.custom;
 import com.adq.jenkins.xmljobtodsl.dsl.strategies.*;
 import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 
-import java.util.ArrayList;
-import java.util.List;
-
+// Methods with null values (e.g., baseUrl() teamDomain()), cause errors when creating jobs in the DSL. If a propertyDescriptor has a null value, do not render it in the converted DSL.
+// Otherwise, convert as normal with descriptor and value
 public class DSLDoNotDisplayEmptyMethodStrategy extends DSLMethodStrategy {
     private final String methodName;
 
@@ -43,20 +42,4 @@ public class DSLDoNotDisplayEmptyMethodStrategy extends DSLMethodStrategy {
         return replaceTabs(String.format(getSyntax("syntax.method_call"),
                 methodName, getChildrenDSL()), getTabs());
     }
-
-    private DSLStrategy getStrategyForObject(PropertyDescriptor propertyDescriptor) {
-        List<PropertyDescriptor> siblings = getChildrenOfType(propertyDescriptor.getParent(), DSLStrategyFactory.TYPE_METHOD);
-
-        propertyDescriptor.getParent().getProperties().clear();
-
-        List<PropertyDescriptor> children = new ArrayList<>();
-        for (PropertyDescriptor descriptor : siblings) {
-            children.add(new PropertyDescriptor(descriptor.getName(), null,
-                    descriptor.getValue(), descriptor.getProperties(),
-                    descriptor.getAttributes()));
-        }
-        PropertyDescriptor object = new PropertyDescriptor(null, null, children);
-        return new DSLObjectStrategy(getTabs(), object, null);
-    }
-
 }
