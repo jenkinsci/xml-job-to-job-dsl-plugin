@@ -37,16 +37,6 @@ public class DSLMethodIfTrueStrategy extends AbstractDSLStrategy {
                         methodName, !Boolean.valueOf(propertyDescriptor.getValue())), getTabs());
         }
 
-//        if (propertyDescriptor.getName().equals("throttleJobProperty")) {
-//            System.out.println("found thorrotle");
-//            List<PropertyDescriptor> children = propertyDescriptor.getProperties();
-//            for (PropertyDescriptor child : children) {
-//                if (child.getName().equals("throttleEnabled") && !child.getValue().equals("false")) {
-//                    return replaceTabs(String.format(getSyntax("syntax.method_call"), getChildrenDSL()), getTabs());
-//                }
-//            }
-//        }
-
         if (propertyDescriptor.getValue().equals("false")) {
             return "";
         }
