@@ -33,14 +33,19 @@ public class DSLMethodIfTrueStrategy extends AbstractDSLStrategy {
         PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
 
         if (propertyDescriptor.getName().equals("doNotFingerprintArtifacts")) {
-            if (propertyDescriptor.getValue().equals("false")) {
                 return replaceTabs(String.format(getSyntax("syntax.method_call"),
-                        methodName, "true"), getTabs());
-            } else {
-                return replaceTabs(String.format(getSyntax("syntax.method_call"),
-                        methodName, "false"), getTabs());
-            }
+                        methodName, !Boolean.valueOf(propertyDescriptor.getValue())), getTabs());
         }
+
+//        if (propertyDescriptor.getName().equals("throttleJobProperty")) {
+//            System.out.println("found thorrotle");
+//            List<PropertyDescriptor> children = propertyDescriptor.getProperties();
+//            for (PropertyDescriptor child : children) {
+//                if (child.getName().equals("throttleEnabled") && !child.getValue().equals("false")) {
+//                    return replaceTabs(String.format(getSyntax("syntax.method_call"), getChildrenDSL()), getTabs());
+//                }
+//            }
+//        }
 
         if (propertyDescriptor.getValue().equals("false")) {
             return "";
