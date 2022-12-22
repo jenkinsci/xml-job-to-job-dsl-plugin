@@ -12,6 +12,7 @@ public class JobDescriptor implements IDescriptor {
 
     private String name;
     private List<PropertyDescriptor> properties;
+    private List<PropertyDescriptor> addedProperties;
 
     public JobDescriptor(String name, List<PropertyDescriptor> properties) {
         this.name = name;
@@ -25,6 +26,8 @@ public class JobDescriptor implements IDescriptor {
     public List<PropertyDescriptor> getProperties() {
         return properties;
     }
+
+    public List<PropertyDescriptor> getAddedProperties(){ return addedProperties; }
 
     @Override
     public boolean equals(Object obj) {
