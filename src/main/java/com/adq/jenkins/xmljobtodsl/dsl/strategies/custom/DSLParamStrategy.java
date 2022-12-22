@@ -27,12 +27,11 @@ public class DSLParamStrategy extends DSLMethodStrategy {
 			String description = getChildrenByName("description").toDSL();
 			return name + ", " + defaultValue + ", " + description;
 
-		} else if (propertyDescriptor.getName().equals("org.jenkinsci.plugins.credentialsbinding.impl.StringBinding")) {
+		} else {
 			String variable = getChildrenByName("variable").toDSL();
 			String credentialsId = getChildrenByName("credentialsId").toDSL();
 			return variable + ", " + credentialsId;
 		}
-		return "";
 	}
 
 	private DSLStrategy getChildrenByName(String name) {
