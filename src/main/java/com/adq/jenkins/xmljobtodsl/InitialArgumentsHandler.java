@@ -7,13 +7,20 @@ import com.adq.jenkins.xmljobtodsl.parsers.XmlParser;
 import com.adq.jenkins.xmljobtodsl.utils.IOUtils;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.security.Key;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 
 public class InitialArgumentsHandler {
 
@@ -133,9 +140,25 @@ public class InitialArgumentsHandler {
 	}
 
 	public static String getJobPromotedBuildsXMLs(File file)
-		throws IOException {
+			throws IOException, SAXException, ParserConfigurationException {
 
 		IOUtils ioUtils = new IOUtils();
+		ArrayList<String> promotionNames = new ArrayList<>();
+
+		// parse xmlFile to get the names of promotion directories and add to list
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db =  dbf.newDocumentBuilder();
+		Document doc = db.parse(file);
+
+		NodeList promotionList = doc.getDocumentElement().getElementsByTagName("activeProcessNames");
+
+		for (int i = 0; i < promotionList.getLength(); ++i) {
+			NodeList childList = promotionList.item(i).getChildNodes();
+			for (int j=0; j < childList.getLength(); j++) {
+				Node childNode = childList.item(j);
+				promotionNames.add(childNode.getTextContent());
+			}
+		}
 
 		File directoryPath = file.getAbsoluteFile().getParentFile();
 
@@ -143,26 +166,30 @@ public class InitialArgumentsHandler {
 
 		if(new File(directoryPath, "promotions").exists()) {
 			File promotionsPath = new File(directoryPath.getAbsolutePath() + "/promotions");
-			for (File promotionStepDir : promotionsPath.listFiles()) {
-				if (new File(promotionStepDir, "config.xml").exists()) {
-					String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
-					// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise wont parse
-					String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
-					int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
+			File[] promotionPaths = promotionsPath.listFiles();
+			// for each promotion name, get the corresponding promotion path
+			for (String promotionName : promotionNames) {
+				for (File promotionStepDir : promotionPaths) {
+					if (promotionStepDir.toString().endsWith(promotionName)) {
+						String promotionConfigPath = promotionStepDir.getAbsolutePath() + "/config.xml";
+						// Get rid of the <?xml version='1.1' encoding='UTF-8'?> heading otherwise won't parse
+						String promotionStepXML = ioUtils.readFromFile(promotionConfigPath);
+						int endOfXMLHeadingIndex = promotionStepXML.indexOf("\n");
 
-					String versionHeadingRemovedXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
+						String versionHeadingRemovedXML = promotionStepXML.substring(endOfXMLHeadingIndex).trim();
 
-					// Insert name of job in between first line in promoted job and the rest of the file
-					int endOfNewSubstringXML = versionHeadingRemovedXML.indexOf("\n");
-					String firstHalfString = versionHeadingRemovedXML.substring(0, endOfNewSubstringXML).trim();
-					String secondHalfString = versionHeadingRemovedXML.substring(endOfNewSubstringXML).trim();
-					String buildStepName = String.format("<promotedBuildStepName>%s</promotedBuildStepName>\n", getJobNameBasedOnPath(new File(promotionConfigPath)));
+						// Insert name of job in between first line in promoted job and the rest of the file
+						int endOfNewSubstringXML = versionHeadingRemovedXML.indexOf("\n");
+						String firstHalfString = versionHeadingRemovedXML.substring(0, endOfNewSubstringXML).trim();
+						String secondHalfString = versionHeadingRemovedXML.substring(endOfNewSubstringXML).trim();
+						String buildStepName = String.format("<promotedBuildStepName>%s</promotedBuildStepName>\n", getJobNameBasedOnPath(new File(promotionConfigPath)));
 
-					returnXML += firstHalfString + buildStepName + secondHalfString;
+						returnXML += firstHalfString + buildStepName + secondHalfString;
+					}
 				}
 			}
 		}
-		String completeXML = "<root>\n"+ returnXML + "\n</root>";
+		String completeXML = "<root>\n" + returnXML + "\n</root>";
 		return completeXML;
 	}
 
