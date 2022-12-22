@@ -32,6 +32,16 @@ public class DSLMethodIfTrueStrategy extends AbstractDSLStrategy {
     public String toDSL() {
         PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
 
+        if (propertyDescriptor.getName().equals("doNotFingerprintArtifacts")) {
+            if (propertyDescriptor.getValue().equals("false")) {
+                return replaceTabs(String.format(getSyntax("syntax.method_call"),
+                        methodName, "true"), getTabs());
+            } else {
+                return replaceTabs(String.format(getSyntax("syntax.method_call"),
+                        methodName, "false"), getTabs());
+            }
+        }
+
         if (propertyDescriptor.getValue().equals("false")) {
             return "";
         }
