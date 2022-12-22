@@ -5,6 +5,12 @@ import com.adq.jenkins.xmljobtodsl.parsers.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+In the case where an XML attribute is nested incorrectly, we can copy the node to the correct "grandparent" and choose to ignore it
+in its current location.
+
+This class does assume the attribute is an object and likely won't work for other attribute types.
+ */
 public class DSLObjectIgnoreParentStrategy extends DSLObjectStrategy {
 
     private final String name;
@@ -51,42 +57,3 @@ public class DSLObjectIgnoreParentStrategy extends DSLObjectStrategy {
         }
     }
 }
-
-//public class DSLObjectIgnoreParentStrategy extends DSLObjectStrategy {
-//
-//    private final String name;
-//
-//    public DSLObjectIgnoreParentStrategy(int tabs, PropertyDescriptor propertyDescriptor, String name, boolean shouldInitChildren) {
-//        super(tabs, propertyDescriptor, name, shouldInitChildren);
-//        this.name = name;
-//
-//        PropertyDescriptor grandparent = propertyDescriptor.getParent().getParent();
-//
-//        // Remove the current node as a child from its parent
-//        List<PropertyDescriptor> siblingProperties = propertyDescriptor.getParent().getProperties();
-//        siblingProperties.remove(propertyDescriptor);
-//        propertyDescriptor.getParent().replaceProperties(siblingProperties);
-//
-//        // Make a new list of children including the current node and its parents' siblings
-//        List<PropertyDescriptor> newChildren = grandparent.getProperties();
-//        newChildren.add(propertyDescriptor);
-//
-//        // Replace the children of the grandparent
-//        grandparent.replaceProperties(newChildren);
-//        initChildren(grandparent);
-//    }
-//
-//    @Override
-//    public String toDSL() {
-//        String childrenDSL = getChildrenDSL();
-//        if (childrenDSL.isEmpty()) {
-//            return "";
-//        }
-//
-//        if (name != null) {
-//            return replaceTabs(String.format(getSyntax("syntax.object_with_name"), name, childrenDSL), getTabs());
-//        } else {
-//            return replaceTabs(String.format(getSyntax("syntax.object"), childrenDSL), getTabs());
-//        }
-//    }
-//}

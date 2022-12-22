@@ -188,6 +188,8 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 			return;
 		}
 
+		// It is possible for a properties' child or children to try to add more nodes to it
+		// Check for those nodes here and add their strategies as children.
 		List<PropertyDescriptor> addedProperties = descriptor.getAddedProperties();
 		Iterator<PropertyDescriptor> addedIterator = addedProperties.iterator();
 
