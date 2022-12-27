@@ -183,6 +183,29 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 				notTranslatedList.addAll(strategy.getNotTranslatedList());
 			}
 		}
+
+		if (descriptor.getAddedProperties() == null) {
+			return;
+		}
+
+		// It is possible for a properties' child or children to try to add more nodes to it
+		// Check for those nodes here and add their strategies as children.
+		List<PropertyDescriptor> addedProperties = descriptor.getAddedProperties();
+		Iterator<PropertyDescriptor> addedIterator = addedProperties.iterator();
+
+		while (addedIterator.hasNext()) {
+			PropertyDescriptor propertyDescriptor = addedIterator.next();
+
+			if (propertiesToBeSkipped.contains(propertyDescriptor.getName())) {
+				continue;
+			}
+
+			DSLStrategy strategy = getStrategyByPropertyDescriptorType(propertyDescriptor);
+			if (strategy != null) {
+				addChild(strategy);
+				notTranslatedList.addAll(strategy.getNotTranslatedList());
+			}
+		}
 	}
 
 	protected List<PropertyDescriptor> getChildrenOfType(PropertyDescriptor parent, String type) {

@@ -4,6 +4,8 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,6 +16,8 @@ public class PropertyDescriptor implements IDescriptor {
     private String name;
     private PropertyDescriptor parent;
     private List<PropertyDescriptor> properties;
+
+    private List<PropertyDescriptor> addedProperties;
     private Map<String, String> attributes;
     private String value;
 
@@ -45,6 +49,7 @@ public class PropertyDescriptor implements IDescriptor {
         this.name = name;
         this.value = value;
         this.properties = properties;
+        this.addedProperties = new ArrayList<>();
         this.attributes = attributes;
         this.parent = parent;
     }
@@ -56,6 +61,8 @@ public class PropertyDescriptor implements IDescriptor {
     public List<PropertyDescriptor> getProperties() {
         return properties;
     }
+
+    public List<PropertyDescriptor> getAddedProperties(){ return addedProperties; }
 
     public Map<String, String> getAttributes() {
         return attributes;
@@ -71,6 +78,19 @@ public class PropertyDescriptor implements IDescriptor {
 
     public List<PropertyDescriptor> replaceProperties(List<PropertyDescriptor> newProperties){
         return this.properties = newProperties;
+    }
+
+    public List<PropertyDescriptor> addProperty(PropertyDescriptor newProperty){
+        this.addedProperties.add(newProperty);
+        return this.addedProperties;
+    }
+
+    public Map<String, String> addAttribute(String key, String value) {
+        if(attributes == null){
+            attributes = new HashMap<>();
+        }
+        attributes.put(key, value);
+        return attributes;
     }
 
     @Override
