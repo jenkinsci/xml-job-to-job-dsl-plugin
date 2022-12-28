@@ -34,6 +34,11 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
             if (isParentAMethod) {
                 return getStrategyForObject(propertyDescriptor).toDSL();
             }
+            if (propertyDescriptor.getName().equals("healthScaleFactor")) {
+                String[] str = propertyDescriptor.getValue().split("\\.");
+                return replaceTabs(String.format(getSyntax("syntax.method_call"),
+                        methodName, str[0]), getTabs());
+            }
 
             return replaceTabs(String.format(getSyntax("syntax.method_call"),
                     methodName, printValueAccordingOfItsType(propertyDescriptor.getValue())), getTabs());
