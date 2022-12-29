@@ -60,6 +60,10 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("trim");
 		propertiesToBeSkipped.add("disableDeferredWipeout");
 		propertiesToBeSkipped.add("shallow");
+		propertiesToBeSkipped.add("skipPublishingChecks");
+		propertiesToBeSkipped.add("checksName");
+		propertiesToBeSkipped.add("skipMarkingBuildUnstable");
+		propertiesToBeSkipped.add("skipOldReports");
 
 		try {
 			initProperties();
