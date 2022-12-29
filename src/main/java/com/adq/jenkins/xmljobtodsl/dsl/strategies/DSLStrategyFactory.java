@@ -29,7 +29,7 @@ public class DSLStrategyFactory {
 			case TYPE_PROPERTY:
 				return new DSLPropertyStrategy(tabs, propertyDescriptor, property);
 			case TYPE_ARRAY:
-				return new DSLArrayStrategy(propertyDescriptor);
+				return new DSLArrayStrategy(tabs, propertyDescriptor, property);
 			case TYPE_METHOD:
 				return new DSLMethodStrategy(tabs, propertyDescriptor, property);
 			case TYPE_CLOSURE:
