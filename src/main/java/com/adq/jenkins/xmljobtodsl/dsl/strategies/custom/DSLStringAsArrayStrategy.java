@@ -7,7 +7,7 @@ import com.adq.jenkins.xmljobtodsl.dsl.strategies.IValueStrategy;
 public class DSLStringAsArrayStrategy extends DSLArrayStrategy implements IValueStrategy {
 
 	public DSLStringAsArrayStrategy(int tabs, PropertyDescriptor descriptor, String name) {
-		super(descriptor);
+		super(tabs, descriptor, name);
 	}
 
 	@Override
