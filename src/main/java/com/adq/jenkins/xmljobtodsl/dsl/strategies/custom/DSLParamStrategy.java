@@ -20,10 +20,18 @@ public class DSLParamStrategy extends DSLMethodStrategy {
 	}
 
 	public String getOrderedChildrenDSL() {
-		String defaultValue = getChildrenByName("defaultValue").toDSL();
-		String name = getChildrenByName("name").toDSL();
-		String description = getChildrenByName("description").toDSL();
-		return name + ", " + defaultValue + ", " + description;
+		PropertyDescriptor propertyDescriptor = (PropertyDescriptor) getDescriptor();
+		if (propertyDescriptor.getName().equals("hudson.model.StringParameterDefinition")) {
+			String defaultValue = getChildrenByName("defaultValue").toDSL();
+			String name = getChildrenByName("name").toDSL();
+			String description = getChildrenByName("description").toDSL();
+			return name + ", " + defaultValue + ", " + description;
+
+		} else {
+			String variable = getChildrenByName("variable").toDSL();
+			String credentialsId = getChildrenByName("credentialsId").toDSL();
+			return variable + ", " + credentialsId;
+		}
 	}
 
 	private DSLStrategy getChildrenByName(String name) {
