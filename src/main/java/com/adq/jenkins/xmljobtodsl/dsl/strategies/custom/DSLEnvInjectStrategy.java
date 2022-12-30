@@ -34,15 +34,9 @@ public class DSLEnvInjectStrategy extends DSLObjectStrategy {
         List<PropertyDescriptor> properties = new ArrayList<>();
         properties.addAll(propertyDescriptor.getProperties());
 
-        boolean featureEnabled = true;
-
         for (HashMap.Entry<String, String> expectedProp : expectedProperties.entrySet()) {
             boolean foundProperty = false;
             int indexToRemove = 0;
-
-            if(!featureEnabled){
-                break;
-            }
 
             for(PropertyDescriptor existingProp : properties){
                 if(existingProp.getName() == expectedProp.getKey()){
@@ -54,7 +48,7 @@ public class DSLEnvInjectStrategy extends DSLObjectStrategy {
 
             if(foundProperty){
                 properties.remove(indexToRemove);
-            } else if (featureEnabled){
+            } else {
                 PropertyDescriptor newChild = new PropertyDescriptor(
                         expectedProp.getKey(),
                         propertyDescriptor.getParent(),
@@ -63,10 +57,9 @@ public class DSLEnvInjectStrategy extends DSLObjectStrategy {
                 );
 
                 propertyDescriptor.getProperties().add(newChild);
-            }
+
         }
 
-        if(featureEnabled){
             initChildren(propertyDescriptor);
         }
     }
