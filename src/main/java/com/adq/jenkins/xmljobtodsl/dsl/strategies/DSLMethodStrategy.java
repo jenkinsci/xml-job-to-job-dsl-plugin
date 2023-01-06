@@ -107,4 +107,13 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
 
         return viableChildren;
     }
+
+    public DSLStrategy getChildrenByName(String name) {
+        for (DSLStrategy strategy : getChildren()) {
+            if (strategy.getDescriptor().getName().equals(name)) {
+                return strategy;
+            }
+        }
+        throw new RuntimeException(String.format("Child with name: %s not found", name));
+    }
 }
