@@ -66,12 +66,45 @@ public class DSLMethodStrategy extends AbstractDSLStrategy {
 
         for (int index = 0; index < size; index++) {
             DSLStrategy strategy = getChildren().get(index);
-            String strategyDsl = strategy.toDSL();
-            dsl.append(strategyDsl);
-            if (index < size - 1 && (strategy instanceof IValueStrategy)) {
-                dsl.append(", ");
+
+            // check if strategy is "viable" ie not an INNER
+            if(strategy instanceof IValueStrategy){
+                String strategyDsl = strategy.toDSL();
+                dsl.append(strategyDsl);
+                if (index < size - 1) {
+                    dsl.append(", ");
+                }
+            } else {
+                // check for viable children
+                ArrayList<DSLStrategy> viableChildren = new ArrayList<>();
+                viableChildren.addAll(findViableChildren(strategy));
+                int viableChildrenSize = viableChildren.size();
+
+                for(int j = 0; j < viableChildrenSize; j++){
+                    DSLStrategy viableChild = viableChildren.get(j);
+                    String viableChildDsl = viableChild.toDSL();
+                    dsl.append(viableChildDsl);
+                    if(index < size - 1 || j < viableChildrenSize - 1){
+                        dsl.append(", ");
+                    }
+                }
             }
         }
         return dsl.toString();
+    }
+
+    protected ArrayList<DSLStrategy> findViableChildren(DSLStrategy strategy){
+        ArrayList<DSLStrategy> viableChildren = new ArrayList<>();
+        List<DSLStrategy> children = strategy.getChildren();
+
+        for(DSLStrategy child : children){
+            if(child instanceof IValueStrategy && child.getChildren().size() == 0){
+                viableChildren.add(child);
+            } else {
+                viableChildren.addAll(findViableChildren(child));
+            }
+        }
+
+        return viableChildren;
     }
 }

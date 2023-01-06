@@ -64,6 +64,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 		propertiesToBeSkipped.add("checksName");
 		propertiesToBeSkipped.add("skipMarkingBuildUnstable");
 		propertiesToBeSkipped.add("skipOldReports");
+		propertiesToBeSkipped.add("operator");
 
 		try {
 			initProperties();
