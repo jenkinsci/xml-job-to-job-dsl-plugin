@@ -41,13 +41,4 @@ public class DSLParamStrategy extends DSLMethodStrategy {
 			return variable + ", " + credentialsId;
 		}
 	}
-
-	private DSLStrategy getChildrenByName(String name) {
-		for (DSLStrategy strategy : getChildren()) {
-			if (strategy.getDescriptor().getName().equals(name)) {
-				return strategy;
-			}
-		}
-		throw new RuntimeException(String.format("Child with name: %s not found", name));
-	}
 }
