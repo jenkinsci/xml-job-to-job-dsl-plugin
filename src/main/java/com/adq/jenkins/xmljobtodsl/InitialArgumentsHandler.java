@@ -10,9 +10,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.security.Key;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 public class InitialArgumentsHandler {
@@ -106,7 +104,7 @@ public class InitialArgumentsHandler {
 		if (output != null) {
 			ioUtils.saveToFile(dsl, output);
 		} else {
-			//System.out.println(dsl);
+			System.out.println(dsl);
 		}
 		unknownTags = translator.getNotTranslated();
 		HashMap<String,Integer> uniqueUnknownTags = new HashMap<String, Integer>();
