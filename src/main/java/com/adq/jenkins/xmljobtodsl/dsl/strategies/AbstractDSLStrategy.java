@@ -14,6 +14,8 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
 	public static final String SUFIX_GROOVY_TYPE = ".type";
 
+	private static final HashSet<String> propertiesToBeSkipped = new HashSet<String>();
+
 	private Properties syntaxProperties;
 	private Properties translatorProperties;
 
@@ -35,6 +37,30 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 	public AbstractDSLStrategy(int tabs, IDescriptor descriptor, boolean shouldInitChildren) {
 		this.tabs = tabs;
 		this.propertyDescriptor = descriptor;
+		propertiesToBeSkipped.add("actions");
+		propertiesToBeSkipped.add("configVersion");
+		propertiesToBeSkipped.add("submoduleCfg");
+		propertiesToBeSkipped.add("doGenerateSubmoduleConfigurations");
+		propertiesToBeSkipped.add("canRoam");
+		propertiesToBeSkipped.add("caseSensitive");
+		propertiesToBeSkipped.add("followSymlinks");
+		propertiesToBeSkipped.add("completeBuild");
+		propertiesToBeSkipped.add("skipWhenFailed");
+		propertiesToBeSkipped.add("notFailBuild");
+		propertiesToBeSkipped.add("unstableReturn");
+		propertiesToBeSkipped.add("ignoreMissing");
+		propertiesToBeSkipped.add("ordinal");
+		propertiesToBeSkipped.add("color");
+		propertiesToBeSkipped.add("activeProcessNames");
+		propertiesToBeSkipped.add("isVisible");
+		propertiesToBeSkipped.add("disableDeferredWipeout");
+		propertiesToBeSkipped.add("shallow");
+		propertiesToBeSkipped.add("skipPublishingChecks");
+		propertiesToBeSkipped.add("checksName");
+		propertiesToBeSkipped.add("skipMarkingBuildUnstable");
+		propertiesToBeSkipped.add("skipOldReports");
+		propertiesToBeSkipped.add("operator");
+
 		try {
 			initProperties();
 		} catch (IOException e) {
@@ -106,6 +132,7 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 	}
 
 	public DSLStrategy getStrategyByPropertyDescriptorType(PropertyDescriptor propertyDescriptor) {
+
 		String type = getType(propertyDescriptor);
 
 		if (type == null) {
@@ -141,6 +168,11 @@ public abstract class AbstractDSLStrategy implements DSLStrategy {
 
 		while (iterator.hasNext()) {
 			PropertyDescriptor propertyDescriptor = iterator.next();
+
+			if (propertiesToBeSkipped.contains(propertyDescriptor.getName())) {
+				continue;
+			}
+
 			DSLStrategy strategy = getStrategyByPropertyDescriptorType(propertyDescriptor);
 			if (strategy != null) {
 				addChild(strategy);
